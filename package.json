@@ -1,0 +1,26 @@
+{
+  "name": "sass-formatter",
+  "version": "0.0.1",
+  "description": "A typescript sass formatter",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepack": "tsc -b",
+    "test": "jest"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "sass",
+    "formatter"
+  ],
+  "author": "Syler",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  }
+}
