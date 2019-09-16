@@ -55,12 +55,13 @@ export class SassTextLine {
 }
 
 export class SassTextDocument {
-  private lines: SassTextLine[] = [];
+  private lines?: SassTextLine[];
   lineCount: number;
-  rawText: string;
+  private rawText?: string;
   constructor(text: string) {
     this.rawText = text;
     const split = text.split('\n');
+    this.lines = [];
     for (let i = 0; i < split.length; i++) {
       const LineText = split[i];
       this.lines.push(new SassTextLine(LineText, i));
@@ -68,7 +69,17 @@ export class SassTextDocument {
     this.lineCount = split.length;
   }
   lineAt(lineNumber: number) {
-    return this.lines[lineNumber];
+    if (this.lines !== undefined) {
+      return this.lines[lineNumber];
+    } else {
+      return new SassTextLine(
+        '[ERROR] This error should never happen if it does then look in src/format.provider.ts => SassTextDocument => lineAt',
+        -1
+      );
+    }
+  }
+  getText() {
+    return this.rawText || '';
   }
 }
 const DefaultConfig = {
@@ -287,7 +298,7 @@ export class SassFormatter {
       }
       return result;
     } else {
-      return document.rawText;
+      return document.getText();
     }
   }
 }
