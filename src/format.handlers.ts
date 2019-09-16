@@ -8,8 +8,15 @@ import {
 } from './format.utility';
 
 import { SassFormatterConfig, SassTextLine, SassFormattingOptions } from './format.provider';
-import { isScssOrCss, isHtmlTag, isIfOrElse, isElse, isComment as isComment_, isKeyframes as isKeyframes_ } from './utility.regex';
-import { getDistanceReversed } from './utility';
+import {
+  isScssOrCss,
+  isHtmlTag,
+  isIfOrElse,
+  isElse,
+  isComment as isComment_,
+  isKeyframes as isKeyframes_,
+  getDistanceReversed
+} from 'suf-regex';
 
 export interface FormatContext {
   convert: {

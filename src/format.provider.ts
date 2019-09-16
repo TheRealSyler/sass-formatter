@@ -12,22 +12,22 @@ import {
   isIgnore,
   isSassSpace,
   isProperty,
+  isReset,
   isAnd,
+  isClassOrId,
+  isMixin,
   isHtmlTag,
   isStar,
   isBracketSelector,
-  isComment,
   isPseudo,
-  isReset,
-  isMixin,
   isEach,
   isInclude,
   isScssOrCss,
+  isComment,
+  getDistanceReversed,
   isEmptyOrWhitespace,
-  isClassOrId,
   isBracketOrWhitespace
-} from './utility.regex';
-import { getDistanceReversed } from './utility';
+} from 'suf-regex';
 
 export interface SassFormatterConfig {
   enabled?: boolean;

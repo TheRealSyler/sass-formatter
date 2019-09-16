@@ -1,6 +1,13 @@
-import { getDistance } from './utility';
-import { isCssPseudo, isCssOneLiner, escapeRegExp, isPseudoWithParenthesis, isClassOrId, isMoreThanOneClassOrId } from './utility.regex';
 import { SassFormattingOptions, SassTextLine } from './format.provider';
+import {
+  getDistance,
+  isMoreThanOneClassOrId,
+  escapeRegExp,
+  isPseudoWithParenthesis,
+  isCssOneLiner,
+  isCssPseudo,
+  isClassOrId
+} from 'suf-regex';
 
 /**
  * returns the relative distance that the class or id should be at.
