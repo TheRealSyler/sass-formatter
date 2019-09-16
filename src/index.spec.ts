@@ -12,7 +12,6 @@ test('Sass Format Case 1', () => {
     { debug: false }
   );
   expect(a).toEqual(`
-
 .class
   margin: 10px
   padding: 10rem
@@ -57,7 +56,6 @@ test('Sass Format Case 2', () => {
     { debug: false }
   );
   expect(a).toEqual(`
-
 .checkbox
   background-color: $dark-gray
   border: solid 1px $font
@@ -195,7 +193,6 @@ test('Sass Format Case 5', () => {
     { debug: false }
   );
   expect(a).toEqual(`
-
 .badge-dot
   padding-left: 0
   padding-right: 0

@@ -98,7 +98,7 @@ export class SassFormatter {
       let ALLOW_SPACE = false;
       let isInBlockComment = false;
       let ignoreLine = false;
-
+      let isFirstLine = true;
       let CONTEXT: FormatContext = {
         convert: {
           lastSelector: '',
@@ -113,14 +113,7 @@ export class SassFormatter {
         // lastHeader: { endedWithComma: false, offset: 0 }
       };
 
-      // handle first line (test case 3 fails without this)
-      let start = 0;
-      if (document.lineAt(0).isEmptyOrWhitespace) {
-        result += document.lineAt(0).text;
-        start = 1;
-      }
-
-      for (let i = start; i < document.lineCount; i++) {
+      for (let i = 0; i < document.lineCount; i++) {
         const line = document.lineAt(i);
 
         if (isBlockCommentStart(line.text)) {
@@ -161,9 +154,17 @@ export class SassFormatter {
 
               if (line.text.length > 0 && pass && config.deleteWhitespace) {
                 LogFormatInfo(enableDebug, line.lineNumber, { title: 'WHITESPACE' });
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
               } else if (pass) {
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
               }
             } else {
               const LOCAL_CONTEXT: FormatLocalContext = {
@@ -208,7 +209,11 @@ export class SassFormatter {
                   Context: CONTEXT
                 });
 
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
                 result += formatRes.edit;
 
                 CONTEXT = formatRes.context;
@@ -224,7 +229,11 @@ export class SassFormatter {
                   options
                 });
 
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
                 result += formatRes.edit;
                 CONTEXT = formatRes.context;
               }
@@ -235,7 +244,11 @@ export class SassFormatter {
                 // Context.lastHeader.endedWithComma = false;
                 CONTEXT.convert.wasLastLineCss = true;
                 LogFormatInfo(enableDebug, line.lineNumber, { title: 'CONVERT', convert: true });
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
                 result += convertRes.text;
               } else if (getDistanceReversed(line.text, options.tabSize) > 0 && config.deleteWhitespace) {
                 let lineText = line.text;
@@ -250,10 +263,18 @@ export class SassFormatter {
                 CONTEXT.convert.wasLastLineCss = convert;
                 LogFormatInfo(enableDebug, line.lineNumber, { title: 'TRAIL', convert });
 
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
                 result += lineText.trimRight();
               } else {
-                result += '\n';
+                if (isFirstLine) {
+                  isFirstLine = false;
+                } else {
+                  result += '\n';
+                }
                 result += line.text;
               }
             }
