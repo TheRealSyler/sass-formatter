@@ -60,7 +60,7 @@ export class SassTextDocument {
   private rawText?: string;
   constructor(text: string) {
     this.rawText = text;
-    const split = text.split('\n');
+    const split = text.split(/[\r\n]?[\r\n]/g);
     this.lines = [];
     for (let i = 0; i < split.length; i++) {
       const LineText = split[i];

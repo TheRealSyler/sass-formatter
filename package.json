@@ -1,11 +1,12 @@
 {
   "name": "sass-formatter",
-  "version": "0.0.4",
-  "description": "A typescript sass formatter",
+  "version": "0.0.5",
+  "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
     "prepack": "jest && npm run build",
     "build": "tsc -b",
+    "watch": "tsc -w",
     "test": "jest"
   },
   "files": [
@@ -27,6 +28,10 @@
   },
   "dependencies": {
     "suf-regex": "^0.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheRealSyler/sass-formatter"
   },
   "jest": {
     "moduleFileExtensions": [
