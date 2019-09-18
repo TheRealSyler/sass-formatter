@@ -1,10 +1,10 @@
 {
   "name": "sass-formatter",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "tsc -b",
+    "prepack": "tsc -b && jest",
     "test": "tsc -b && jest"
   },
   "files": [

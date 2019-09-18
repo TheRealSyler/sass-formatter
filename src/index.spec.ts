@@ -223,3 +223,31 @@ test('Sass Format Case 5', () => {
         height: .625rem
 `);
 });
+test('Sass Format Case 6', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(`
+  
+
+
+  
+
+  
+    .test
+    margin: 234px      
+    -moz-animation:             abs()
+  
+  .test2
+    max-width: 23px  
+`),
+    { insertSpaces: false, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(`
+.test
+	margin: 234px
+	-moz-animation: abs()
+
+	.test2
+		max-width: 23px
+`);
+});
