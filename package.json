@@ -4,8 +4,8 @@
   "description": "A typescript sass formatter",
   "main": "dist/src/index.js",
   "scripts": {
-    "prepack": "tsc -b && jest",
-    "test": "tsc -b && jest"
+    "prepack": "jest && tsc -b",
+    "test": "jest"
   },
   "files": [
     "dist/src",
@@ -20,17 +20,26 @@
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "jest": "^24.9.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "ts-jest": "^24.1.0"
   },
   "dependencies": {
     "suf-regex": "^0.0.2"
   },
   "jest": {
     "moduleFileExtensions": [
+      "ts",
+      "tsx",
       "js",
       "json",
       "jsx",
       "node"
-    ]
+    ],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
   }
 }

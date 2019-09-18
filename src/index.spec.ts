@@ -1,5 +1,5 @@
-import { SassFormatter } from '../src/index';
-import { SassTextDocument } from '../src/format.provider';
+import { SassFormatter } from './index';
+import { SassTextDocument } from './format.provider';
 test('Sass Format Case 1', () => {
   const a = SassFormatter.Format(
     new SassTextDocument(`
