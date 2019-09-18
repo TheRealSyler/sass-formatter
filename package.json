@@ -2,13 +2,14 @@
   "name": "sass-formatter",
   "version": "0.0.4",
   "description": "A typescript sass formatter",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "prepack": "jest && tsc -b",
+    "prepack": "jest && npm run build",
+    "build": "tsc -b",
     "test": "jest"
   },
   "files": [
-    "dist/src",
+    "dist",
     "README.md"
   ],
   "keywords": [
@@ -22,7 +23,7 @@
     "jest": "^24.9.0",
     "typescript": "^3.6.3",
     "ts-jest": "^24.1.0",
-    "tslib": "1.10.0"
+    "tslib": "^1.10.0"
   },
   "dependencies": {
     "suf-regex": "^0.0.2"
