@@ -24,5 +24,8 @@
   },
   "dependencies": {
     "suf-regex": "^0.0.2"
+  },
+  "jest": {
+    "moduleFileExtensions": "['js', 'json', 'jsx', 'node']"
   }
 }
