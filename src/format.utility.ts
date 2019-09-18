@@ -177,6 +177,8 @@ export function LogFormatInfo(enableDebug: boolean, lineNumber: number, info: Lo
       StoreCssConvertLog.log.join('\n')
     );
     StoreCssConvertLog.log = [];
+  } else {
+    StoreCssConvertLog.log = [];
   }
 }
 function StoreConvertInfo(title: string) {

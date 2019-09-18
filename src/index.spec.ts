@@ -4,6 +4,7 @@ test('Sass Format Case 1', () => {
   const a = SassFormatter.Format(
     new SassTextDocument(`
 
+
 .class
     margin: 10px
               padding: 10rem
