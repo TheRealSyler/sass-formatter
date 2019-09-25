@@ -2,26 +2,31 @@ import { SassFormatter } from './index';
 import { SassTextDocument } from './format.provider';
 test('Sass Format Case 1', () => {
   const a = SassFormatter.Format(
-    new SassTextDocument(`
+    new SassTextDocument(
+      `
 
 
 .class
     margin: 10px
               padding: 10rem
-`),
+`
+    ),
     { insertSpaces: true, tabSize: 2 },
     { debug: false }
   );
-  expect(a).toEqual(`
+  expect(a).toEqual(
+    `
 .class
   margin: 10px
   padding: 10rem
-`);
+`
+  );
 });
 
 test('Sass Format Case 2', () => {
   const a = SassFormatter.Format(
-    new SassTextDocument(`
+    new SassTextDocument(
+      `
 
 
 
@@ -52,11 +57,13 @@ test('Sass Format Case 2', () => {
                   left: 5px
 
 
-`),
+`
+    ),
     { insertSpaces: true, tabSize: 2 },
     { debug: false }
   );
-  expect(a).toEqual(`
+  expect(a).toEqual(
+    `
 .checkbox
   background-color: $dark-gray
   border: solid 1px $font
@@ -78,11 +85,13 @@ test('Sass Format Case 2', () => {
         display: none
         content: ""
         left: 5px
-`);
+`
+  );
 });
 test('Sass Format Case 3', () => {
   const a = SassFormatter.Format(
-    new SassTextDocument(`
+    new SassTextDocument(
+      `
 @import ../test.sass
 $test: 23;
 
@@ -98,11 +107,13 @@ div
     top: $awd
         @include name ()
     
-`),
+`
+    ),
     { insertSpaces: true, tabSize: 2 },
     { debug: false }
   );
-  expect(a).toEqual(`
+  expect(a).toEqual(
+    `
 @import ../test.sass
 $test: 23
 
@@ -117,11 +128,13 @@ div#{abc}
 div
   top: $awd
   @include name ()
-`);
+`
+  );
 });
 test('Sass Format Case 4', () => {
   const a = SassFormatter.Format(
-    new SassTextDocument(`
+    new SassTextDocument(
+      `
 $var: 100vh;
 
 .test-scss {
@@ -133,11 +146,13 @@ $var: 100vh;
 .test-scss-2 {
                     margin:         $var;
 }
-`),
+`
+    ),
     { insertSpaces: true, tabSize: 2 },
     { debug: false }
   );
-  expect(a).toEqual(`
+  expect(a).toEqual(
+    `
 $var: 100vh
 
 .test-scss
@@ -147,11 +162,13 @@ $var: 100vh
 
   &-2
     margin: $var
-`);
+`
+  );
 });
 test('Sass Format Case 5', () => {
   const a = SassFormatter.Format(
-    new SassTextDocument(`
+    new SassTextDocument(
+      `
 
   .badge-dot {
     padding-left: 0;
@@ -189,11 +206,13 @@ test('Sass Format Case 5', () => {
     }
 }
   
-`),
+`
+    ),
     { insertSpaces: true, tabSize: 2 },
     { debug: false }
   );
-  expect(a).toEqual(`
+  expect(a).toEqual(
+    `
 .badge-dot
   padding-left: 0
   padding-right: 0
@@ -222,11 +241,13 @@ test('Sass Format Case 5', () => {
       i
         width: .625rem
         height: .625rem
-`);
+`
+  );
 });
 test('Sass Format Case 6', () => {
   const a = SassFormatter.Format(
-    new SassTextDocument(`
+    new SassTextDocument(
+      `
   
 
 
@@ -239,16 +260,44 @@ test('Sass Format Case 6', () => {
   
   .test2
     max-width: 23px  
-`),
+`
+    ),
     { insertSpaces: false, tabSize: 2 },
     { debug: false }
   );
-  expect(a).toEqual(`
+  expect(a).toEqual(
+    `
 .test
 	margin: 234px
 	-moz-animation: abs()
 
 	.test2
 		max-width: 23px
-`);
+`
+  );
+});
+
+test('Sass Format Case 7', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(
+      `
+
+
+.footer
+    margin-top: 3rem
+      +desktop
+          padding-top: 220px
+`
+    ),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+.footer
+  margin-top: 3rem
+  +desktop
+    padding-top: 220px
+`
+  );
 });
