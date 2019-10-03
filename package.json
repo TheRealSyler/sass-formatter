@@ -27,7 +27,7 @@
     "tslib": "^1.10.0"
   },
   "dependencies": {
-    "suf-regex": "0.0.4"
+    "suf-regex": "^0.0.5"
   },
   "repository": {
     "type": "git",
