@@ -301,3 +301,87 @@ test('Sass Format Case 7', () => {
 `
   );
 });
+
+test('Sass Format Case 8', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(
+      `
+.footer,
+  .footer,
+.footer2
+margin: 10px
+  padding: 20px
+
+`
+    ),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+.footer,
+.footer,
+.footer2
+  margin: 10px
+  padding: 20px
+`
+  );
+});
+test('Sass Format Case 8.1', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(
+      `
+  .footer,
+#footer,
+          +footer2
+margin: 10px
+  padding: 20px
+
+`
+    ),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+.footer,
+#footer,
++footer2
+  margin: 10px
+  padding: 20px
+`
+  );
+});
+test('Sass Format Case 9', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(
+      `
+.foo
+position: relative
+
+  @media only screen and (min-width: 600px)
+    .foo
+  position: absolute
+
+    & > .bar
+  width: 100%
+
+`
+    ),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+.foo
+  position: relative
+
+  @media only screen and (min-width: 600px)
+    .foo
+      position: absolute
+
+    & > .bar
+      width: 100%
+`
+  );
+});

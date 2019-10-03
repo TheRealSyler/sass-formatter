@@ -17,121 +17,97 @@ import {
   isKeyframes as isKeyframes_,
   getDistanceReversed
 } from 'suf-regex';
+import { FormattingState } from './format.state';
 
-export interface FormatContext {
-  convert: {
-    lastSelector: string;
-    wasLastLineCss: boolean;
-  };
-  keyframes: {
-    is: boolean;
-    tabs: number;
-  };
-  tabs: number;
-  currentTabs: number;
-  // lastHeader: { offset: number; endedWithComma: boolean };
-}
-export interface FormatLocalContext {
-  ResetTabs: boolean;
-  isAnd_: boolean;
-  isProp: boolean;
-  indentation: {
+export function FormatHandleBlockHeader(
+  inp: {
+    line: SassTextLine;
+    options: SassFormattingOptions;
+    config: SassFormatterConfig;
+    enableDebug: boolean;
     offset: number;
-    distance: number;
-  };
-  isClassOrIdSelector: boolean;
-  isIfOrElse: boolean;
-  isIfOrElseAProp: boolean;
-  isKeyframes: boolean;
-  isKeyframesPoint: boolean;
-}
-
-export function FormatHandleBlockHeader(i: {
-  line: SassTextLine;
-  options: SassFormattingOptions;
-  config: SassFormatterConfig;
-  enableDebug: boolean;
-  LocalContext: FormatLocalContext;
-  offset: number;
-  Context: FormatContext;
-}) {
+  },
+  State: FormattingState
+) {
   let replaceSpaceOrTabs = false;
   let convert = false;
-  let lineText = i.line.text;
+  let lineText = inp.line.text;
   let additionalTabs = 0;
   let edit: string = lineText;
-  if (i.config.convert && isScssOrCss(i.line.text, i.Context.convert.wasLastLineCss) && !isComment_(i.line.text)) {
-    const convertRes = convertScssOrCss(lineText, i.options, i.Context.convert.lastSelector);
-    i.Context.convert.lastSelector = convertRes.lastSelector;
+  if (inp.config.convert && isScssOrCss(inp.line.text, State.CONTEXT.convert.wasLastLineCss) && !isComment_(inp.line.text)) {
+    const convertRes = convertScssOrCss(lineText, inp.options, State.CONTEXT.convert.lastSelector);
+    State.CONTEXT.convert.lastSelector = convertRes.lastSelector;
     if (convertRes.increaseTabSize) {
-      additionalTabs = i.options.tabSize;
+      additionalTabs = inp.options.tabSize;
     }
     lineText = convertRes.text;
     convert = true;
   }
 
-  if (!convert && i.LocalContext.isClassOrIdSelector) {
-    i.Context.convert.lastSelector = '';
+  if (!convert && State.LOCAL_CONTEXT.isClassOrIdSelector) {
+    State.CONTEXT.convert.lastSelector = '';
   }
 
-  if (i.config.replaceSpacesOrTabs && i.options.insertSpaces ? /\t/g.test(lineText) : / /g.test(lineText)) {
-    lineText = replaceSpacesOrTabs(lineText, i.options.insertSpaces, i.options.tabSize);
+  if (inp.config.replaceSpacesOrTabs && inp.options.insertSpaces ? /\t/g.test(lineText) : / /g.test(lineText)) {
+    lineText = replaceSpacesOrTabs(lineText, inp.options.insertSpaces, inp.options.tabSize);
     replaceSpaceOrTabs = true;
   }
-  // if (i.Context.lastHeader.endedWithComma) {
-  //   // additionalTabs -= i.options.tabSize;
-  //   i.offset = i.Context.lastHeader.offset;
-  // }
+  if (State.CONTEXT.firstCommaHeader.exists) {
+    inp.offset = State.CONTEXT.firstCommaHeader.distance - State.LOCAL_CONTEXT.indentation.distance;
+  }
   // Set Context Vars
-  // i.Context.convert.wasLastLineCss = convert;
-  // if (lineText.trim().endsWith(',')) {
-  //   i.Context.lastHeader.endedWithComma = true;
-  // } else {
-  //   i.Context.lastHeader.endedWithComma = false;
-  // }
+  State.CONTEXT.convert.wasLastLineCss = convert;
+  if (lineText.trim().endsWith(',')) {
+    if (State.CONTEXT.firstCommaHeader.exists !== true) {
+      State.CONTEXT.firstCommaHeader.distance = State.LOCAL_CONTEXT.indentation.distance + inp.offset;
+    }
+    State.CONTEXT.firstCommaHeader.exists = true;
+  } else {
+    State.CONTEXT.firstCommaHeader.exists = false;
+  }
 
   // Return
-  if (i.offset !== 0) {
-    LogFormatInfo(i.enableDebug, i.line.lineNumber, { title: 'SET NEW TAB', convert, replaceSpaceOrTabs });
-    edit = replaceWithOffset(lineText, i.offset, i.options).trimRight();
-  } else if (getDistanceReversed(i.line.text, i.options.tabSize) > 0 && i.config.deleteWhitespace) {
-    LogFormatInfo(i.enableDebug, i.line.lineNumber, { title: 'TRAIL', convert, replaceSpaceOrTabs });
+  if (inp.offset !== 0) {
+    LogFormatInfo(inp.enableDebug, inp.line.lineNumber, { title: 'SET NEW TAB', convert, replaceSpaceOrTabs });
+    edit = replaceWithOffset(lineText, inp.offset, inp.options).trimRight();
+  } else if (getDistanceReversed(inp.line.text, inp.options.tabSize) > 0 && inp.config.deleteWhitespace) {
+    LogFormatInfo(inp.enableDebug, inp.line.lineNumber, { title: 'TRAIL', convert, replaceSpaceOrTabs });
     edit = lineText.trimRight();
   } else if (convert || replaceSpaceOrTabs) {
-    LogFormatInfo(i.enableDebug, i.line.lineNumber, { title: 'CHANGE', convert, replaceSpaceOrTabs });
+    LogFormatInfo(inp.enableDebug, inp.line.lineNumber, { title: 'CHANGE', convert, replaceSpaceOrTabs });
     edit = lineText;
   }
-  i.Context = FormatHandleSetTabs(i.Context, i.LocalContext, i.options, { additionalTabs, offset: i.offset });
-  return { edit, context: i.Context, additionalTabs };
+  FormatHandleSetTabs(inp.options, State, { additionalTabs, offset: inp.offset });
+  return edit;
 }
 
-export function FormatHandleProperty(i: {
-  line: SassTextLine;
-  options: SassFormattingOptions;
-  config: SassFormatterConfig;
-  enableDebug: boolean;
-  LocalContext: FormatLocalContext;
-  Context: FormatContext;
-}) {
+export function FormatHandleProperty(
+  i: {
+    line: SassTextLine;
+    options: SassFormattingOptions;
+    config: SassFormatterConfig;
+    enableDebug: boolean;
+  },
+  State: FormattingState
+) {
   let lineText = i.line.text;
   let setSpace = false;
   let convert = false;
   let replaceSpaceOrTabs = false;
   let edit: string = lineText;
   const isComment = isComment_(i.line.text);
-  if (!isHtmlTag(i.line.text) && !hasPropertyValueSpace(i.line.text) && i.LocalContext.isProp && i.config.setPropertySpace) {
+  if (!isHtmlTag(i.line.text) && !hasPropertyValueSpace(i.line.text) && State.LOCAL_CONTEXT.isProp && i.config.setPropertySpace) {
     lineText = lineText.replace(/(^[\t ]*[\$\w-]+:)[\t ]*/, '$1 ');
     setSpace = true;
   }
-  if (i.config.convert && isScssOrCss(i.line.text, i.Context.convert.wasLastLineCss) && !isComment) {
-    const convertRes = convertScssOrCss(lineText, i.options, i.Context.convert.lastSelector);
+  if (i.config.convert && isScssOrCss(i.line.text, State.CONTEXT.convert.wasLastLineCss) && !isComment) {
+    const convertRes = convertScssOrCss(lineText, i.options, State.CONTEXT.convert.lastSelector);
     lineText = convertRes.text;
     convert = true;
   }
   // Set Context Vars
-  // i.Context.lastHeader.endedWithComma = false;
-  i.Context.convert.wasLastLineCss = convert;
-  const move = i.LocalContext.indentation.offset !== 0 && !isComment;
+  State.CONTEXT.convert.wasLastLineCss = convert;
+  const move = State.LOCAL_CONTEXT.indentation.offset !== 0 && !isComment;
   if (
     i.config.replaceSpacesOrTabs &&
     !move &&
@@ -146,11 +122,11 @@ export function FormatHandleProperty(i: {
       title: 'MOVE',
       convert,
       setSpace,
-      offset: i.LocalContext.indentation.offset,
+      offset: State.LOCAL_CONTEXT.indentation.offset,
       replaceSpaceOrTabs
     });
 
-    edit = replaceWithOffset(lineText, i.LocalContext.indentation.offset, i.options).trimRight();
+    edit = replaceWithOffset(lineText, State.LOCAL_CONTEXT.indentation.offset, i.options).trimRight();
   } else if (getDistanceReversed(i.line.text, i.options.tabSize) > 0 && i.config.deleteWhitespace) {
     LogFormatInfo(i.enableDebug, i.line.lineNumber, { title: 'TRAIL', convert, setSpace, replaceSpaceOrTabs });
 
@@ -160,28 +136,28 @@ export function FormatHandleProperty(i: {
     edit = lineText;
   }
 
-  i.Context = FormatHandleSetTabs(i.Context, i.LocalContext, i.options);
+  FormatHandleSetTabs(i.options, State);
 
-  return { edit, context: i.Context };
+  return edit;
 }
-export function FormatHandleLocalContext(line: SassTextLine, CONTEXT: FormatContext, options: SassFormattingOptions) {
-  const isPointCheck = isKeyframePoint(line.text, CONTEXT.keyframes.is);
-  if (CONTEXT.keyframes.is && isPointCheck) {
-    CONTEXT.tabs = Math.max(0, CONTEXT.keyframes.tabs);
+export function FormatHandleLocalContext(line: SassTextLine, options: SassFormattingOptions, State) {
+  const isPointCheck = isKeyframePoint(line.text, State.CONTEXT.keyframes.is);
+  if (State.CONTEXT.keyframes.is && isPointCheck) {
+    State.CONTEXT.tabs = Math.max(0, State.CONTEXT.keyframes.tabs);
   }
   const isKeyframes = isKeyframes_(line.text);
 
   let IS_IF_OR_ELSE_ = isIfOrElse(line.text);
   let isIfOrElseAProp = false;
-  if (CONTEXT.keyframes.is && IS_IF_OR_ELSE_) {
+  if (State.CONTEXT.keyframes.is && IS_IF_OR_ELSE_) {
     IS_IF_OR_ELSE_ = false;
     isIfOrElseAProp = true;
-    CONTEXT.tabs = CONTEXT.keyframes.tabs + options.tabSize;
+    State.CONTEXT.tabs = State.CONTEXT.keyframes.tabs + options.tabSize;
   }
-  if (IS_IF_OR_ELSE_ && !CONTEXT.keyframes.is && isElse(line.text)) {
+  if (IS_IF_OR_ELSE_ && !State.CONTEXT.keyframes.is && isElse(line.text)) {
     isIfOrElseAProp = true;
     IS_IF_OR_ELSE_ = false;
-    CONTEXT.tabs = Math.max(0, CONTEXT.currentTabs - options.tabSize);
+    State.CONTEXT.tabs = Math.max(0, State.CONTEXT.currentTabs - options.tabSize);
   }
   return {
     isIfOrElse: IS_IF_OR_ELSE_,
@@ -191,34 +167,35 @@ export function FormatHandleLocalContext(line: SassTextLine, CONTEXT: FormatCont
   };
 }
 function FormatHandleSetTabs(
-  CONTEXT: FormatContext,
-  LOCAL_CONTEXT: FormatLocalContext,
   options: SassFormattingOptions,
+  State: FormattingState,
   headerStuff?: { offset: number; additionalTabs: number }
 ) {
   if (headerStuff === undefined) {
     // § set Tabs Property
-    if (CONTEXT.keyframes.is && LOCAL_CONTEXT.isKeyframesPoint) {
-      CONTEXT.tabs = Math.max(0, CONTEXT.keyframes.tabs + options.tabSize);
+    if (State.CONTEXT.keyframes.is && State.LOCAL_CONTEXT.isKeyframesPoint) {
+      State.CONTEXT.tabs = Math.max(0, State.CONTEXT.keyframes.tabs + options.tabSize);
     }
-    if (LOCAL_CONTEXT.isIfOrElseAProp && CONTEXT.keyframes.is) {
-      CONTEXT.tabs = CONTEXT.keyframes.tabs + options.tabSize * 2;
-    } else if (LOCAL_CONTEXT.isIfOrElseAProp && !CONTEXT.keyframes.is) {
-      CONTEXT.tabs = CONTEXT.currentTabs;
+    if (State.LOCAL_CONTEXT.isIfOrElseAProp && State.CONTEXT.keyframes.is) {
+      State.CONTEXT.tabs = State.CONTEXT.keyframes.tabs + options.tabSize * 2;
+    } else if (State.LOCAL_CONTEXT.isIfOrElseAProp && !State.CONTEXT.keyframes.is) {
+      State.CONTEXT.tabs = State.CONTEXT.currentTabs;
     }
   } else {
     //§ set Tabs Header Block
-    if (LOCAL_CONTEXT.isKeyframes) {
-      CONTEXT.keyframes.tabs = Math.max(0, LOCAL_CONTEXT.indentation.distance + headerStuff.offset + options.tabSize);
+    if (State.LOCAL_CONTEXT.isKeyframes) {
+      State.CONTEXT.keyframes.tabs = Math.max(0, State.LOCAL_CONTEXT.indentation.distance + headerStuff.offset + options.tabSize);
     }
-    if (LOCAL_CONTEXT.ResetTabs) {
-      CONTEXT.tabs = Math.max(0, LOCAL_CONTEXT.indentation.distance + headerStuff.offset);
-      CONTEXT.currentTabs = CONTEXT.tabs;
+    if (State.LOCAL_CONTEXT.ResetTabs) {
+      State.CONTEXT.tabs = Math.max(0, State.LOCAL_CONTEXT.indentation.distance + headerStuff.offset);
+      State.CONTEXT.currentTabs = State.CONTEXT.tabs;
     } else {
-      CONTEXT.tabs = Math.max(0, LOCAL_CONTEXT.indentation.distance + headerStuff.offset + options.tabSize + headerStuff.additionalTabs);
+      State.CONTEXT.tabs = Math.max(
+        0,
+        State.LOCAL_CONTEXT.indentation.distance + headerStuff.offset + options.tabSize + headerStuff.additionalTabs
+      );
 
-      CONTEXT.currentTabs = CONTEXT.tabs;
+      State.CONTEXT.currentTabs = State.CONTEXT.tabs;
     }
   }
-  return CONTEXT;
 }
