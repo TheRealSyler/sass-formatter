@@ -21,7 +21,6 @@ import {
   getDistanceReversed,
   isEmptyOrWhitespace,
   isBracketOrWhitespace,
-  getDistance,
   isMedia,
   isPreSelector
 } from 'suf-regex';
@@ -165,15 +164,9 @@ export class SassFormatter {
                 indentation: getIndentationOffset(line.text, State.CONTEXT.tabs, options.tabSize),
                 isClassOrIdSelector: isClassOrId(line.text)
               });
-              if (isMedia(line.text)) {
-                ResetContext('normal', State);
-                const distance = getDistance(line.text, options.tabSize);
-                State.CONTEXT.tabs = distance + options.tabSize;
-                State.CONTEXT.currentTabs = distance + options.tabSize;
-                result += addNewLine(State);
-                result += line.text;
-              } //####### Block Header #######
-              else if (
+              //####### Block Header #######
+              if (
+                isMedia(line.text) ||
                 isPreSelector(line.text) ||
                 State.LOCAL_CONTEXT.isClassOrIdSelector ||
                 isMixin(line.text) ||
