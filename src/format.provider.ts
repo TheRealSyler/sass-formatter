@@ -14,7 +14,7 @@ import {
   isStar,
   isBracketSelector,
   isPseudo,
-  isEach,
+  isLoop,
   isInclude,
   isScssOrCss,
   isComment,
@@ -22,7 +22,8 @@ import {
   isEmptyOrWhitespace,
   isBracketOrWhitespace,
   getDistance,
-  isMedia
+  isMedia,
+  isPreSelector
 } from 'suf-regex';
 import { FormattingState } from './format.state';
 
@@ -103,7 +104,7 @@ export class SassFormatter {
         console.log('FORMAT');
       }
       const State = new FormattingState();
-      // State.ResetState();
+
       let result: string = '';
 
       for (let i = 0; i < document.lineCount; i++) {
@@ -173,6 +174,7 @@ export class SassFormatter {
                 result += line.text;
               } //####### Block Header #######
               else if (
+                isPreSelector(line.text) ||
                 State.LOCAL_CONTEXT.isClassOrIdSelector ||
                 isMixin(line.text) ||
                 isHtmlTag(line.text.trim().split(' ')[0]) ||
@@ -183,7 +185,7 @@ export class SassFormatter {
                 isBracketSelector(line.text) ||
                 isPseudo(line.text) ||
                 State.LOCAL_CONTEXT.isKeyframes ||
-                isEach(line.text)
+                isLoop(line.text)
               ) {
                 const offset = getCLassOrIdIndentationOffset(
                   State.LOCAL_CONTEXT.indentation.distance,

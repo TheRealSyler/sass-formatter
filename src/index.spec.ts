@@ -385,3 +385,88 @@ position: relative
 `
   );
 });
+test('Sass Format Case 10', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(
+      `
+.class
+  .class
+    color: none
+    span
+      color: none
+
+      > span
+      color: none
+  + span
+      color: none
+
+  ~ div
+  color: none
+
+
+`
+    ),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+.class
+  .class
+    color: none
+    span
+      color: none
+
+      > span
+        color: none
+  + span
+    color: none
+
+  ~ div
+    color: none
+`
+  );
+});
+test('Sass Format Case 11', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(
+      `
+    span
+      color: none
+
+      @for $i from 0 through 2
+         
+          &:nth-child(#{$i})
+              color: none
+          @each $author in $list
+              .photo-#{$author}
+                background: image-url("avatars/#{$author}.png") no-repeat
+
+    @while $types > 0
+          .while-#{$types}
+ width: $type-width + $types
+     
+`
+    ),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+span
+  color: none
+
+  @for $i from 0 through 2
+
+    &:nth-child(#{$i})
+      color: none
+      @each $author in $list
+        .photo-#{$author}
+          background: image-url("avatars/#{$author}.png") no-repeat
+
+    @while $types > 0
+      .while-#{$types}
+        width: $type-width + $types
+`
+  );
+});
