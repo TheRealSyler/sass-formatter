@@ -35,6 +35,7 @@ export interface SassFormatterConfig {
   convert?: boolean;
   replaceSpacesOrTabs?: boolean;
   setPropertySpace?: boolean;
+  ignoreBackslash?: boolean;
 }
 
 export interface SassFormattingOptions {
@@ -125,6 +126,7 @@ export class SassFormatter {
             if (isSassSpace(line.text)) {
               State.ALLOW_SPACE = true;
             }
+
             // ####### Empty Line #######
 
             if (line.isEmptyOrWhitespace || (config.convert ? isBracketOrWhitespace(line.text) : false)) {
@@ -176,7 +178,7 @@ export class SassFormatter {
                 State.LOCAL_CONTEXT.ResetTabs ||
                 State.LOCAL_CONTEXT.isAnd_ ||
                 isBracketSelector(line.text) ||
-                isPseudo(line.text) ||
+                isPseudo(line.text, config.ignoreBackslash) ||
                 State.LOCAL_CONTEXT.isKeyframes ||
                 isLoop(line.text)
               ) {
@@ -226,7 +228,11 @@ export class SassFormatter {
                 result += formatRes;
               }
               // ####### Convert #######
-              else if (config.convert && isScssOrCss(line.text, State.CONTEXT.convert.wasLastLineCss) && !isComment(line.text)) {
+              else if (
+                config.convert &&
+                isScssOrCss(line.text, State.CONTEXT.convert.wasLastLineCss) &&
+                !isComment(line.text)
+              ) {
                 const convertRes = convertScssOrCss(line.text, options, State.CONTEXT.convert.lastSelector);
                 // Set Context Vars
                 ResetContext('convert', State);
@@ -236,7 +242,11 @@ export class SassFormatter {
               } else if (getDistanceReversed(line.text, options.tabSize) > 0 && config.deleteWhitespace) {
                 let lineText = line.text;
                 let convert = false;
-                if (config.convert && isScssOrCss(line.text, State.CONTEXT.convert.wasLastLineCss) && !isComment(line.text)) {
+                if (
+                  config.convert &&
+                  isScssOrCss(line.text, State.CONTEXT.convert.wasLastLineCss) &&
+                  !isComment(line.text)
+                ) {
                   const convertRes = convertScssOrCss(lineText, options, State.CONTEXT.convert.lastSelector);
                   lineText = convertRes.text;
                   convert = true;

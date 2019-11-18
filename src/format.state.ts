@@ -56,6 +56,9 @@ export class FormattingState {
   isFirstLine = true;
   ALLOW_SPACE = false;
   isInBlockComment = false;
+  /**
+   * The Formatter Skips one line.
+   */
   ignoreLine = false;
   LOCAL_CONTEXT: FormatLocalContext;
   constructor() {

@@ -470,3 +470,12 @@ span
 `
   );
 });
+test('Sass Format Case 12', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument('\\:root\n     --color: red'),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: false, ignoreBackslash: true }
+  );
+
+  expect(a).toBe('\\:root\n  --color: red');
+});
