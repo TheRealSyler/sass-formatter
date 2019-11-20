@@ -1,5 +1,4 @@
-import { getCLassOrIdIndentationOffset, getIndentationOffset, convertScssOrCss, LogFormatInfo } from './format.utility';
-import { FormatHandleBlockHeader, FormatHandleProperty, FormatHandleLocalContext } from './format.handlers';
+import { getCLassOrIdIndentationOffset, getIndentationOffset, convertScssOrCss, LogFormatInfo } from './utility';
 import {
   isBlockCommentStart,
   isBlockCommentEnd,
@@ -24,7 +23,11 @@ import {
   isMedia,
   isPreSelector
 } from 'suf-regex';
-import { FormattingState } from './format.state';
+import { FormattingState } from './state';
+import { FormatHandleLocalContext } from './handlers/handler.utility';
+import { FormatHandleBlockHeader } from './handlers/handler.header';
+import { FormatHandleProperty } from './handlers/handler.property';
+import { FormatHandleBlockComment } from './handlers/handler.blockComment';
 
 export interface SassFormatterConfig {
   enabled?: boolean;
@@ -113,12 +116,15 @@ export class SassFormatter {
         if (isBlockCommentStart(line.text)) {
           State.isInBlockComment = true;
         }
-        if (isBlockCommentEnd(line.text)) {
-          State.isInBlockComment = false;
-        }
 
-        if (State.ignoreLine || State.isInBlockComment) {
+        if (State.ignoreLine) {
           State.ignoreLine = false;
+        } else if (State.isInBlockComment) {
+          result += addNewLine(State);
+          result += FormatHandleBlockComment(line.text, options);
+          if (isBlockCommentEnd(line.text)) {
+            State.isInBlockComment = false;
+          }
         } else {
           if (isIgnore(line.text)) {
             State.ignoreLine = true;
@@ -284,7 +290,7 @@ function ResetContext(type: 'normal' | 'convert', State) {
   }
 }
 
-function addNewLine(State) {
+function addNewLine(State: FormattingState) {
   if (State.isFirstLine) {
     State.isFirstLine = false;
     return '';

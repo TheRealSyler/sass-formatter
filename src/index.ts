@@ -1,1 +1,1 @@
-export * from './format.provider';
+export * from './provider';

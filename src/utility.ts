@@ -1,4 +1,4 @@
-import { SassFormattingOptions, SassTextLine } from './format.provider';
+import { SassFormattingOptions, SassTextLine } from './provider';
 import {
   getDistance,
   isMoreThanOneClassOrId,
@@ -12,7 +12,12 @@ import {
 /**
  * returns the relative distance that the class or id should be at.
  */
-export function getCLassOrIdIndentationOffset(distance: number, tabSize: number, current: number, ignoreCurrent: boolean) {
+export function getCLassOrIdIndentationOffset(
+  distance: number,
+  tabSize: number,
+  current: number,
+  ignoreCurrent: boolean
+) {
   if (distance === 0) {
     return 0;
   }
@@ -38,7 +43,11 @@ export function replaceWithOffset(text: string, offset: number, options: SassFor
 /**
  * returns the difference between the current indentation and the indentation of the given text.
  */
-export function getIndentationOffset(text: string, indentation: number, tabSize: number): { offset: number; distance: number } {
+export function getIndentationOffset(
+  text: string,
+  indentation: number,
+  tabSize: number
+): { offset: number; distance: number } {
   const distance = getDistance(text, tabSize);
   return { offset: indentation - distance, distance };
 }
@@ -98,7 +107,9 @@ export function convertScssOrCss(
     return {
       increaseTabSize: false,
       lastSelector: split[0].trim(),
-      text: removeInvalidChars(split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), options.tabSize, options))).trimRight()
+      text: removeInvalidChars(
+        split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), options.tabSize, options))
+      ).trimRight()
     };
   } else if (isCssPseudo(text) && !isMultiple) {
     StoreConvertInfo(' +  PSEUDO');

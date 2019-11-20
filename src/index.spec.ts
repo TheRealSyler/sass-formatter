@@ -1,5 +1,5 @@
 import { SassFormatter } from './index';
-import { SassTextDocument } from './format.provider';
+import { SassTextDocument } from './provider';
 test('Sass Format Case 1', () => {
   const a = SassFormatter.Format(
     new SassTextDocument(
@@ -478,4 +478,25 @@ test('Sass Format Case 12', () => {
   );
 
   expect(a).toBe('\\:root\n  --color: red');
+});
+test('Sass Format Case 13', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(`/**
+    * @comment
+      * test Comment text.
+ 		   			*
+ *
+ *
+ */`),
+    { insertSpaces: false, tabSize: 2 },
+    { debug: true }
+  );
+
+  expect(a).toBe(`/**
+	* @comment
+	* test Comment text.
+	*
+	*
+	*
+	*/`);
 });
