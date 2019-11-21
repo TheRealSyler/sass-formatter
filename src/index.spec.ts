@@ -489,7 +489,7 @@ test('Sass Format Case 13', () => {
  *
  */`),
     { insertSpaces: false, tabSize: 2 },
-    { debug: true }
+    { debug: false }
   );
 
   expect(a).toBe(`/**
