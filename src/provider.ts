@@ -38,7 +38,6 @@ export interface SassFormatterConfig {
   convert?: boolean;
   replaceSpacesOrTabs?: boolean;
   setPropertySpace?: boolean;
-  ignoreBackslash?: boolean;
 }
 
 export interface SassFormattingOptions {
@@ -184,7 +183,7 @@ export class SassFormatter {
                 State.LOCAL_CONTEXT.ResetTabs ||
                 State.LOCAL_CONTEXT.isAnd_ ||
                 isBracketSelector(line.text) ||
-                isPseudo(line.text, config.ignoreBackslash) ||
+                isPseudo(line.text) ||
                 State.LOCAL_CONTEXT.isKeyframes ||
                 isLoop(line.text)
               ) {

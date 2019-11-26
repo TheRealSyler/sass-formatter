@@ -28,7 +28,7 @@
     "ts-doc-gen": "^0.2.0"
   },
   "dependencies": {
-    "suf-regex": "0.0.8"
+    "suf-regex": "^0.0.9"
   },
   "repository": {
     "type": "git",
