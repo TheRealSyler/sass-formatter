@@ -1,0 +1,15 @@
+{
+  "name": "package.name",
+  "github": "TheRealSyler",
+  "repo": "sass-formatter",
+  "out": "README.md",
+  "vscode": "",
+  "badges": [
+    "badge=https://jestjs.io/img/jest-badge.svg link=https://github.com/facebook/jest",
+    "circleci circleci",
+    "npmV npm ?color=green",
+    "min bundle",
+    "install package",
+    "githubLastCommit github"
+  ]
+}

@@ -1,6 +1,8 @@
 ### Sass Formatter
 
-[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![CircleCI](https://img.shields.io/circleci/build/github/TheRealSyler/sass-formatter)](https://circleci.com/gh/TheRealSyler/sass-formatter) [![Size](https://badgen.net/bundlephobia/min/sass-formatter)](https://www.npmjs.com/package/sass-formatter) [![Size](https://badgen.net/packagephobia/install/sass-formatter)](https://www.npmjs.com/package/sass-formatter)
+<span id="BADGE_GENERATION_MARKER_0"></span>
+ [![badge=https://jestjs.io/img/jest-badge.svg](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![circleci]( https://img.shields.io/circleci/build/github/TheRealSyler/sass-formatter)](https://app.circleci.com/github/TheRealSyler/sass-formatter/pipelines) [![npmV]( https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter) [![min]( https://img.shields.io/bundlephobia/min/sass-formatter)](https://bundlephobia.com/result?p=sass-formatter) [![install](https://badgen.net/packagephobia/install/sass-formatter)](https://packagephobia.now.sh/result?p=sass-formatter) [![githubLastCommit]( https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter) [![npmDT]( https://img.shields.io/npm/dt/sass-formatter)](https://www.npmjs.com/package/sass-formatter)
+<span id="BADGE_GENERATION_MARKER_1"></span>
 
 ```typescript
 import { SassFormatter, SassTextDocument } from 'sass-formatter';
@@ -41,7 +43,6 @@ interface SassFormatterConfig {
     convert?: boolean;
     replaceSpacesOrTabs?: boolean;
     setPropertySpace?: boolean;
-    ignoreBackslash?: boolean;
 }
 ```
 

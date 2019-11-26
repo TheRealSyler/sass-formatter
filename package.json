@@ -4,10 +4,12 @@
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "jest && npm run build",
-    "build": "tdg --include 'provider' && tsc -b",
+    "prepack": "jest && npm run build && npm run generate:badges && npm run generate:docs",
+    "build": "tsc -b",
     "watch": "tsc -w",
-    "test": "jest"
+    "test": "jest",
+    "generate:docs": "tdg --include 'provider'",
+    "generate:badges": "get-badges"
   },
   "files": [
     "dist",
@@ -21,11 +23,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.18",
+    "get-badges": "^0.1.0",
     "jest": "^24.9.0",
-    "typescript": "^3.6.3",
+    "ts-doc-gen": "^0.2.0",
     "ts-jest": "^24.1.0",
     "tslib": "^1.10.0",
-    "ts-doc-gen": "^0.2.0"
+    "typescript": "^3.6.3"
   },
   "dependencies": {
     "suf-regex": "^0.0.9"
