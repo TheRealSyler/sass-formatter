@@ -1,5 +1,9 @@
 import { SassFormatter } from './index';
 import { SassTextDocument } from './provider';
+import { SetEnvironment } from '@sorg/log';
+
+SetEnvironment('node');
+
 test('Sass Format Case 1', () => {
   const a = SassFormatter.Format(
     new SassTextDocument(
@@ -499,4 +503,21 @@ test('Sass Format Case 13', () => {
 	*
 	*
 	*/`);
+});
+test('Sass Format Case 14', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(`#{body}
+    color: red
+
+#{main}
+    color:red`),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: true }
+  );
+
+  expect(a).toBe(`#{body}
+  color: red
+
+#{main}
+  color: red`);
 });

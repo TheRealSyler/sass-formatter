@@ -4,7 +4,7 @@ import { FormattingState } from '../state';
 
 import { isHtmlTag, hasPropertyValueSpace, isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { convertScssOrCss, replaceSpacesOrTabs, LogFormatInfo, replaceWithOffset } from '../utility';
+import { convertScssOrCss, replaceSpacesOrTabs, PushLog, replaceWithOffset } from '../utility';
 
 import { FormatHandleSetTabs } from './handler.utility';
 
@@ -17,9 +17,6 @@ export function FormatHandleProperty(
   },
   State: FormattingState
 ) {
-  /**
-   *
-   */
   let lineText = i.line.text;
   let setSpace = false;
   let convert = false;
@@ -53,7 +50,7 @@ export function FormatHandleProperty(
   }
   // Return
   if (move) {
-    LogFormatInfo(i.enableDebug, i.line.lineNumber, {
+    PushLog(i.enableDebug, i.line.lineNumber, {
       title: 'MOVE',
       convert,
       setSpace,
@@ -63,11 +60,11 @@ export function FormatHandleProperty(
 
     edit = replaceWithOffset(lineText, State.LOCAL_CONTEXT.indentation.offset, i.options).trimRight();
   } else if (getDistanceReversed(i.line.text, i.options.tabSize) > 0 && i.config.deleteWhitespace) {
-    LogFormatInfo(i.enableDebug, i.line.lineNumber, { title: 'TRAIL', convert, setSpace, replaceSpaceOrTabs });
+    PushLog(i.enableDebug, i.line.lineNumber, { title: 'TRAIL', convert, setSpace, replaceSpaceOrTabs });
 
     edit = lineText.trimRight();
   } else if (setSpace || convert || replaceSpaceOrTabs) {
-    LogFormatInfo(i.enableDebug, i.line.lineNumber, { title: 'CHANGE', convert, setSpace, replaceSpaceOrTabs });
+    PushLog(i.enableDebug, i.line.lineNumber, { title: 'CHANGE', convert, setSpace, replaceSpaceOrTabs });
     edit = lineText;
   }
 

@@ -1,4 +1,4 @@
-import { getCLassOrIdIndentationOffset, getIndentationOffset, convertScssOrCss, LogFormatInfo } from './utility';
+import { getCLassOrIdIndentationOffset, getIndentationOffset, convertScssOrCss, PushLog, Log } from './utility';
 import {
   isBlockCommentStart,
   isBlockCommentEnd,
@@ -102,9 +102,6 @@ export class SassFormatter {
     config = Object.assign(DefaultConfig, config);
     if (config.enabled === true) {
       const enableDebug: boolean = config.debug ? config.debug : false;
-      if (enableDebug) {
-        console.log('FORMAT');
-      }
       const State = new FormattingState();
 
       let result: string = '';
@@ -123,6 +120,9 @@ export class SassFormatter {
           result += FormatHandleBlockComment(line.text, options);
           if (isBlockCommentEnd(line.text)) {
             State.isInBlockComment = false;
+          }
+          if (enableDebug) {
+            PushLog(enableDebug, line.lineNumber, { title: 'COMMENT BLOCK' });
           }
         } else {
           if (isIgnore(line.text)) {
@@ -147,7 +147,7 @@ export class SassFormatter {
                   (compact && !State.ALLOW_SPACE && nextLineWillBeDeleted)
                 ) {
                   if (enableDebug) {
-                    LogFormatInfo(enableDebug, line.lineNumber, { title: 'DELETE', nextLine });
+                    PushLog(enableDebug, line.lineNumber, { title: 'DELETE', nextLine });
                   }
 
                   pass = false;
@@ -156,7 +156,7 @@ export class SassFormatter {
               }
 
               if (line.text.length > 0 && pass && config.deleteWhitespace) {
-                LogFormatInfo(enableDebug, line.lineNumber, { title: 'WHITESPACE' });
+                PushLog(enableDebug, line.lineNumber, { title: 'WHITESPACE' });
                 result += addNewLine(State);
               } else if (pass) {
                 result += addNewLine(State);
@@ -241,7 +241,7 @@ export class SassFormatter {
                 const convertRes = convertScssOrCss(line.text, options, State.CONTEXT.convert.lastSelector);
                 // Set Context Vars
                 ResetContext('convert', State);
-                LogFormatInfo(enableDebug, line.lineNumber, { title: 'CONVERT', convert: true });
+                PushLog(enableDebug, line.lineNumber, { title: 'CONVERT', convert: true });
                 result += addNewLine(State);
                 result += convertRes.text;
               } else if (getDistanceReversed(line.text, options.tabSize) > 0 && config.deleteWhitespace) {
@@ -259,7 +259,7 @@ export class SassFormatter {
                 // Set Context Vars
                 ResetContext('normal', State);
                 State.CONTEXT.convert.wasLastLineCss = convert;
-                LogFormatInfo(enableDebug, line.lineNumber, { title: 'TRAIL', convert });
+                PushLog(enableDebug, line.lineNumber, { title: 'TRAIL', convert });
 
                 result += addNewLine(State);
                 result += lineText.trimRight();
@@ -273,7 +273,7 @@ export class SassFormatter {
       }
 
       if (config.debug) {
-        console.log('RESULT:'.concat(result, ':END'));
+        Log(result);
       }
       return result;
     } else {

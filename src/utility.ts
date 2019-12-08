@@ -8,6 +8,7 @@ import {
   isCssPseudo,
   isClassOrId
 } from 'suf-regex';
+import { logger } from './logger';
 
 /**
  * returns the relative distance that the class or id should be at.
@@ -75,6 +76,7 @@ export function hasPropertyValueSpace(text: string) {
       : !split[1][1].startsWith(' ')
     : false;
 }
+
 /**
  * converts scss/css to sass.
  */
@@ -84,45 +86,47 @@ export function convertScssOrCss(
   lastSelector: string
 ): { text: string; increaseTabSize: boolean; lastSelector: string } {
   const isMultiple = isMoreThanOneClassOrId(text);
-  StoreConvertInfo('CSS CONVERT');
-  StoreConvertInfo(` TEXT: ${text}`);
-  if (lastSelector && new RegExp('^.*' + escapeRegExp(lastSelector)).test(text)) {
-    StoreConvertInfo(' +  LAST SELECTOR');
-    let newText = text.replace(lastSelector, '');
-    if (isPseudoWithParenthesis(text)) {
-      newText = newText.split('(')[0].trim() + '(&' + ')';
-    } else if (text.trim().startsWith(lastSelector)) {
-      newText = text.replace(lastSelector, '&');
-    } else {
-      newText = newText.replace(/ /g, '') + ' &';
+  StoreLog.TempConvertData.log = true;
+  StoreLog.TempConvertData.text = text;
+  if (!/[\t ]*[#.%]\{.*?}/.test(text)) {
+    if (lastSelector && new RegExp('^.*' + escapeRegExp(lastSelector)).test(text)) {
+      SetStoreConvertInfoType('LAST SELECTOR');
+      let newText = text.replace(lastSelector, '');
+      if (isPseudoWithParenthesis(text)) {
+        newText = newText.split('(')[0].trim() + '(&' + ')';
+      } else if (text.trim().startsWith(lastSelector)) {
+        newText = text.replace(lastSelector, '&');
+      } else {
+        newText = newText.replace(/ /g, '') + ' &';
+      }
+      return {
+        lastSelector,
+        increaseTabSize: true,
+        text: replaceWithOffset(removeInvalidChars(newText).trimRight(), options.tabSize, options)
+      };
+    } else if (isCssOneLiner(text)) {
+      SetStoreConvertInfoType('ONE LINER');
+      const split = text.split('{');
+      return {
+        increaseTabSize: false,
+        lastSelector: split[0].trim(),
+        text: removeInvalidChars(
+          split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), options.tabSize, options))
+        ).trimRight()
+      };
+    } else if (isCssPseudo(text) && !isMultiple) {
+      SetStoreConvertInfoType('PSEUDO');
+      return {
+        increaseTabSize: false,
+        lastSelector,
+        text: removeInvalidChars(text).trimRight()
+      };
+    } else if (isClassOrId(text)) {
+      SetStoreConvertInfoType('CLASS OR ID');
+      lastSelector = removeInvalidChars(text).trimRight();
     }
-    return {
-      lastSelector,
-      increaseTabSize: true,
-      text: replaceWithOffset(removeInvalidChars(newText).trimRight(), options.tabSize, options)
-    };
-  } else if (isCssOneLiner(text)) {
-    StoreConvertInfo(' +  ONE LINER');
-    const split = text.split('{');
-    return {
-      increaseTabSize: false,
-      lastSelector: split[0].trim(),
-      text: removeInvalidChars(
-        split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), options.tabSize, options))
-      ).trimRight()
-    };
-  } else if (isCssPseudo(text) && !isMultiple) {
-    StoreConvertInfo(' +  PSEUDO');
-    return {
-      increaseTabSize: false,
-      lastSelector,
-      text: removeInvalidChars(text).trimRight()
-    };
-  } else if (isClassOrId(text)) {
-    StoreConvertInfo(' +  CLASS OR ID');
-    lastSelector = removeInvalidChars(text).trimRight();
   }
-  StoreConvertInfo(' END/DEFAULT');
+  SetStoreConvertInfoType('DEFAULT');
   return { text: removeInvalidChars(text).trimRight(), increaseTabSize: false, lastSelector };
 }
 
@@ -164,37 +168,36 @@ interface LogFormatInfo {
   replaceSpaceOrTabs?: boolean;
   nextLine?: SassTextLine;
 }
-export function LogFormatInfo(enableDebug: boolean, lineNumber: number, info: LogFormatInfo) {
+export function PushLog(enableDebug: boolean, lineNumber: number, info: LogFormatInfo) {
   if (enableDebug) {
-    console.log(
-      ' ',
-      info.title,
-      'Row:',
-      lineNumber + 1,
-      info.offset !== undefined ? `Offset: ${info.offset}` : '',
-      '\n    ',
-      'PROPERTY SPACE : ',
-      info.setSpace !== undefined ? info.setSpace : 'not provided',
-      '\n    ',
-      'CONVERT        : ',
-      info.convert !== undefined ? info.convert : 'not provided',
-      '\n    ',
-      'NEXT LINE      : ',
-      info.nextLine !== undefined ? info.nextLine : 'not provided',
-      '\n    ',
-      'REPLACE        : ',
-      info.replaceSpaceOrTabs !== undefined ? info.replaceSpaceOrTabs : 'not provided',
-      StoreCssConvertLog.log.length > 0 ? '\n' : '',
-      StoreCssConvertLog.log.join('\n')
-    );
-    StoreCssConvertLog.log = [];
+    StoreLog.logs.push({ info, lineNumber, ConvertData: StoreLog.TempConvertData });
+
+    StoreLog.resetTempConvertData();
   } else {
-    StoreCssConvertLog.log = [];
+    StoreLog.resetTempConvertData();
   }
 }
-function StoreConvertInfo(title: string) {
-  StoreCssConvertLog.log.push(`      ${title}`);
+export function Log(res: string) {
+  logger.Log('info', StoreLog.logs, res);
 }
-class StoreCssConvertLog {
-  static log: string[] = [];
+
+function SetStoreConvertInfoType(type: string) {
+  StoreLog.TempConvertData.type = type;
+}
+
+interface LogType {
+  type: string;
+  text: string;
+  log: boolean;
+}
+class StoreLog {
+  static TempConvertData: LogType;
+  static resetTempConvertData() {
+    this.TempConvertData = {
+      text: '',
+      type: '',
+      log: false
+    };
+  }
+  static logs: { ConvertData: LogType; lineNumber: number; info: LogFormatInfo }[] = [];
 }

@@ -4,7 +4,7 @@ import { FormattingState } from '../state';
 
 import { isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { convertScssOrCss, replaceSpacesOrTabs, LogFormatInfo, replaceWithOffset } from '../utility';
+import { convertScssOrCss, replaceSpacesOrTabs, PushLog, replaceWithOffset } from '../utility';
 import { FormatHandleSetTabs } from './handler.utility';
 
 export function FormatHandleBlockHeader(
@@ -60,15 +60,16 @@ export function FormatHandleBlockHeader(
 
   // Return
   if (inp.offset !== 0) {
-    LogFormatInfo(inp.enableDebug, inp.line.lineNumber, { title: 'SET NEW TAB', convert, replaceSpaceOrTabs });
+    PushLog(inp.enableDebug, inp.line.lineNumber, { title: 'SET NEW TAB', convert, replaceSpaceOrTabs });
     edit = replaceWithOffset(lineText, inp.offset, inp.options).trimRight();
   } else if (getDistanceReversed(inp.line.text, inp.options.tabSize) > 0 && inp.config.deleteWhitespace) {
-    LogFormatInfo(inp.enableDebug, inp.line.lineNumber, { title: 'TRAIL', convert, replaceSpaceOrTabs });
+    PushLog(inp.enableDebug, inp.line.lineNumber, { title: 'TRAIL', convert, replaceSpaceOrTabs });
     edit = lineText.trimRight();
   } else if (convert || replaceSpaceOrTabs) {
-    LogFormatInfo(inp.enableDebug, inp.line.lineNumber, { title: 'CHANGE', convert, replaceSpaceOrTabs });
+    PushLog(inp.enableDebug, inp.line.lineNumber, { title: 'CHANGE', convert, replaceSpaceOrTabs });
     edit = lineText;
   }
+
   FormatHandleSetTabs(inp.options, State, { additionalTabs, offset: inp.offset });
   return edit;
 }
