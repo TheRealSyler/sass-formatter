@@ -15,7 +15,7 @@ export const logger = new Logger<{
         out += InfoLogHelper(data[i], colon, quote);
       }
       out += `
-${quote}${styler(res, '#c76')}${quote}`;
+${quote}${styler(res.replace(/\n/g, '\n|'), '#c76')}${quote}`;
       return out;
     }
   }

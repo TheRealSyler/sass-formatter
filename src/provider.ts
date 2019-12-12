@@ -21,7 +21,8 @@ import {
   isEmptyOrWhitespace,
   isBracketOrWhitespace,
   isMedia,
-  isPreSelector
+  isPreSelector,
+  isFontFace
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './handlers/handler.utility';
@@ -149,9 +150,7 @@ export class SassFormatter {
                   if (enableDebug) {
                     PushLog(enableDebug, line.lineNumber, { title: 'DELETE', nextLine });
                   }
-
                   pass = false;
-                  // result.push(new TextEdit(new Range(line.range.start, nextLine.range.start), ''));
                 }
               }
 
@@ -173,18 +172,19 @@ export class SassFormatter {
               });
               //####### Block Header #######
               if (
+                isMixin(line.text) ||
+                isPseudo(line.text) ||
                 isMedia(line.text) ||
                 isPreSelector(line.text) ||
-                State.LOCAL_CONTEXT.isClassOrIdSelector ||
-                isMixin(line.text) ||
-                isHtmlTag(line.text.trim().split(' ')[0]) ||
                 isStar(line.text) ||
+                isBracketSelector(line.text) ||
+                isFontFace(line.text) ||
+                State.LOCAL_CONTEXT.isClassOrIdSelector ||
                 State.LOCAL_CONTEXT.isIfOrElse ||
                 State.LOCAL_CONTEXT.ResetTabs ||
                 State.LOCAL_CONTEXT.isAnd_ ||
-                isBracketSelector(line.text) ||
-                isPseudo(line.text) ||
                 State.LOCAL_CONTEXT.isKeyframes ||
+                isHtmlTag(line.text.trim().split(' ')[0]) ||
                 isLoop(line.text)
               ) {
                 const offset = getCLassOrIdIndentationOffset(

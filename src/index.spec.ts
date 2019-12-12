@@ -512,7 +512,7 @@ test('Sass Format Case 14', () => {
 #{main}
     color:red`),
     { insertSpaces: true, tabSize: 2 },
-    { debug: true }
+    { debug: false }
   );
 
   expect(a).toBe(`#{body}
@@ -520,4 +520,14 @@ test('Sass Format Case 14', () => {
 
 #{main}
   color: red`);
+});
+test('Sass Format Case 15', () => {
+  const a = SassFormatter.Format(
+    new SassTextDocument(`@font-face
+    margin: 200px`),
+    { insertSpaces: true, tabSize: 2 },
+    { debug: true }
+  );
+  expect(a).toBe(`@font-face
+  margin: 200px`);
 });
