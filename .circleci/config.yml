@@ -3,8 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 version: 2.1
-orbs:
-  coveralls: coveralls/coveralls@1.0.4
+
 jobs:
   build:
     docker:
@@ -29,8 +28,6 @@ jobs:
             - v1-dependencies-
 
       - run: npm install
-
-      - coveralls/upload
 
       - save_cache:
           paths:
