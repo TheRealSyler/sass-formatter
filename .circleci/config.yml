@@ -36,11 +36,14 @@ jobs:
       - run: npm run test
 
       - codecov/upload:
-          - file: coverage/lcov.info
+          file: coverage/lcov.info
+          flags: test
       - codecov/upload:
-          - file: coverage/**.json
+          file: coverage/**.json
+          flags: test2
       - codecov/upload:
-          - file: coverage/**.xml
+          file: coverage/**.xml
+          flags: test3
       # scripts:
       #   - npm install codecov -g
       # after_success:
