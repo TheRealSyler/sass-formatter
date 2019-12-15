@@ -1,32 +1,37 @@
-import { Logger, LoggerType, styler } from '@sorg/log';
+import { Logger, LoggerType, styler, SetEnvironment } from '@sorg/log';
+import { Log } from './utility';
+SetEnvironment('node');
+
+const colon = styler(':', '#777');
+const quote = styler('"', '#f64');
+const pipe = styler('|', '#f64');
+const TEXT = (text: string) => styler(text, '#bbb');
+const NUMBER = (number: number) => styler(number.toString(), '#f03');
+const BOOL = (bool: Boolean) => styler(bool.toString(), bool ? '#0c0' : '#c00');
 
 export const logger = new Logger<{
   info: LoggerType;
 }>({
   info: {
     customHandler: msg => {
-      const data = msg.rawMessages[0] as any;
+      const data = msg.rawMessages[0] as Log[];
       const res = msg.rawMessages[1] as string;
-      const colon = styler(':', '#777');
-      const quote = styler('"', '#f64');
+
       let out = styler('FORMAT', '#0af');
       for (let i = 0; i < data.length; i++) {
         out += '\n';
-        out += InfoLogHelper(data[i], colon, quote);
+        out += InfoLogHelper(data[i]);
       }
       out += `
-${quote}${styler(res.replace(/\n/g, '\n|'), '#c76')}${quote}`;
+${pipe}${styler(res.replace(/\n/g, '|\n|'), '#c76')}${pipe}`;
       return out;
     }
   }
 });
 
-function InfoLogHelper(data: any, colon: string, quote: string) {
+function InfoLogHelper(data: any) {
   if (data) {
     const { info, lineNumber, ConvertData } = data;
-    const TEXT = (text: string) => styler(text, '#bbb');
-    const NUMBER = (number: number) => styler(number.toString(), '#f03');
-    const BOOL = (bool: Boolean) => styler(bool.toString(), bool ? '#0c0' : '#c00');
 
     const notProvided = styler('not provided', '#666');
     const title = styler(info.title, '#cc0');

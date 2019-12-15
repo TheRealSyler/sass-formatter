@@ -1,7 +1,7 @@
 ### Sass Formatter
 
 <span id="BADGE_GENERATION_MARKER_0"></span>
- [![badge=https://jestjs.io/img/jest-badge.svg](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![circleci]( https://img.shields.io/circleci/build/github/TheRealSyler/sass-formatter)](https://app.circleci.com/github/TheRealSyler/sass-formatter/pipelines) [![npmV]( https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter) [![min]( https://img.shields.io/bundlephobia/min/sass-formatter)](https://bundlephobia.com/result?p=sass-formatter) [![install](https://badgen.net/packagephobia/install/sass-formatter)](https://packagephobia.now.sh/result?p=sass-formatter) [![githubLastCommit]( https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter)
+[![badge=https://jestjs.io/img/jest-badge.svg](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![badge=https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg](https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg)](https://codecov.io/gh/TheRealSyler/sass-formatter) [![circleci](https://img.shields.io/circleci/build/github/TheRealSyler/sass-formatter)](https://app.circleci.com/github/TheRealSyler/sass-formatter/pipelines) [![npmV](https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter)
 <span id="BADGE_GENERATION_MARKER_1"></span>
 
 ```typescript
@@ -18,6 +18,7 @@ const formattedSass = SassFormatter.SassFormatter.Format(
 ```
 
 <span id="DOC_GENERATION_MARKER_0"></span>
+
 # Docs
 
 - **[provider](#provider)**
@@ -30,19 +31,18 @@ const formattedSass = SassFormatter.SassFormatter.Format(
 
 ### provider
 
-
 ##### SassFormatterConfig
 
 ```typescript
 interface SassFormatterConfig {
-    enabled?: boolean;
-    debug?: boolean;
-    deleteCompact?: boolean;
-    deleteEmptyRows?: boolean;
-    deleteWhitespace?: boolean;
-    convert?: boolean;
-    replaceSpacesOrTabs?: boolean;
-    setPropertySpace?: boolean;
+  enabled?: boolean;
+  debug?: boolean;
+  deleteCompact?: boolean;
+  deleteEmptyRows?: boolean;
+  deleteWhitespace?: boolean;
+  convert?: boolean;
+  replaceSpacesOrTabs?: boolean;
+  setPropertySpace?: boolean;
 }
 ```
 
@@ -50,8 +50,8 @@ interface SassFormatterConfig {
 
 ```typescript
 interface SassFormattingOptions {
-    tabSize: number;
-    insertSpaces: boolean;
+  tabSize: number;
+  insertSpaces: boolean;
 }
 ```
 
@@ -59,10 +59,10 @@ interface SassFormattingOptions {
 
 ```typescript
 class SassTextLine {
-    lineNumber: number;
-    text: string;
-    isEmptyOrWhitespace: boolean;
-    constructor(text: string, lineNumber: number);
+  lineNumber: number;
+  text: string;
+  isEmptyOrWhitespace: boolean;
+  constructor(text: string, lineNumber: number);
 }
 ```
 
@@ -70,12 +70,12 @@ class SassTextLine {
 
 ```typescript
 class SassTextDocument {
-    private lines?;
-    lineCount: number;
-    private rawText?;
-    constructor(text: string);
-    lineAt(lineNumber: number): SassTextLine;
-    getText(): string;
+  private lines?;
+  lineCount: number;
+  private rawText?;
+  constructor(text: string);
+  lineAt(lineNumber: number): SassTextLine;
+  getText(): string;
 }
 ```
 
@@ -83,9 +83,9 @@ class SassTextDocument {
 
 ```typescript
 class SassFormatter {
-    static Format(document: SassTextDocument, options: SassFormattingOptions, config?: SassFormatterConfig): string;
+  static Format(document: SassTextDocument, options: SassFormattingOptions, config?: SassFormatterConfig): string;
 }
 ```
 
-*Generated With* **[ts-doc-gen](https://www.npmjs.com/package/ts-doc-gen)**
+_Generated With_ **[ts-doc-gen](https://www.npmjs.com/package/ts-doc-gen)**
 <span id="DOC_GENERATION_MARKER_1"></span>

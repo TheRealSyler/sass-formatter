@@ -6,6 +6,7 @@
   "vscode": "",
   "badges": [
     "badge=https://jestjs.io/img/jest-badge.svg link=https://github.com/facebook/jest",
+    "badge=https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg link=https://codecov.io/gh/TheRealSyler/sass-formatter",
     "circleci circleci",
     "npmV npm ?color=green",
     "min bundle",

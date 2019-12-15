@@ -37,14 +37,4 @@ jobs:
 
       - codecov/upload:
           file: coverage/lcov.info
-          flags: test
-      - codecov/upload:
-          file: coverage/**.json
-          flags: test2
-      - codecov/upload:
-          file: coverage/**.xml
-          flags: test3
-      # scripts:
-      #   - npm install codecov -g
-      # after_success:
-      #   - codecov
+          flags: jest

@@ -1,4 +1,3 @@
-import { SassFormattingOptions, SassTextLine } from './provider';
 import {
   getDistance,
   isMoreThanOneClassOrId,
@@ -9,16 +8,13 @@ import {
   isClassOrId
 } from 'suf-regex';
 import { logger } from './logger';
+import { SassTextLine } from './index';
+import { FormattingState } from './state';
 
 /**
  * returns the relative distance that the class or id should be at.
  */
-export function getCLassOrIdIndentationOffset(
-  distance: number,
-  tabSize: number,
-  current: number,
-  ignoreCurrent: boolean
-) {
+export function getBlockHeaderOffset(distance: number, tabSize: number, current: number, ignoreCurrent: boolean) {
   if (distance === 0) {
     return 0;
   }
@@ -30,14 +26,17 @@ export function getCLassOrIdIndentationOffset(
 /**
  * adds or removes whitespace based on the given offset, a positive value adds whitespace a negative value removes it.
  */
-export function replaceWithOffset(text: string, offset: number, options: SassFormattingOptions) {
+export function replaceWithOffset(text: string, offset: number, STATE: FormattingState) {
   if (offset < 0) {
-    text = text.replace(/\t/g, ' '.repeat(options.tabSize)).replace(new RegExp(`^ {${Math.abs(offset)}}`), '');
-    if (!options.insertSpaces) {
-      text = replaceSpacesOrTabs(text, false, options.tabSize);
+    text = text.replace(/\t/g, ' '.repeat(STATE.CONFIG.tabSize)).replace(new RegExp(`^ {${Math.abs(offset)}}`), '');
+    if (!STATE.CONFIG.insertSpaces) {
+      text = replaceSpacesOrTabs(text, STATE, false);
     }
   } else {
-    text = text.replace(/^/, options.insertSpaces ? ' '.repeat(offset) : '\t'.repeat(offset / options.tabSize));
+    text = text.replace(
+      /^/,
+      STATE.CONFIG.insertSpaces ? ' '.repeat(offset) : '\t'.repeat(offset / STATE.CONFIG.tabSize)
+    );
   }
   return text;
 }
@@ -82,10 +81,10 @@ export function hasPropertyValueSpace(text: string) {
  */
 export function convertScssOrCss(
   text: string,
-  options: SassFormattingOptions,
-  lastSelector: string
+  STATE: FormattingState
 ): { text: string; increaseTabSize: boolean; lastSelector: string } {
   const isMultiple = isMoreThanOneClassOrId(text);
+  let lastSelector = STATE.CONTEXT.convert.lastSelector;
   StoreLog.TempConvertData.log = true;
   StoreLog.TempConvertData.text = text;
   if (!/[\t ]*[#.%]\{.*?}/.test(text)) {
@@ -102,7 +101,7 @@ export function convertScssOrCss(
       return {
         lastSelector,
         increaseTabSize: true,
-        text: replaceWithOffset(removeInvalidChars(newText).trimRight(), options.tabSize, options)
+        text: '\n'.concat(replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE))
       };
     } else if (isCssOneLiner(text)) {
       SetStoreConvertInfoType('ONE LINER');
@@ -111,7 +110,7 @@ export function convertScssOrCss(
         increaseTabSize: false,
         lastSelector: split[0].trim(),
         text: removeInvalidChars(
-          split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), options.tabSize, options))
+          split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), STATE.CONFIG.tabSize, STATE))
         ).trimRight()
       };
     } else if (isCssPseudo(text) && !isMultiple) {
@@ -153,11 +152,11 @@ function removeInvalidChars(text: string) {
   return newText;
 }
 
-export function replaceSpacesOrTabs(text: string, useSpaces: boolean, tabSize: number) {
-  if (useSpaces) {
-    return text.replace(/\t/g, ' '.repeat(tabSize));
+export function replaceSpacesOrTabs(text: string, STATE: FormattingState, insertSpaces?: boolean) {
+  if (insertSpaces !== undefined ? insertSpaces : STATE.CONFIG.insertSpaces) {
+    return text.replace(/\t/g, ' '.repeat(STATE.CONFIG.tabSize));
   } else {
-    return text.replace(new RegExp(' '.repeat(tabSize), 'g'), '\t');
+    return text.replace(new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g'), '\t');
   }
 }
 interface LogFormatInfo {
@@ -185,10 +184,15 @@ function SetStoreConvertInfoType(type: string) {
   StoreLog.TempConvertData.type = type;
 }
 
-interface LogType {
+export interface LogType {
   type: string;
   text: string;
   log: boolean;
+}
+export interface Log {
+  ConvertData: LogType;
+  lineNumber: number;
+  info: LogFormatInfo;
 }
 class StoreLog {
   static TempConvertData: LogType;

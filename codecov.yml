@@ -1,0 +1,2 @@
+ignore:
+  - 'src/logger.ts' # ignore folders and all its contents

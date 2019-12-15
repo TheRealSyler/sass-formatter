@@ -1,4 +1,22 @@
+import { SassFormatterConfig } from './index';
+
 interface FormatContext {
+  isFirstLine: boolean;
+  isLastLine: boolean;
+  isInBlockComment: boolean;
+  /**
+   * The Formatter ignores whitespace until the next selector.
+   */
+  allowSpace: boolean;
+
+  /**
+   * The Formatter Skips one line.
+   */
+  ignoreLine: boolean;
+  /**
+   * true if the last line was a selector.
+   */
+  wasLastLineSelector: boolean;
   convert: {
     lastSelector: string;
     wasLastLineCss: boolean;
@@ -7,6 +25,10 @@ interface FormatContext {
     is: boolean;
     tabs: number;
   };
+  /**
+   * Indentation level of the last selector
+   */
+  lastSelectorTabs: number;
   /**
    * if `.class` is at line 0 and has an indentation level of 0,
    * then this property should be set to the current `tabSize`.
@@ -30,7 +52,7 @@ interface FormatContext {
      */
     distance: number;
     /**
-     * true if a selector end with a comma
+     * true if a selector ends with a comma
      */ exists: boolean;
   };
 }
@@ -46,38 +68,63 @@ interface FormatLocalContext {
     distance: number;
   };
   isClassOrIdSelector: boolean;
+  isHtmlTag: boolean;
   isIfOrElse: boolean;
   isIfOrElseAProp: boolean;
   isKeyframes: boolean;
   isKeyframesPoint: boolean;
+  isAdjacentSelector: boolean;
 }
 
 export class FormattingState {
-  isFirstLine = true;
-  ALLOW_SPACE = false;
-  isInBlockComment = false;
   /**
-   * The Formatter Skips one line.
+   * Text to format.
    */
-  ignoreLine = false;
-  LOCAL_CONTEXT: FormatLocalContext;
-  constructor() {
-    this.LOCAL_CONTEXT = {
-      ResetTabs: false,
-      indentation: {
-        distance: 0,
-        offset: 0
-      },
-      isAnd_: false,
-      isClassOrIdSelector: false,
-      isIfOrElse: false,
-      isIfOrElseAProp: false,
-      isKeyframes: false,
-      isKeyframesPoint: false,
-      isProp: false
-    };
-  }
+  text = '';
+  /**
+   * Current Character.
+   */
+  char = 0;
+  /**
+   * Current line.
+   */
+  line = 0;
+  /**
+   * Current line Text.
+   */
+  lineText = '';
+  /**
+   * Formatting Result
+   */
+  RESULT = '';
+  /**
+   * Context For Each Line.
+   */
+  LOCAL_CONTEXT: FormatLocalContext = {
+    isAdjacentSelector: false,
+    isHtmlTag: false,
+    ResetTabs: false,
+    indentation: {
+      distance: 0,
+      offset: 0
+    },
+    isAnd_: false,
+    isClassOrIdSelector: false,
+    isIfOrElse: false,
+    isIfOrElseAProp: false,
+    isKeyframes: false,
+    isKeyframesPoint: false,
+    isProp: false
+  };
+
   CONTEXT: FormatContext = {
+    isFirstLine: true,
+    isLastLine: false,
+    allowSpace: false,
+    isInBlockComment: false,
+    ignoreLine: false,
+    lastSelectorTabs: 0,
+    wasLastLineSelector: false,
     convert: {
       lastSelector: '',
       wasLastLineCss: false
@@ -90,6 +137,18 @@ export class FormattingState {
     currentTabs: 0,
     firstCommaHeader: { exists: false, distance: 0 }
   };
+  CONFIG: SassFormatterConfig = {
+    insertSpaces: true,
+    tabSize: 2,
+    convert: true,
+    debug: false,
+    deleteCompact: true,
+    deleteEmptyRows: true,
+    deleteWhitespace: true,
+    replaceSpacesOrTabs: true,
+    setPropertySpace: true
+  };
+  // useless !?
   setLocalContext(context: FormatLocalContext) {
     this.LOCAL_CONTEXT = context;
   }
