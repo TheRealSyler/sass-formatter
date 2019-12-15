@@ -4,8 +4,8 @@
 #
 version: 2.1
 
-orbs:
-  - codecov: codecov/codecov@1.0.4
+# orbs:
+#   - codecov: codecov/codecov@1.0.4
 
 jobs:
   build:
@@ -35,9 +35,13 @@ jobs:
       # run tests!
       - run: npm run test
 
-      - codecov/upload:
-          - file: coverage/lcov.info
-      - codecov/upload:
-          - file: coverage/**.json
-      - codecov/upload:
-          - file: coverage/**.xml
+      # - codecov/upload:
+      #     - file: coverage/lcov.info
+      # - codecov/upload:
+      #     - file: coverage/**.json
+      # - codecov/upload:
+      #     - file: coverage/**.xml
+      scripts:
+        - npm install codecov -g
+      after_success:
+        - codecov
