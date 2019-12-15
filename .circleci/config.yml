@@ -4,16 +4,14 @@
 #
 version: 2.1
 
+orbs:
+  - codecov: codecov/codecov@1.0.4
+
 jobs:
   build:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.15.3
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
 
@@ -36,6 +34,10 @@ jobs:
 
       # run tests!
       - run: npm run test
-      
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+
+      - codecov/upload:
+          - file: coverage/lcov.info
+      - codecov/upload:
+          - file: coverage/**.json
+      - codecov/upload:
+          - file: coverage/**.xml
