@@ -252,7 +252,7 @@ test('Sass Format: check + selector and + @include', () => {
         + div
         padding: 2rem
 `,
-    { insertSpaces: true, tabSize: 2 }
+    { insertSpaces: true, tabSize: 2, debug: false }
   );
   expect(a).toEqual(
     `
@@ -276,7 +276,7 @@ test('Sass Format Case 9', () => {
   const a = SF.Format(
     `
 .foo
-position: relative
+position:   relative
 
   @media only screen and (min-width: 600px)
     .foo
@@ -395,7 +395,7 @@ test('Sass Format: Block Comment', () => {
  *
  *
  */`,
-    { insertSpaces: false, tabSize: 2, debug: true }
+    { insertSpaces: false, tabSize: 2, debug: false }
   );
 
   expect(a).toBe(`/**

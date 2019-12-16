@@ -4,8 +4,9 @@ import { FormattingState } from '../state';
 
 import { isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { convertScssOrCss, replaceSpacesOrTabs, PushLog, replaceWithOffset } from '../utility';
+import { replaceSpacesOrTabs, PushLog, replaceWithOffset } from '../utility';
 import { FormatSetTabs } from './format.utility';
+import { convertScssOrCss } from './format.convert';
 
 export function FormatBlockHeader(
   inp: {

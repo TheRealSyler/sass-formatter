@@ -1,7 +1,6 @@
-import { getBlockHeaderOffset, getIndentationOffset, convertScssOrCss, PushLog, Log } from './utility';
+import { getBlockHeaderOffset, getIndentationOffset, PushLog, Log } from './utility';
 import {
   isBlockCommentStart,
-  isBlockCommentEnd,
   isIgnore,
   isSassSpace,
   isProperty,
@@ -17,13 +16,18 @@ import {
   isComment,
   isBracketOrWhitespace,
   isMedia,
-  isFontFace
+  isFontFace,
+  isAdjacentSelector,
+  isClassOrId,
+  isEmptyOrWhitespace,
+  isSelectorOperator
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
+import { convertScssOrCss } from './formatters/format.convert';
 
 export interface SassFormatterConfig {
   debug: boolean;
@@ -42,7 +46,7 @@ export class SassTextLine {
   isEmptyOrWhitespace: boolean;
   constructor(text: string, public lineNumber: number) {
     this.text = text;
-    this.isEmptyOrWhitespace = /^[\t ]*\n?$/.test(text); // TODO replace with isWhiteSpaceOrEmpty
+    this.isEmptyOrWhitespace = isEmptyOrWhitespace(text);
   }
 }
 
@@ -115,7 +119,7 @@ export class SassFormatter {
             indentation: getIndentationOffset(line.text, STATE.CONTEXT.tabs, STATE.CONFIG.tabSize),
             isAdjacentSelector: isAdjacentSelector(line.text),
             isHtmlTag: isHtmlTag(line.text.trim().split(' ')[0]),
-            isClassOrIdSelector: /^[\t ]*[#\.%]/.test(line.text) // TODO replace with isClassOrId
+            isClassOrIdSelector: isClassOrId(line.text)
           });
           //####### Block Header #######
           if (this.isBlockHeader(line, STATE)) {
@@ -145,7 +149,8 @@ export class SassFormatter {
   private static handleCommentBlock(STATE: FormattingState, line: SassTextLine) {
     this.addNewLine(STATE);
     STATE.RESULT += FormatHandleBlockComment(line.text, STATE);
-    if (isBlockCommentEnd(line.text)) {
+    // TODO replace with isBlockCommentEnd and update suf-regex
+    if (/[\t ]*(\*\/)/.test(line.text)) {
       STATE.CONTEXT.isInBlockComment = false;
     }
     if (STATE.CONFIG.debug) {
@@ -197,7 +202,7 @@ export class SassFormatter {
       isMixin(line.text) ||
       isPseudo(line.text) ||
       isMedia(line.text) ||
-      /^[\t ]*[>~]/.test(line.text) || // TODO  Change to isSelectorOperator
+      isSelectorOperator(line.text) ||
       isStar(line.text) ||
       isBracketSelector(line.text) ||
       isFontFace(line.text) ||
@@ -246,7 +251,7 @@ export class SassFormatter {
   private static isProperty(STATE: FormattingState, line: SassTextLine) {
     return (
       STATE.LOCAL_CONTEXT.isProp ||
-      /^[\t ]*(@include|\+[^\t ])/.test(line.text) || // NOTE change suf-regex and replace with isInclude
+      /^[\t ]*(@include|\+[\w\-_$])/.test(line.text) || // TODO  Replace with isInclude
       STATE.LOCAL_CONTEXT.isKeyframesPoint ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
     );
