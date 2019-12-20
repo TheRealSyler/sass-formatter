@@ -77,29 +77,22 @@ interface FormatLocalContext {
 }
 
 export class FormattingState {
-  /**
-   * Text to format.
-   */
+  /** Text to format. */
   text = '';
-  /**
-   * Current Character.
-   */
+
+  /** Current Character. */
   char = 0;
-  /**
-   * Current line.
-   */
+
+  /** Current line. */
   line = 0;
-  /**
-   * Current line Text.
-   */
+
+  /** Current line Text. */
   lineText = '';
-  /**
-   * Formatting Result
-   */
+
+  /** Formatting Result */
   RESULT = '';
-  /**
-   * Context For Each Line.
-   */
+
+  /** Context For Each Line. */
   LOCAL_CONTEXT: FormatLocalContext = {
     isAdjacentSelector: false,
     isHtmlTag: false,

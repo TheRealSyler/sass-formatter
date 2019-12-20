@@ -60,18 +60,22 @@ export function replaceSpacesOrTabs(text: string, STATE: FormattingState, insert
     return text.replace(new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g'), '\t');
   }
 }
-interface LogFormatInfo {
+export interface LogFormatInfo {
   title: string;
+  debug: boolean;
+  lineNumber: number;
+  oldLineText: string;
+  newLineText: string;
   setSpace?: boolean;
   convert?: boolean;
   offset?: number;
   replaceSpaceOrTabs?: boolean;
   nextLine?: SassTextLine;
 }
-export function PushLog(enableDebug: boolean, lineNumber: number, info: LogFormatInfo) {
-  if (enableDebug) {
-    StoreLog.logs.push({ info, lineNumber, ConvertData: StoreLog.TempConvertData });
 
+export function PushDebugInfo(info: LogFormatInfo) {
+  if (info.debug) {
+    StoreLog.logs.push({ info, ConvertData: StoreLog.TempConvertData });
     StoreLog.resetTempConvertData();
   } else {
     StoreLog.resetTempConvertData();
@@ -100,5 +104,5 @@ export class StoreLog {
       log: false
     };
   }
-  static logs: { ConvertData: LogType; lineNumber: number; info: LogFormatInfo }[] = [];
+  static logs: { ConvertData: LogType; info: LogFormatInfo }[] = [];
 }

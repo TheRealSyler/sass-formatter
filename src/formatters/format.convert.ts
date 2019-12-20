@@ -6,7 +6,7 @@ import {
   isPseudoWithParenthesis,
   isCssOneLiner,
   isCssPseudo,
-  isClassOrId
+  isCssSelector
 } from 'suf-regex';
 
 import { replaceWithOffset, StoreLog } from '../utility';
@@ -40,6 +40,7 @@ export function convertScssOrCss(
       };
     } else if (isCssOneLiner(text)) {
       SetStoreConvertInfoType('ONE LINER');
+      // TODO Rewrite, this can't handle more than one property.
       const split = text.split('{');
       return {
         increaseTabSize: false,
@@ -55,9 +56,10 @@ export function convertScssOrCss(
         lastSelector,
         text: removeInvalidChars(text).trimRight()
       };
-    } else if (isClassOrId(text)) {
-      SetStoreConvertInfoType('CLASS OR ID');
+    } else if (isCssSelector(text)) {
+      SetStoreConvertInfoType('SELECTOR');
       lastSelector = removeInvalidChars(text).trimRight();
+      return { text: lastSelector, increaseTabSize: false, lastSelector };
     }
   }
   SetStoreConvertInfoType('DEFAULT');

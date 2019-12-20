@@ -4,30 +4,29 @@ import { FormattingState } from '../state';
 
 import { hasPropertyValueSpace, isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { replaceSpacesOrTabs, PushLog, replaceWithOffset } from '../utility';
+import { replaceSpacesOrTabs, PushDebugInfo, replaceWithOffset } from '../utility';
 
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
 
 export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
-  let lineText = line.text;
   let setSpace = false;
   let convert = false;
   let replaceSpaceOrTabs = false;
-  let edit: string = lineText;
-  const isComment = isComment_(line.text);
+  let edit: string = line.get();
+  const isComment = isComment_(line.get());
   if (
     !STATE.LOCAL_CONTEXT.isHtmlTag &&
-    !hasPropertyValueSpace(line.text) &&
+    !hasPropertyValueSpace(line.get()) &&
     STATE.LOCAL_CONTEXT.isProp &&
     STATE.CONFIG.setPropertySpace
   ) {
-    lineText = lineText.replace(/(^[\t ]*[\$\w-]+:)[\t ]*/, '$1 ');
+    line.set(line.get().replace(/(^[\t ]*[\$\w-]+:)[\t ]*/, '$1 '));
     setSpace = true;
   }
-  if (STATE.CONFIG.convert && isScssOrCss(line.text, STATE.CONTEXT.convert.wasLastLineCss) && !isComment) {
-    const convertRes = convertScssOrCss(lineText, STATE);
-    lineText = convertRes.text;
+  if (STATE.CONFIG.convert && isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) && !isComment) {
+    const convertRes = convertScssOrCss(line.get(), STATE);
+    line.set(convertRes.text);
     convert = true;
   }
   // Set Context Vars
@@ -37,33 +36,63 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     STATE.CONFIG.replaceSpacesOrTabs &&
     !move &&
     (STATE.CONFIG.insertSpaces
-      ? /\t/g.test(lineText)
-      : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(lineText))
+      ? /\t/g.test(line.get())
+      : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(line.get()))
   ) {
-    lineText = replaceSpacesOrTabs(lineText, STATE).trimRight();
+    line.set(replaceSpacesOrTabs(line.get(), STATE).trimRight());
     replaceSpaceOrTabs = true;
   }
   // Return
   if (move) {
-    PushLog(STATE.CONFIG.debug, line.lineNumber, {
-      title: 'MOVE',
+    edit = replaceWithOffset(line.get(), STATE.LOCAL_CONTEXT.indentation.offset, STATE).trimRight();
+    PushDebugInfo({
+      title: 'PROPERTY: MOVE',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
       convert,
       setSpace,
       offset: STATE.LOCAL_CONTEXT.indentation.offset,
       replaceSpaceOrTabs
     });
-
-    edit = replaceWithOffset(lineText, STATE.LOCAL_CONTEXT.indentation.offset, STATE).trimRight();
-  } else if (getDistanceReversed(line.text, STATE.CONFIG.tabSize) > 0 && STATE.CONFIG.deleteWhitespace) {
-    PushLog(STATE.CONFIG.debug, line.lineNumber, { title: 'TRAIL', convert, setSpace, replaceSpaceOrTabs });
-
-    edit = lineText.trimRight();
+  } else if (getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 && STATE.CONFIG.deleteWhitespace) {
+    edit = line.get().trimRight();
+    PushDebugInfo({
+      title: 'PROPERTY: TRAIL',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      convert,
+      setSpace,
+      replaceSpaceOrTabs
+    });
   } else if (setSpace || convert || replaceSpaceOrTabs) {
-    PushLog(STATE.CONFIG.debug, line.lineNumber, { title: 'CHANGE', convert, setSpace, replaceSpaceOrTabs });
-    edit = lineText;
+    edit = line.get();
+    PushDebugInfo({
+      title: 'PROPERTY: CHANGE',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      convert,
+      setSpace,
+      replaceSpaceOrTabs
+    });
+  } else {
+    PushDebugInfo({
+      title: 'PROPERTY: DEFAULT',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      convert,
+      setSpace,
+      replaceSpaceOrTabs
+    });
   }
 
   FormatSetTabs(STATE);
-
   return edit;
 }

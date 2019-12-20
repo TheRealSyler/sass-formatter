@@ -41,20 +41,20 @@ export function FormatSetTabs(STATE: FormattingState, headerStuff?: { offset: nu
 }
 
 export function FormatHandleLocalContext(line: SassTextLine, STATE: FormattingState) {
-  const isPointCheck = isKeyframePoint(line.text, STATE.CONTEXT.keyframes.is);
+  const isPointCheck = isKeyframePoint(line.get(), STATE.CONTEXT.keyframes.is);
   if (STATE.CONTEXT.keyframes.is && isPointCheck) {
     STATE.CONTEXT.tabs = Math.max(0, STATE.CONTEXT.keyframes.tabs);
   }
-  const isKeyframes = isKeyframes_(line.text);
+  const isKeyframes = isKeyframes_(line.get());
 
-  let IS_IF_OR_ELSE_ = isIfOrElse(line.text);
+  let IS_IF_OR_ELSE_ = isIfOrElse(line.get());
   let isIfOrElseAProp = false;
   if (STATE.CONTEXT.keyframes.is && IS_IF_OR_ELSE_) {
     IS_IF_OR_ELSE_ = false;
     isIfOrElseAProp = true;
     STATE.CONTEXT.tabs = STATE.CONTEXT.keyframes.tabs + STATE.CONFIG.tabSize;
   }
-  if (IS_IF_OR_ELSE_ && !STATE.CONTEXT.keyframes.is && isElse(line.text)) {
+  if (IS_IF_OR_ELSE_ && !STATE.CONTEXT.keyframes.is && isElse(line.get())) {
     isIfOrElseAProp = true;
     IS_IF_OR_ELSE_ = false;
     STATE.CONTEXT.tabs = Math.max(0, STATE.CONTEXT.currentTabs - STATE.CONFIG.tabSize);
