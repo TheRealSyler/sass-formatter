@@ -7,11 +7,9 @@ import { convertScssOrCss } from './format.convert';
 import { PushDebugInfo, isConvert } from '../utility';
 
 export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingState) {
-  let convert = false;
   if (isConvert(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
     line.set(convertRes.text);
-    convert = true;
   }
   line.set(line.get().trimStart());
   if (STATE.CONFIG.debug) {
@@ -20,8 +18,7 @@ export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingStat
       lineNumber: line.lineNumber,
       oldLineText: STATE.lineText,
       newLineText: line.get(),
-      debug: STATE.CONFIG.debug,
-      convert
+      debug: STATE.CONFIG.debug
     });
   }
   return line.get();
