@@ -4,10 +4,13 @@ import { FormattingState } from '../state';
 import { isKeyframePoint } from '../utility';
 import { isIfOrElse, isElse, isKeyframes as isKeyframes_ } from 'suf-regex';
 
-export function FormatSetTabs(STATE: FormattingState, headerStuff?: { offset: number; additionalTabs: number }) {
+export function FormatSetTabs(
+  STATE: FormattingState,
+  headerStuff?: { offset: number; additionalTabs: number } // TODO   isAtForwardOrAtUse: boolean
+) {
   if (headerStuff === undefined) {
     // § set Tabs Property
-    if (STATE.CONTEXT.keyframes.is && STATE.LOCAL_CONTEXT.isKeyframesPoint) {
+    if (STATE.CONTEXT.keyframes.is && STATE.LOCAL_CONTEXT.isAtKeyframesPoint) {
       STATE.CONTEXT.tabs = Math.max(0, STATE.CONTEXT.keyframes.tabs + STATE.CONFIG.tabSize);
     }
     if (STATE.LOCAL_CONTEXT.isIfOrElseAProp && STATE.CONTEXT.keyframes.is) {
@@ -17,20 +20,25 @@ export function FormatSetTabs(STATE: FormattingState, headerStuff?: { offset: nu
     }
   } else {
     //§ set Tabs Header Block
-    if (STATE.LOCAL_CONTEXT.isKeyframes) {
+    if (STATE.LOCAL_CONTEXT.isAtKeyframes) {
       STATE.CONTEXT.keyframes.tabs = Math.max(
         0,
         STATE.LOCAL_CONTEXT.indentation.distance + headerStuff.offset + STATE.CONFIG.tabSize
       );
     }
     if (STATE.LOCAL_CONTEXT.ResetTabs) {
-      STATE.CONTEXT.tabs = Math.max(0, STATE.LOCAL_CONTEXT.indentation.distance + headerStuff.offset);
+      STATE.CONTEXT.tabs = Math.max(
+        0,
+        STATE.LOCAL_CONTEXT.indentation.distance + headerStuff.offset
+      );
       STATE.CONTEXT.currentTabs = STATE.CONTEXT.tabs;
     } else {
+      // TODO  adding the tab size when it an @ header can lead to strange results
+      // TODO  const tabSizeOrZero = headerStuff.isAtForwardOrAtUse ? 0 : STATE.CONFIG.tabSize;
       STATE.CONTEXT.tabs = Math.max(
         0,
         STATE.LOCAL_CONTEXT.indentation.distance +
-          headerStuff.offset +
+        headerStuff.offset + // keep in mind that + offset can decrease the number.
           STATE.CONFIG.tabSize +
           headerStuff.additionalTabs
       );
@@ -45,7 +53,7 @@ export function FormatHandleLocalContext(line: SassTextLine, STATE: FormattingSt
   if (STATE.CONTEXT.keyframes.is && isPointCheck) {
     STATE.CONTEXT.tabs = Math.max(0, STATE.CONTEXT.keyframes.tabs);
   }
-  const isKeyframes = isKeyframes_(line.get());
+  const isAtKeyframes = isKeyframes_(line.get());
 
   let IS_IF_OR_ELSE_ = isIfOrElse(line.get());
   let isIfOrElseAProp = false;
@@ -62,7 +70,7 @@ export function FormatHandleLocalContext(line: SassTextLine, STATE: FormattingSt
   return {
     isIfOrElse: IS_IF_OR_ELSE_,
     isIfOrElseAProp,
-    isKeyframes,
-    isKeyframesPoint: isPointCheck
+    isAtKeyframes,
+    isAtKeyframesPoint: isPointCheck
   };
 }

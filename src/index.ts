@@ -1,4 +1,4 @@
-import { getIndentationOffset, PushDebugInfo, Log } from './utility';
+import { getIndentationOffset, PushDebugInfo, Log, isConvert } from './utility';
 import {
   isBlockCommentStart,
   isIgnore,
@@ -6,24 +6,20 @@ import {
   isProperty,
   isReset,
   isAnd,
-  isMixin,
   isHtmlTag,
   isStar,
   isBracketSelector,
   isPseudo,
-  isLoop,
-  isScssOrCss,
-  isComment,
   isBracketOrWhitespace,
-  isMedia,
-  isFontFace,
   isAdjacentSelector,
   isSelectorOperator,
   isBlockCommentEnd,
   isInclude,
   isEmptyOrWhitespace,
   isClassOrId,
-  isCssSelector
+  isCssSelector,
+  isAtForwardOrAtUse,
+  isMixin
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
@@ -31,6 +27,7 @@ import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
 import { convertScssOrCss } from './formatters/format.convert';
+import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
 
 export interface SassFormatterConfig {
   debug: boolean;
@@ -117,7 +114,10 @@ export class SassFormatter {
           STATE.CONTEXT.allowSpace = true;
         }
         // ####### Empty Line #######
-        if (line.isEmptyOrWhitespace || (STATE.CONFIG.convert ? isBracketOrWhitespace(line.get()) : false)) {
+        if (
+          line.isEmptyOrWhitespace ||
+          (STATE.CONFIG.convert ? isBracketOrWhitespace(line.get()) : false)
+        ) {
           this.handleEmptyLine(STATE, line);
         } else {
           STATE.setLocalContext({
@@ -135,8 +135,13 @@ export class SassFormatter {
             ),
             isClassOrIdSelector: isClassOrId(line.get())
           });
-          //####### Block Header #######
-          if (this.isBlockHeader(line, STATE)) {
+          // ####### Is @forward or @use #######
+          if (isAtForwardOrAtUse(line.get())) {
+            this.addNewLine(STATE);
+            STATE.RESULT += FormatAtForwardOrAtUse(line, STATE);
+          }
+          // ####### Block Header #######
+          else if (this.isBlockHeader(line, STATE)) {
             this.addNewLine(STATE);
             STATE.RESULT += FormatBlockHeader(line, STATE);
           }
@@ -147,12 +152,11 @@ export class SassFormatter {
             STATE.RESULT += FormatProperty(line, STATE);
           }
           // ####### Convert #######
-          else if (this.isConvert(line, STATE)) {
+          else if (isConvert(line, STATE)) {
             this.ResetCONTEXT('convert', STATE);
             const edit = convertScssOrCss(line.get(), STATE).text;
             PushDebugInfo({
               title: 'CONVERT',
-              convert: true,
               lineNumber: line.lineNumber,
               oldLineText: STATE.lineText,
               newLineText: edit,
@@ -163,7 +167,6 @@ export class SassFormatter {
           } else {
             PushDebugInfo({
               title: 'NO CHANGE',
-              convert: true,
               lineNumber: line.lineNumber,
               oldLineText: STATE.lineText,
               newLineText: 'NULL',
@@ -220,7 +223,9 @@ export class SassFormatter {
       const nextLine: SassTextLine = getNextLine();
 
       const compact = STATE.CONFIG.deleteCompact ? true : !isProperty(nextLine.get());
-      const nextLineWillBeDeleted = STATE.CONFIG.convert ? isBracketOrWhitespace(nextLine.get()) : false;
+      const nextLineWillBeDeleted = STATE.CONFIG.convert
+        ? isBracketOrWhitespace(nextLine.get())
+        : false;
 
       if (
         (compact && !STATE.CONTEXT.allowSpace && nextLine.isEmptyOrWhitespace) ||
@@ -262,22 +267,18 @@ export class SassFormatter {
 
   private static isBlockHeader(line: SassTextLine, STATE: FormattingState) {
     return (
-      isMixin(line.get()) ||
+      isMixin(line.get()) || // also adds =mixin etc.
       isPseudo(line.get()) ||
-      isMedia(line.get()) ||
       isSelectorOperator(line.get()) ||
       isStar(line.get()) ||
       isBracketSelector(line.get()) ||
-      isFontFace(line.get()) ||
       STATE.LOCAL_CONTEXT.isClassOrIdSelector ||
       STATE.LOCAL_CONTEXT.isAdjacentSelector ||
       STATE.LOCAL_CONTEXT.isIfOrElse ||
       STATE.LOCAL_CONTEXT.ResetTabs ||
       STATE.LOCAL_CONTEXT.isAnd_ ||
-      STATE.LOCAL_CONTEXT.isKeyframes ||
       STATE.LOCAL_CONTEXT.isHtmlTag ||
-      isLoop(line.get()) ||
-      isCssSelector(line.get())
+      isCssSelector(line.get()) // adds all lines that start with @
     );
   }
 
@@ -285,14 +286,8 @@ export class SassFormatter {
     return (
       STATE.LOCAL_CONTEXT.isProp ||
       isInclude(line.get()) ||
-      STATE.LOCAL_CONTEXT.isKeyframesPoint ||
+      STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
-    );
-  }
-
-  private static isConvert(line: SassTextLine, STATE: FormattingState) {
-    return (
-      STATE.CONFIG.convert && isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) && !isComment(line.get())
     );
   }
 

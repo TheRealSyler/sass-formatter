@@ -17,7 +17,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   let hasBeenConverted = false;
   let additionalTabs = 0;
   let edit: string = line.get();
-  // First Convert
+
+  // First Convert then set Offset.
   if (
     STATE.CONFIG.convert &&
     isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) &&
@@ -29,17 +30,21 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       additionalTabs = STATE.CONFIG.tabSize;
     }
     line.set(convertRes.text);
-    STATE.LOCAL_CONTEXT.indentation = getIndentationOffset(line.get(), STATE.CONTEXT.tabs, STATE.CONFIG.tabSize);
+    STATE.LOCAL_CONTEXT.indentation = getIndentationOffset(
+      line.get(),
+      STATE.CONTEXT.tabs,
+      STATE.CONFIG.tabSize
+    );
     hasBeenConverted = true;
   }
-  // Then Set offset.
+  // Set offset.
   let offset =
     STATE.LOCAL_CONTEXT.isAdjacentSelector && STATE.CONTEXT.wasLastLineSelector
       ? STATE.CONTEXT.lastSelectorTabs - STATE.LOCAL_CONTEXT.indentation.distance
       : getBlockHeaderOffset(
           STATE.LOCAL_CONTEXT.indentation.distance,
           STATE.CONFIG.tabSize,
-          STATE.CONTEXT.currentTabs,
+          STATE.CONTEXT.tabs,
           STATE.LOCAL_CONTEXT.ResetTabs
         );
 
@@ -48,7 +53,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   // Set Context Vars
-  STATE.CONTEXT.keyframes.is = STATE.LOCAL_CONTEXT.isKeyframes || STATE.LOCAL_CONTEXT.isKeyframesPoint;
+  STATE.CONTEXT.keyframes.is =
+    STATE.LOCAL_CONTEXT.isAtKeyframes || STATE.LOCAL_CONTEXT.isAtKeyframesPoint;
   STATE.CONTEXT.allowSpace = false;
 
   if (!hasBeenConverted && STATE.LOCAL_CONTEXT.isClassOrIdSelector) {
@@ -71,7 +77,11 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   // Convert Spaces to tabs or vice versa depending on the config.
-  if (STATE.CONFIG.replaceSpacesOrTabs && STATE.CONFIG.insertSpaces ? /\t/g.test(line.get()) : / /g.test(line.get())) {
+  if (
+    STATE.CONFIG.replaceSpacesOrTabs && STATE.CONFIG.insertSpaces
+      ? /\t/g.test(line.get())
+      : / /g.test(line.get())
+  ) {
     line.set(replaceSpacesOrTabs(line.get(), STATE));
     replaceSpaceOrTabs = true;
   }
@@ -85,11 +95,13 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert: hasBeenConverted,
       replaceSpaceOrTabs,
       offset: offset
     });
-  } else if (getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 && STATE.CONFIG.deleteWhitespace) {
+  } else if (
+    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
+    STATE.CONFIG.deleteWhitespace
+  ) {
     edit = line.get().trimRight();
     PushDebugInfo({
       title: 'BLOCK HEADER: TRAIL',
@@ -97,7 +109,6 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert: hasBeenConverted,
       replaceSpaceOrTabs
     });
   } else if (hasBeenConverted || replaceSpaceOrTabs) {
@@ -108,7 +119,6 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert: hasBeenConverted,
       replaceSpaceOrTabs
     });
   } else {
@@ -118,7 +128,6 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert: hasBeenConverted,
       replaceSpaceOrTabs
     });
   }

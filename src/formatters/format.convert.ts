@@ -36,7 +36,9 @@ export function convertScssOrCss(
       return {
         lastSelector,
         increaseTabSize: true,
-        text: '\n'.concat(replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE))
+        text: '\n'.concat(
+          replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE)
+        )
       };
     } else if (isCssOneLiner(text)) {
       SetStoreConvertInfoType('ONE LINER');
@@ -46,7 +48,9 @@ export function convertScssOrCss(
         increaseTabSize: false,
         lastSelector: split[0].trim(),
         text: removeInvalidChars(
-          split[0].trim().concat('\n', replaceWithOffset(split[1].trim(), STATE.CONFIG.tabSize, STATE))
+          split[0]
+            .trim()
+            .concat('\n', replaceWithOffset(split[1].trim(), STATE.CONFIG.tabSize, STATE))
         ).trimRight()
       };
     } else if (isCssPseudo(text) && !isMultiple) {
@@ -70,7 +74,7 @@ function removeInvalidChars(text: string) {
   let newText = '';
   let isInQuotes = false;
   let isInComment = false;
-  let isInVarSelector = false;
+  let isInInterpolation = false;
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     if (!isInQuotes && char === '/' && text[i + 1] === '/') {
@@ -78,11 +82,11 @@ function removeInvalidChars(text: string) {
     } else if (/['"]/.test(char)) {
       isInQuotes = !isInQuotes;
     } else if (/#/.test(char) && /{/.test(text[i + 1])) {
-      isInVarSelector = true;
-    } else if (isInVarSelector && /}/.test(text[i - 1])) {
-      isInVarSelector = false;
+      isInInterpolation = true;
+    } else if (isInInterpolation && /}/.test(text[i - 1])) {
+      isInInterpolation = false;
     }
-    if (!/[;\{\}]/.test(char) || isInQuotes || isInComment || isInVarSelector) {
+    if (!/[;\{\}]/.test(char) || isInQuotes || isInComment || isInInterpolation) {
       newText += char;
     }
   }

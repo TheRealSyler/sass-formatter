@@ -23,7 +23,7 @@ export const logger = new Logger<{
         out += InfoLogHelper(data[i]);
       }
       out += `
-${pipe}${styler(res.replace(/\n/g, '|\n|'), '#c76')}${pipe}`;
+${pipe}${styler(replaceWhitespace(res.replace(/\n/g, '|\n|')), '#c76')}${pipe}`;
       return out;
     }
   }
@@ -36,9 +36,9 @@ function InfoLogHelper(data: any) {
     const notProvided = null;
     const title = styler(info.title, '#cc0');
     const row = `${TEXT('Row')}${colon} ${NUMBER(info.lineNumber)}`;
-    const offset = info.offset !== undefined ? `${TEXT('Offset')}${colon} ${NUMBER(info.offset)}` : '';
+    const offset =
+      info.offset !== undefined ? `${TEXT('Offset')}${colon} ${NUMBER(info.offset)}` : '';
     const propertySpace = info.setSpace !== undefined ? BOOL(info.setSpace) : notProvided;
-    const convert = info.convert !== undefined ? BOOL(info.convert) : notProvided;
     const nextLine =
       info.nextLine !== undefined
         ? JSON.stringify(info.nextLine)
@@ -49,33 +49,39 @@ function InfoLogHelper(data: any) {
               return styler(s, '#c76');
             })
         : notProvided;
-    const replace = info.replaceSpaceOrTabs !== undefined ? BOOL(info.replaceSpaceOrTabs) : notProvided;
+    const replace =
+      info.replaceSpaceOrTabs !== undefined ? BOOL(info.replaceSpaceOrTabs) : notProvided;
     const CONVERT = ConvertData.log
       ? `
-  ${styler('CONVERT TYPE', '#0c7')}   ${colon} ${styler(ConvertData.type, '#f64')}`
+      ${TEXT('Convert')}        ${colon} ${styler(ConvertData.type, '#f64')}`
       : '';
     switch (info.newLineText) {
       case 'DELETED':
         return ` ${title} ${row} ${TEXT('Next Line')}${colon} ${nextLine}`;
       case 'NEWLINE':
-        return ` ${title} ${row}`;
       case 'NULL':
         return ` ${title} ${row}`;
       default:
         let additionalInfo = '';
-        additionalInfo += propertySpace !== null ? `\n      ${TEXT('Property Space')} ${colon} ${propertySpace}` : '';
-        additionalInfo += convert !== null ? `\n      ${TEXT('Convert')}        ${colon} ${convert}` : '';
-        additionalInfo += nextLine !== null ? `\n      ${TEXT('Next Line')}      ${colon} ${nextLine}` : '';
-        additionalInfo += replace !== null ? `\n      ${TEXT('Replace')}        ${colon} ${replace}${CONVERT}` : '';
+        additionalInfo +=
+          propertySpace !== null
+            ? `\n      ${TEXT('Property Space')} ${colon} ${propertySpace}`
+            : '';
+        additionalInfo +=
+          nextLine !== null ? `\n      ${TEXT('Next Line')}      ${colon} ${nextLine}` : '';
+        additionalInfo +=
+          replace !== null ? `\n      ${TEXT('Replace')}        ${colon} ${replace}` : '';
 
         return ` ${title} ${row} ${offset}
-      ${TEXT('Old')}            ${colon} ${styler(replaceWhiteSpace(info.oldLineText), '#c64')}
-      ${TEXT('New')}            ${colon} ${styler(replaceWhiteSpace(info.newLineText), '#2c2')}${additionalInfo}`;
+      ${TEXT('Old')}            ${colon} ${styler(replaceWhitespace(info.oldLineText), '#c64')}
+      ${TEXT('New')}            ${colon} ${styler(
+          replaceWhitespace(info.newLineText),
+          '#2c2'
+        )}${CONVERT}${additionalInfo}`;
     }
   }
   return '';
-
-  function replaceWhiteSpace(text: string) {
-    return text.replace(/ /g, '·').replace(/\t/g, '⟶');
-  }
+}
+function replaceWhitespace(text: string) {
+  return text.replace(/ /g, '·').replace(/\t/g, '⟶');
 }

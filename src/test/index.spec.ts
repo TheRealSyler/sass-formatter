@@ -3,13 +3,12 @@ import { SassFormatter as SF } from '../index';
 test('Sass Format: Simple Indentation', () => {
   const a = SF.Format(
     `
-
-
+  
 .class
     margin: 10px
               padding: 10rem
 `,
-    { insertSpaces: true, tabSize: 2 }
+    { debug: false }
   );
   expect(a).toEqual(
     `
@@ -28,7 +27,7 @@ test('Sass Format: Indentation & Whitespace', () => {
 $test: 23;
 
 
-  @mixin name ( $test )
+      @mixin name ( $test )
        &:active
          left: $test
 
@@ -64,7 +63,7 @@ $test: 23;
                   @include name ($test)
 
 `,
-    { insertSpaces: true, tabSize: 2, debug: true }
+    { insertSpaces: true, tabSize: 2, debug: false }
   );
   expect(a).toEqual(
     `
@@ -72,9 +71,9 @@ $test: 23;
 
 $test: 23
 
-@mixin name ( $test )
-  &:active
-    left: $test
+  @mixin name ( $test )
+    &:active
+      left: $test
 
 .checkbox
   background-color: $dark-gray
@@ -479,11 +478,11 @@ $light-text: #036;
 $dark-background: #6b717f;
 $dark-text: #d2e1dd;
     
-    @mixin theme-colors($light-theme: true) {
-      @if $light-theme {
+  @mixin theme-colors($light-theme: true) {
+    @if $light-theme {
         background-color: $light-background;
         color: $light-text;
-      } @else {
+  } @else {
         background-color: $dark-background;
         color: $dark-text;
       }
@@ -508,9 +507,9 @@ $dark-text: #d2e1dd
   @if $light-theme
     background-color: $light-background
     color: $light-text
-    @else
-      background-color: $dark-background
-      color: $dark-text
+  @else
+    background-color: $dark-background
+    color: $dark-text
 
     .banner
       @include theme-colors($light-theme: true)
@@ -527,7 +526,9 @@ test('Sass Format: Options', () => {
       { deleteCompact: false, convert: false }
     )
   ).toBe(``);
-  expect(SF.Format(`.class { padding: 20px }`, { convert: false })).toBe(`.class { padding: 20px }`);
+  expect(SF.Format(`.class { padding: 20px }`, { convert: false })).toBe(
+    `.class { padding: 20px }`
+  );
   expect(
     SF.Format(
       `.class  
@@ -581,4 +582,30 @@ test('Sass Format: Commands', () => {
 
 
   margin: 200px`);
+});
+
+test('Sass Format: @forward and @use', () => {
+  expect(
+    SF.Format(
+      `  @use 'sass:map' as MAP
+      @use "bootstrap";
+
+      @forward "src/list" as list-*;
+
+li {
+  @include bootstrap.list-reset;
+}
+
+
+   `,
+      { debug: false }
+    )
+  ).toBe(`@use 'sass:map' as MAP
+@use "bootstrap"
+
+@forward "src/list" as list-*
+
+li
+  @include bootstrap.list-reset
+`);
 });

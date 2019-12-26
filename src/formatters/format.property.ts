@@ -2,9 +2,9 @@ import { SassTextLine } from '../index';
 
 import { FormattingState } from '../state';
 
-import { hasPropertyValueSpace, isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
+import { hasPropertyValueSpace, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { replaceSpacesOrTabs, PushDebugInfo, replaceWithOffset } from '../utility';
+import { replaceSpacesOrTabs, PushDebugInfo, replaceWithOffset, isConvert } from '../utility';
 
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
@@ -24,7 +24,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     line.set(line.get().replace(/(^[\t ]*[\$\w-]+:)[\t ]*/, '$1 '));
     setSpace = true;
   }
-  if (STATE.CONFIG.convert && isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) && !isComment) {
+  if (isConvert(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
     line.set(convertRes.text);
     convert = true;
@@ -51,12 +51,14 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert,
       setSpace,
       offset: STATE.LOCAL_CONTEXT.indentation.offset,
       replaceSpaceOrTabs
     });
-  } else if (getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 && STATE.CONFIG.deleteWhitespace) {
+  } else if (
+    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
+    STATE.CONFIG.deleteWhitespace
+  ) {
     edit = line.get().trimRight();
     PushDebugInfo({
       title: 'PROPERTY: TRAIL',
@@ -64,7 +66,6 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert,
       setSpace,
       replaceSpaceOrTabs
     });
@@ -76,7 +77,6 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert,
       setSpace,
       replaceSpaceOrTabs
     });
@@ -87,7 +87,6 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lineText,
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      convert,
       setSpace,
       replaceSpaceOrTabs
     });

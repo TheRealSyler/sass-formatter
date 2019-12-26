@@ -71,8 +71,8 @@ interface FormatLocalContext {
   isHtmlTag: boolean;
   isIfOrElse: boolean;
   isIfOrElseAProp: boolean;
-  isKeyframes: boolean;
-  isKeyframesPoint: boolean;
+  isAtKeyframes: boolean;
+  isAtKeyframesPoint: boolean;
   isAdjacentSelector: boolean;
 }
 
@@ -105,8 +105,8 @@ export class FormattingState {
     isClassOrIdSelector: false,
     isIfOrElse: false,
     isIfOrElseAProp: false,
-    isKeyframes: false,
-    isKeyframesPoint: false,
+    isAtKeyframes: false,
+    isAtKeyframesPoint: false,
     isProp: false
   };
 

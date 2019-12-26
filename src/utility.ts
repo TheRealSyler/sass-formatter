@@ -1,4 +1,4 @@
-import { getDistance } from 'suf-regex';
+import { getDistance, isScssOrCss, isComment } from 'suf-regex';
 import { logger } from './logger';
 import { SassTextLine } from './index';
 import { FormattingState } from './state';
@@ -6,7 +6,12 @@ import { FormattingState } from './state';
 /**
  * returns the relative distance that the class or id should be at.
  */
-export function getBlockHeaderOffset(distance: number, tabSize: number, current: number, ignoreCurrent: boolean) {
+export function getBlockHeaderOffset(
+  distance: number,
+  tabSize: number,
+  current: number,
+  ignoreCurrent: boolean
+) {
   if (distance === 0) {
     return 0;
   }
@@ -20,7 +25,9 @@ export function getBlockHeaderOffset(distance: number, tabSize: number, current:
  */
 export function replaceWithOffset(text: string, offset: number, STATE: FormattingState) {
   if (offset < 0) {
-    text = text.replace(/\t/g, ' '.repeat(STATE.CONFIG.tabSize)).replace(new RegExp(`^ {${Math.abs(offset)}}`), '');
+    text = text
+      .replace(/\t/g, ' '.repeat(STATE.CONFIG.tabSize))
+      .replace(new RegExp(`^ {${Math.abs(offset)}}`), '');
     if (!STATE.CONFIG.insertSpaces) {
       text = replaceSpacesOrTabs(text, STATE, false);
     }
@@ -67,7 +74,6 @@ export interface LogFormatInfo {
   oldLineText: string;
   newLineText: string;
   setSpace?: boolean;
-  convert?: boolean;
   offset?: number;
   replaceSpaceOrTabs?: boolean;
   nextLine?: SassTextLine;
@@ -75,7 +81,10 @@ export interface LogFormatInfo {
 
 export function PushDebugInfo(info: LogFormatInfo) {
   if (info.debug) {
-    StoreLog.logs.push({ info, ConvertData: StoreLog.TempConvertData });
+    StoreLog.logs.push({
+      info,
+      ConvertData: StoreLog.TempConvertData ? StoreLog.TempConvertData : ({} as LogType)
+    });
     StoreLog.resetTempConvertData();
   } else {
     StoreLog.resetTempConvertData();
@@ -105,4 +114,12 @@ export class StoreLog {
     };
   }
   static logs: { ConvertData: LogType; info: LogFormatInfo }[] = [];
+}
+
+export function isConvert(line: SassTextLine, STATE: FormattingState) {
+  return (
+    STATE.CONFIG.convert &&
+    isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) &&
+    !isComment(line.get())
+  );
 }
