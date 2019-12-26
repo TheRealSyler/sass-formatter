@@ -3,13 +3,12 @@ import { SassFormatter as SF } from '../index';
 test('Sass Format: Simple Indentation', () => {
   const a = SF.Format(
     `
-
-
+  
 .class
     margin: 10px
               padding: 10rem
 `,
-    { insertSpaces: true, tabSize: 2 }
+    { debug: false }
   );
   expect(a).toEqual(
     `
@@ -28,7 +27,7 @@ test('Sass Format: Indentation & Whitespace', () => {
 $test: 23;
 
 
-  @mixin name ( $test )
+      @mixin name ( $test )
        &:active
          left: $test
 
@@ -64,7 +63,7 @@ $test: 23;
                   @include name ($test)
 
 `,
-    { insertSpaces: true, tabSize: 2 }
+    { insertSpaces: true, tabSize: 2, debug: false }
   );
   expect(a).toEqual(
     `
@@ -72,9 +71,9 @@ $test: 23;
 
 $test: 23
 
-@mixin name ( $test )
-  &:active
-    left: $test
+  @mixin name ( $test )
+    &:active
+      left: $test
 
 .checkbox
   background-color: $dark-gray
@@ -130,6 +129,7 @@ $var: 100vh
   margin: 100px
   &:hover
     left: 10rem
+
 
   &-2
     margin: $var
@@ -252,7 +252,7 @@ test('Sass Format: check + selector and + @include', () => {
         + div
         padding: 2rem
 `,
-    { insertSpaces: true, tabSize: 2 }
+    { insertSpaces: true, tabSize: 2, debug: false }
   );
   expect(a).toEqual(
     `
@@ -276,7 +276,7 @@ test('Sass Format Case 9', () => {
   const a = SF.Format(
     `
 .foo
-position: relative
+position:   relative
 
   @media only screen and (min-width: 600px)
     .foo
@@ -302,6 +302,7 @@ position: relative
 `
   );
 });
+
 test('Sass Format Case 10', () => {
   const a = SF.Format(
     `
@@ -341,6 +342,7 @@ test('Sass Format Case 10', () => {
 `
   );
 });
+
 test('Sass Format Case 11', () => {
   const a = SF.Format(
     `
@@ -381,11 +383,13 @@ span
 `
   );
 });
+
 test('Sass Format: \\:root', () => {
   const a = SF.Format('\\:root\n     --color: red', { insertSpaces: true, tabSize: 2 });
 
   expect(a).toBe('\\:root\n  --color: red');
 });
+
 test('Sass Format: Block Comment', () => {
   const a = SF.Format(
     `/**
@@ -395,7 +399,7 @@ test('Sass Format: Block Comment', () => {
  *
  *
  */`,
-    { insertSpaces: false, tabSize: 2, debug: true }
+    { insertSpaces: false, tabSize: 2, debug: false }
   );
 
   expect(a).toBe(`/**
@@ -406,6 +410,7 @@ test('Sass Format: Block Comment', () => {
 	*
 	*/`);
 });
+
 test('Sass Format: Interpolation', () => {
   const a = SF.Format(
     `#{body}
@@ -422,6 +427,7 @@ test('Sass Format: Interpolation', () => {
 #{main}
   color: red`);
 });
+
 test('Sass Format: Check Comment and @font-face', () => {
   const a = SF.Format(
     `
@@ -439,12 +445,13 @@ test('Sass Format: Check Comment and @font-face', () => {
 @font-face
   margin: 200px`);
 });
+
 test('Sass Format: Check @keyframes', () => {
   const a = SF.Format(
     `
 .class
     animation: test 200ms
-@keyframes 
+@keyframes test
    from 
    transform: rotate(0deg)    
    
@@ -455,7 +462,7 @@ test('Sass Format: Check @keyframes', () => {
   expect(a).toBe(`
 .class
   animation: test 200ms
-@keyframes
+@keyframes test
   from
     transform: rotate(0deg)
 
@@ -463,36 +470,83 @@ test('Sass Format: Check @keyframes', () => {
     transform: rotate(90deg)`);
 });
 
+test('Sass Format: Check @if && @else', () => {
+  const a = SF.Format(
+    `
+$light-background: #f2ece4;
+$light-text: #036;
+$dark-background: #6b717f;
+$dark-text: #d2e1dd;
+    
+  @mixin theme-colors($light-theme: true) {
+    @if $light-theme {
+        background-color: $light-background;
+        color: $light-text;
+  } @else {
+        background-color: $dark-background;
+        color: $dark-text;
+      }
+    }
+    
+    .banner {
+      @include theme-colors($light-theme: true);
+      body.dark & {
+               @include theme-colors($light-theme: false);
+      }
+    }
+           `,
+    { debug: false }
+  );
+  expect(a).toBe(`
+$light-background: #f2ece4
+$light-text: #036
+$dark-background: #6b717f
+$dark-text: #d2e1dd
+
+@mixin theme-colors($light-theme: true)
+  @if $light-theme
+    background-color: $light-background
+    color: $light-text
+  @else
+    background-color: $dark-background
+    color: $dark-text
+
+    .banner
+      @include theme-colors($light-theme: true)
+      body.dark &
+        @include theme-colors($light-theme: false)
+`);
+});
+
 test('Sass Format: Options', () => {
   expect(
     SF.Format(
       `  
    `,
-      { insertSpaces: true, tabSize: 2, deleteCompact: false, convert: false }
+      { deleteCompact: false, convert: false }
     )
   ).toBe(``);
-  expect(SF.Format(`.class { padding: 20px }`, { insertSpaces: true, tabSize: 2, convert: false })).toBe(
+  expect(SF.Format(`.class { padding: 20px }`, { convert: false })).toBe(
     `.class { padding: 20px }`
   );
   expect(
     SF.Format(
       `.class  
-  margin: 200px       `,
-      { insertSpaces: true, tabSize: 2 }
+  margin: 200px       `
     )
   ).toBe(
     `.class
   margin: 200px`
   );
 });
+
 test('Sass Format: Commands', () => {
   expect(
     SF.Format(
       `
 .class
     ///I
-    margin: 200px`,
-      { insertSpaces: true, tabSize: 2 }
+    margin: 200px`
     )
   ).toBe(`
 .class
@@ -503,8 +557,7 @@ test('Sass Format: Commands', () => {
       `
 .class
         ///R
-    margin: 200px`,
-      { insertSpaces: true, tabSize: 2 }
+    margin: 200px`
     )
   ).toBe(`
 .class
@@ -519,8 +572,7 @@ test('Sass Format: Commands', () => {
       
 
 
-     margin: 200px`,
-      { insertSpaces: true, tabSize: 2 }
+     margin: 200px`
     )
   ).toBe(`
 .class
@@ -530,4 +582,30 @@ test('Sass Format: Commands', () => {
 
 
   margin: 200px`);
+});
+
+test('Sass Format: @forward and @use', () => {
+  expect(
+    SF.Format(
+      `  @use 'sass:map' as MAP
+      @use "bootstrap";
+
+      @forward "src/list" as list-*;
+
+li {
+  @include bootstrap.list-reset;
+}
+
+
+   `,
+      { debug: false }
+    )
+  ).toBe(`@use 'sass:map' as MAP
+@use "bootstrap"
+
+@forward "src/list" as list-*
+
+li
+  @include bootstrap.list-reset
+`);
 });

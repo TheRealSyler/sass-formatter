@@ -1,9 +1,9 @@
 import { Logger, LoggerType, styler, SetEnvironment } from '@sorg/log';
-import { Log } from './utility';
+import { Log, LogFormatInfo } from './utility';
 SetEnvironment('node');
 
 const colon = styler(':', '#777');
-const quote = styler('"', '#f64');
+// const quote = styler('"', '#f64');
 const pipe = styler('|', '#f64');
 const TEXT = (text: string) => styler(text, '#bbb');
 const NUMBER = (number: number) => styler(number.toString(), '#f03');
@@ -23,7 +23,7 @@ export const logger = new Logger<{
         out += InfoLogHelper(data[i]);
       }
       out += `
-${pipe}${styler(res.replace(/\n/g, '|\n|'), '#c76')}${pipe}`;
+${pipe}${styler(replaceWhitespace(res.replace(/\n/g, '|\n|')), '#c76')}${pipe}`;
       return out;
     }
   }
@@ -31,14 +31,14 @@ ${pipe}${styler(res.replace(/\n/g, '|\n|'), '#c76')}${pipe}`;
 
 function InfoLogHelper(data: any) {
   if (data) {
-    const { info, lineNumber, ConvertData } = data;
-
-    const notProvided = styler('not provided', '#666');
+    const ConvertData = data.ConvertData;
+    const info = data.info as LogFormatInfo;
+    const notProvided = null;
     const title = styler(info.title, '#cc0');
-    const row = `${TEXT('Row')}${colon} ${NUMBER(lineNumber)}`;
-    const offset = info.offset !== undefined ? `${TEXT('Offset')}${colon} ${NUMBER(info.offset)}` : '';
+    const row = `${TEXT('Row')}${colon} ${NUMBER(info.lineNumber)}`;
+    const offset =
+      info.offset !== undefined ? `${TEXT('Offset')}${colon} ${NUMBER(info.offset)}` : '';
     const propertySpace = info.setSpace !== undefined ? BOOL(info.setSpace) : notProvided;
-    const convert = info.convert !== undefined ? BOOL(info.convert) : notProvided;
     const nextLine =
       info.nextLine !== undefined
         ? JSON.stringify(info.nextLine)
@@ -49,18 +49,39 @@ function InfoLogHelper(data: any) {
               return styler(s, '#c76');
             })
         : notProvided;
-    const replace = info.replaceSpaceOrTabs !== undefined ? BOOL(info.replaceSpaceOrTabs) : notProvided;
+    const replace =
+      info.replaceSpaceOrTabs !== undefined ? BOOL(info.replaceSpaceOrTabs) : notProvided;
     const CONVERT = ConvertData.log
       ? `
-  ${styler('CONVERT CSS', '#0c7')}
-  ${TEXT('Text')}           ${colon} ${quote}${ConvertData.text}${quote}
-  ${TEXT('Type')}           ${colon} ${styler(ConvertData.type, '#f64')}`
+      ${TEXT('Convert')}        ${colon} ${styler(ConvertData.type, '#f64')}`
       : '';
-    return ` ${title} ${row} ${offset}
-  ${TEXT('Property Space')} ${colon} ${propertySpace}
-  ${TEXT('Convert')}        ${colon} ${convert}
-  ${TEXT('Next Line')}      ${colon} ${nextLine}
-  ${TEXT('Replace')}        ${colon} ${replace}${CONVERT}`;
+    switch (info.newLineText) {
+      case 'DELETED':
+        return ` ${title} ${row} ${TEXT('Next Line')}${colon} ${nextLine}`;
+      case 'NEWLINE':
+      case 'NULL':
+        return ` ${title} ${row}`;
+      default:
+        let additionalInfo = '';
+        additionalInfo +=
+          propertySpace !== null
+            ? `\n      ${TEXT('Property Space')} ${colon} ${propertySpace}`
+            : '';
+        additionalInfo +=
+          nextLine !== null ? `\n      ${TEXT('Next Line')}      ${colon} ${nextLine}` : '';
+        additionalInfo +=
+          replace !== null ? `\n      ${TEXT('Replace')}        ${colon} ${replace}` : '';
+
+        return ` ${title} ${row} ${offset}
+      ${TEXT('Old')}            ${colon} ${styler(replaceWhitespace(info.oldLineText), '#c64')}
+      ${TEXT('New')}            ${colon} ${styler(
+          replaceWhitespace(info.newLineText),
+          '#2c2'
+        )}${CONVERT}${additionalInfo}`;
+    }
   }
   return '';
+}
+function replaceWhitespace(text: string) {
+  return text.replace(/ /g, '·').replace(/\t/g, '⟶');
 }

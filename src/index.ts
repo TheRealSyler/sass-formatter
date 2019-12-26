@@ -1,29 +1,33 @@
-import { getBlockHeaderOffset, getIndentationOffset, convertScssOrCss, PushLog, Log } from './utility';
+import { getIndentationOffset, PushDebugInfo, Log, isConvert } from './utility';
 import {
   isBlockCommentStart,
-  isBlockCommentEnd,
   isIgnore,
   isSassSpace,
   isProperty,
   isReset,
   isAnd,
-  isMixin,
   isHtmlTag,
   isStar,
   isBracketSelector,
   isPseudo,
-  isLoop,
-  isScssOrCss,
-  isComment,
   isBracketOrWhitespace,
-  isMedia,
-  isFontFace
+  isAdjacentSelector,
+  isSelectorOperator,
+  isBlockCommentEnd,
+  isInclude,
+  isEmptyOrWhitespace,
+  isClassOrId,
+  isCssSelector,
+  isAtForwardOrAtUse,
+  isMixin
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
+import { convertScssOrCss } from './formatters/format.convert';
+import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
 
 export interface SassFormatterConfig {
   debug: boolean;
@@ -38,11 +42,17 @@ export interface SassFormatterConfig {
 }
 
 export class SassTextLine {
-  text: string;
   isEmptyOrWhitespace: boolean;
-  constructor(text: string, public lineNumber: number) {
+  constructor(private text: string, public lineNumber: number) {
+    this.isEmptyOrWhitespace = isEmptyOrWhitespace(text);
+  }
+  /**Sets the text of the line. */
+  set(text: string) {
     this.text = text;
-    this.isEmptyOrWhitespace = /^[\t ]*\n?$/.test(text); // TODO replace with isWhiteSpaceOrEmpty
+  }
+  /**Gets the text of the line. */
+  get(): string {
+    return this.text;
   }
 }
 
@@ -85,52 +95,86 @@ export class SassFormatter {
   }
 
   private static handleLine(line: SassTextLine, STATE: FormattingState) {
-    if (isBlockCommentStart(line.text)) {
+    if (isBlockCommentStart(line.get())) {
       STATE.CONTEXT.isInBlockComment = true;
     }
     if (STATE.CONTEXT.ignoreLine) {
       STATE.CONTEXT.ignoreLine = false;
       this.addNewLine(STATE);
-      STATE.RESULT += line.text;
+      STATE.RESULT += line.get();
     } else if (STATE.CONTEXT.isInBlockComment) {
       this.handleCommentBlock(STATE, line);
     } else {
-      if (isIgnore(line.text)) {
+      if (isIgnore(line.get())) {
         STATE.CONTEXT.ignoreLine = true;
         this.addNewLine(STATE);
-        STATE.RESULT += line.text;
+        STATE.RESULT += line.get();
       } else {
-        if (isSassSpace(line.text)) {
+        if (isSassSpace(line.get())) {
           STATE.CONTEXT.allowSpace = true;
         }
         // ####### Empty Line #######
-        if (line.isEmptyOrWhitespace || (STATE.CONFIG.convert ? isBracketOrWhitespace(line.text) : false)) {
+        if (
+          line.isEmptyOrWhitespace ||
+          (STATE.CONFIG.convert ? isBracketOrWhitespace(line.get()) : false)
+        ) {
           this.handleEmptyLine(STATE, line);
         } else {
           STATE.setLocalContext({
             ...FormatHandleLocalContext(line, STATE),
-            ResetTabs: isReset(line.text),
-            isAnd_: isAnd(line.text),
-            isProp: isProperty(line.text),
-            indentation: getIndentationOffset(line.text, STATE.CONTEXT.tabs, STATE.CONFIG.tabSize),
-            isAdjacentSelector: isAdjacentSelector(line.text),
-            isHtmlTag: isHtmlTag(line.text.trim().split(' ')[0]),
-            isClassOrIdSelector: /^[\t ]*[#\.%]/.test(line.text) // TODO replace with isClassOrId
+            ResetTabs: isReset(line.get()),
+            isAnd_: isAnd(line.get()),
+            isProp: isProperty(line.get()),
+            indentation: getIndentationOffset(line.get(), STATE.CONTEXT.tabs, STATE.CONFIG.tabSize),
+            isAdjacentSelector: isAdjacentSelector(line.get()),
+            isHtmlTag: isHtmlTag(
+              line
+                .get()
+                .trim()
+                .split(' ')[0]
+            ),
+            isClassOrIdSelector: isClassOrId(line.get())
           });
-          //####### Block Header #######
-          if (this.isBlockHeader(line, STATE)) {
-            this.HandleBlockHeader(STATE, line);
+          // ####### Is @forward or @use #######
+          if (isAtForwardOrAtUse(line.get())) {
+            this.addNewLine(STATE);
+            STATE.RESULT += FormatAtForwardOrAtUse(line, STATE);
+          }
+          // ####### Block Header #######
+          else if (this.isBlockHeader(line, STATE)) {
+            this.addNewLine(STATE);
+            STATE.RESULT += FormatBlockHeader(line, STATE);
           }
           // ####### Properties #######
           else if (this.isProperty(STATE, line)) {
-            this.handleProperty(STATE, line);
+            this.ResetCONTEXT('normal', STATE);
+            this.addNewLine(STATE);
+            STATE.RESULT += FormatProperty(line, STATE);
           }
           // ####### Convert #######
-          else if (this.isConvert(line, STATE)) {
-            this.handleConvert(line, STATE);
-          } else {
+          else if (isConvert(line, STATE)) {
+            this.ResetCONTEXT('convert', STATE);
+            const edit = convertScssOrCss(line.get(), STATE).text;
+            PushDebugInfo({
+              title: 'CONVERT',
+              lineNumber: line.lineNumber,
+              oldLineText: STATE.lineText,
+              newLineText: edit,
+              debug: STATE.CONFIG.debug
+            });
             this.addNewLine(STATE);
-            STATE.RESULT += line.text;
+            STATE.RESULT += edit;
+          } else {
+            PushDebugInfo({
+              title: 'NO CHANGE',
+              lineNumber: line.lineNumber,
+              oldLineText: STATE.lineText,
+              newLineText: 'NULL',
+              debug: STATE.CONFIG.debug
+            });
+
+            this.addNewLine(STATE);
+            STATE.RESULT += line.get();
           }
           // set CONTEXT Variables
           STATE.CONTEXT.wasLastLineSelector =
@@ -144,12 +188,20 @@ export class SassFormatter {
 
   private static handleCommentBlock(STATE: FormattingState, line: SassTextLine) {
     this.addNewLine(STATE);
-    STATE.RESULT += FormatHandleBlockComment(line.text, STATE);
-    if (isBlockCommentEnd(line.text)) {
+    const edit = FormatHandleBlockComment(line.get(), STATE);
+    STATE.RESULT += edit;
+
+    if (isBlockCommentEnd(line.get())) {
       STATE.CONTEXT.isInBlockComment = false;
     }
     if (STATE.CONFIG.debug) {
-      PushLog(STATE.CONFIG.debug, line.lineNumber, { title: 'COMMENT BLOCK' });
+      PushDebugInfo({
+        title: 'COMMENT BLOCK',
+        lineNumber: line.lineNumber,
+        oldLineText: STATE.lineText,
+        newLineText: edit,
+        debug: STATE.CONFIG.debug
+      });
     }
   }
 
@@ -170,109 +222,72 @@ export class SassFormatter {
       };
       const nextLine: SassTextLine = getNextLine();
 
-      const compact = STATE.CONFIG.deleteCompact ? true : !isProperty(nextLine.text);
-      const nextLineWillBeDeleted = STATE.CONFIG.convert ? isBracketOrWhitespace(nextLine.text) : false;
+      const compact = STATE.CONFIG.deleteCompact ? true : !isProperty(nextLine.get());
+      const nextLineWillBeDeleted = STATE.CONFIG.convert
+        ? isBracketOrWhitespace(nextLine.get())
+        : false;
 
       if (
         (compact && !STATE.CONTEXT.allowSpace && nextLine.isEmptyOrWhitespace) ||
         (compact && !STATE.CONTEXT.allowSpace && nextLineWillBeDeleted)
       ) {
         if (STATE.CONFIG.debug) {
-          PushLog(STATE.CONFIG.debug, line.lineNumber, { title: 'DELETE', nextLine });
+          PushDebugInfo({
+            title: 'EMPTY LINE: DELETE',
+            nextLine,
+            lineNumber: line.lineNumber,
+            oldLineText: STATE.lineText,
+            newLineText: 'DELETED',
+            debug: STATE.CONFIG.debug
+          });
         }
         pass = false;
       }
     }
-    if (line.text.length > 0 && pass && STATE.CONFIG.deleteWhitespace) {
-      PushLog(STATE.CONFIG.debug, line.lineNumber, { title: 'WHITESPACE' });
+    if (line.get().length > 0 && pass && STATE.CONFIG.deleteWhitespace) {
+      PushDebugInfo({
+        title: 'EMPTY LINE: WHITESPACE',
+        lineNumber: line.lineNumber,
+        oldLineText: STATE.lineText,
+        newLineText: 'NEWLINE',
+        debug: STATE.CONFIG.debug
+      });
       this.addNewLine(STATE);
     } else if (pass) {
+      PushDebugInfo({
+        title: 'EMPTY LINE',
+        lineNumber: line.lineNumber,
+        oldLineText: STATE.lineText,
+        newLineText: 'NEWLINE',
+        debug: STATE.CONFIG.debug
+      });
       this.addNewLine(STATE);
     }
   }
 
-  // SECTION  Block Header
   private static isBlockHeader(line: SassTextLine, STATE: FormattingState) {
     return (
-      isMixin(line.text) ||
-      isPseudo(line.text) ||
-      isMedia(line.text) ||
-      /^[\t ]*[>~]/.test(line.text) || // TODO  Change to isSelectorOperator
-      isStar(line.text) ||
-      isBracketSelector(line.text) ||
-      isFontFace(line.text) ||
+      isMixin(line.get()) || // also adds =mixin etc.
+      isPseudo(line.get()) ||
+      isSelectorOperator(line.get()) ||
+      isStar(line.get()) ||
+      isBracketSelector(line.get()) ||
       STATE.LOCAL_CONTEXT.isClassOrIdSelector ||
       STATE.LOCAL_CONTEXT.isAdjacentSelector ||
       STATE.LOCAL_CONTEXT.isIfOrElse ||
       STATE.LOCAL_CONTEXT.ResetTabs ||
       STATE.LOCAL_CONTEXT.isAnd_ ||
-      STATE.LOCAL_CONTEXT.isKeyframes ||
       STATE.LOCAL_CONTEXT.isHtmlTag ||
-      isLoop(line.text)
+      isCssSelector(line.get()) // adds all lines that start with @
     );
   }
 
-  private static HandleBlockHeader(
-    STATE: FormattingState,
-
-    line: SassTextLine
-  ) {
-    const offset = getBlockHeaderOffset(
-      STATE.LOCAL_CONTEXT.indentation.distance,
-      STATE.CONFIG.tabSize,
-      STATE.CONTEXT.currentTabs,
-      STATE.LOCAL_CONTEXT.ResetTabs
-    );
-    STATE.CONTEXT.keyframes.is = STATE.LOCAL_CONTEXT.isKeyframes || STATE.LOCAL_CONTEXT.isKeyframesPoint;
-    STATE.CONTEXT.allowSpace = false;
-
-    const formatRes = FormatBlockHeader(
-      {
-        line,
-        offset:
-          STATE.LOCAL_CONTEXT.isAdjacentSelector && STATE.CONTEXT.wasLastLineSelector
-            ? STATE.CONTEXT.lastSelectorTabs - STATE.LOCAL_CONTEXT.indentation.distance
-            : offset
-      },
-      STATE
-    );
-
-    this.addNewLine(STATE);
-    STATE.RESULT += formatRes;
-  }
-  //_ !SECTION
-
-  // SECTION Property
   private static isProperty(STATE: FormattingState, line: SassTextLine) {
     return (
       STATE.LOCAL_CONTEXT.isProp ||
-      /^[\t ]*(@include|\+[^\t ])/.test(line.text) || // NOTE change suf-regex and replace with isInclude
-      STATE.LOCAL_CONTEXT.isKeyframesPoint ||
+      isInclude(line.get()) ||
+      STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
-    );
-  }
-
-  private static handleProperty(STATE: FormattingState, line: SassTextLine) {
-    this.ResetCONTEXT('normal', STATE);
-    const formatRes = FormatProperty(line, STATE);
-
-    this.addNewLine(STATE);
-    STATE.RESULT += formatRes;
-  }
-  //_ !SECTION
-
-  private static handleConvert(line: SassTextLine, STATE: FormattingState) {
-    const convertRes = convertScssOrCss(line.text, STATE);
-    // Set Context Vars
-    this.ResetCONTEXT('convert', STATE);
-    PushLog(STATE.CONFIG.debug, line.lineNumber, { title: 'CONVERT', convert: true });
-    this.addNewLine(STATE);
-    STATE.RESULT += convertRes.text;
-  }
-
-  private static isConvert(line: SassTextLine, STATE: FormattingState) {
-    return (
-      STATE.CONFIG.convert && isScssOrCss(line.text, STATE.CONTEXT.convert.wasLastLineCss) && !isComment(line.text)
     );
   }
 
@@ -283,9 +298,7 @@ export class SassFormatter {
     }
   }
 
-  /**
-   * Adds new Line If not first line.
-   */
+  /** Adds new Line If not first line. */
   private static addNewLine(STATE: FormattingState) {
     if (!STATE.CONTEXT.isFirstLine) {
       STATE.RESULT += '\n';

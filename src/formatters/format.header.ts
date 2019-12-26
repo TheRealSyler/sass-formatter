@@ -1,77 +1,137 @@
 import { SassTextLine } from '../index';
-
 import { FormattingState } from '../state';
-
 import { isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { convertScssOrCss, replaceSpacesOrTabs, PushLog, replaceWithOffset } from '../utility';
+import {
+  replaceSpacesOrTabs,
+  PushDebugInfo,
+  replaceWithOffset,
+  getBlockHeaderOffset,
+  getIndentationOffset
+} from '../utility';
 import { FormatSetTabs } from './format.utility';
+import { convertScssOrCss } from './format.convert';
 
-export function FormatBlockHeader(
-  inp: {
-    line: SassTextLine;
-    offset: number;
-  },
-  STATE: FormattingState
-) {
+export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;
-  let convert = false;
-  let lineText = inp.line.text;
+  let hasBeenConverted = false;
   let additionalTabs = 0;
-  let edit: string = lineText;
+  let edit: string = line.get();
+
+  // First Convert then set Offset.
   if (
     STATE.CONFIG.convert &&
-    isScssOrCss(inp.line.text, STATE.CONTEXT.convert.wasLastLineCss) &&
-    !isComment_(inp.line.text)
+    isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) &&
+    !isComment_(line.get())
   ) {
-    const convertRes = convertScssOrCss(lineText, STATE);
+    const convertRes = convertScssOrCss(line.get(), STATE);
     STATE.CONTEXT.convert.lastSelector = convertRes.lastSelector;
     if (convertRes.increaseTabSize) {
       additionalTabs = STATE.CONFIG.tabSize;
     }
-    lineText = convertRes.text;
-    convert = true;
+    line.set(convertRes.text);
+    STATE.LOCAL_CONTEXT.indentation = getIndentationOffset(
+      line.get(),
+      STATE.CONTEXT.tabs,
+      STATE.CONFIG.tabSize
+    );
+    hasBeenConverted = true;
+  }
+  // Set offset.
+  let offset =
+    STATE.LOCAL_CONTEXT.isAdjacentSelector && STATE.CONTEXT.wasLastLineSelector
+      ? STATE.CONTEXT.lastSelectorTabs - STATE.LOCAL_CONTEXT.indentation.distance
+      : getBlockHeaderOffset(
+          STATE.LOCAL_CONTEXT.indentation.distance,
+          STATE.CONFIG.tabSize,
+          STATE.CONTEXT.tabs,
+          STATE.LOCAL_CONTEXT.ResetTabs
+        );
+
+  if (STATE.CONTEXT.firstCommaHeader.exists) {
+    offset = STATE.CONTEXT.firstCommaHeader.distance - STATE.LOCAL_CONTEXT.indentation.distance;
   }
 
-  if (!convert && STATE.LOCAL_CONTEXT.isClassOrIdSelector) {
+  // Set Context Vars
+  STATE.CONTEXT.keyframes.is =
+    STATE.LOCAL_CONTEXT.isAtKeyframes || STATE.LOCAL_CONTEXT.isAtKeyframesPoint;
+  STATE.CONTEXT.allowSpace = false;
+
+  if (!hasBeenConverted && STATE.LOCAL_CONTEXT.isClassOrIdSelector) {
     STATE.CONTEXT.convert.lastSelector = '';
   }
 
-  if (STATE.CONFIG.replaceSpacesOrTabs && STATE.CONFIG.insertSpaces ? /\t/g.test(lineText) : / /g.test(lineText)) {
-    lineText = replaceSpacesOrTabs(lineText, STATE);
-    replaceSpaceOrTabs = true;
-  }
-  if (STATE.CONTEXT.firstCommaHeader.exists) {
-    inp.offset = STATE.CONTEXT.firstCommaHeader.distance - STATE.LOCAL_CONTEXT.indentation.distance;
-  }
-  // Set Context Vars
-  STATE.CONTEXT.convert.wasLastLineCss = convert;
-  if (lineText.trim().endsWith(',')) {
+  STATE.CONTEXT.convert.wasLastLineCss = hasBeenConverted;
+  if (
+    line
+      .get()
+      .trim()
+      .endsWith(',')
+  ) {
     if (STATE.CONTEXT.firstCommaHeader.exists !== true) {
-      STATE.CONTEXT.firstCommaHeader.distance = STATE.LOCAL_CONTEXT.indentation.distance + inp.offset;
+      STATE.CONTEXT.firstCommaHeader.distance = STATE.LOCAL_CONTEXT.indentation.distance + offset;
     }
     STATE.CONTEXT.firstCommaHeader.exists = true;
   } else {
     STATE.CONTEXT.firstCommaHeader.exists = false;
   }
 
-  // Return
-  if (inp.offset !== 0) {
-    PushLog(STATE.CONFIG.debug, inp.line.lineNumber, {
-      title: 'SET TAB',
-      convert,
-      replaceSpaceOrTabs,
-      offset: inp.offset
-    });
-    edit = replaceWithOffset(lineText, inp.offset, STATE).trimRight();
-  } else if (getDistanceReversed(inp.line.text, STATE.CONFIG.tabSize) > 0 && STATE.CONFIG.deleteWhitespace) {
-    PushLog(STATE.CONFIG.debug, inp.line.lineNumber, { title: 'TRAIL', convert, replaceSpaceOrTabs });
-    edit = lineText.trimRight();
-  } else if (convert || replaceSpaceOrTabs) {
-    PushLog(STATE.CONFIG.debug, inp.line.lineNumber, { title: 'CHANGE', convert, replaceSpaceOrTabs });
-    edit = lineText;
+  // Convert Spaces to tabs or vice versa depending on the config.
+  if (
+    STATE.CONFIG.replaceSpacesOrTabs && STATE.CONFIG.insertSpaces
+      ? /\t/g.test(line.get())
+      : / /g.test(line.get())
+  ) {
+    line.set(replaceSpacesOrTabs(line.get(), STATE));
+    replaceSpaceOrTabs = true;
   }
-  STATE.CONTEXT.lastSelectorTabs = Math.max(STATE.LOCAL_CONTEXT.indentation.distance + inp.offset, 0);
-  FormatSetTabs(STATE, { additionalTabs, offset: inp.offset });
+
+  // Set edit or just return the line text.
+  if (offset !== 0) {
+    edit = replaceWithOffset(line.get(), offset, STATE).trimRight();
+    PushDebugInfo({
+      title: 'BLOCK HEADER: MOVE',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      replaceSpaceOrTabs,
+      offset: offset
+    });
+  } else if (
+    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
+    STATE.CONFIG.deleteWhitespace
+  ) {
+    edit = line.get().trimRight();
+    PushDebugInfo({
+      title: 'BLOCK HEADER: TRAIL',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      replaceSpaceOrTabs
+    });
+  } else if (hasBeenConverted || replaceSpaceOrTabs) {
+    edit = line.get();
+    PushDebugInfo({
+      title: 'BLOCK HEADER: MODIFIED',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      replaceSpaceOrTabs
+    });
+  } else {
+    PushDebugInfo({
+      title: 'BLOCK HEADER: DEFAULT',
+      lineNumber: line.lineNumber,
+      oldLineText: STATE.lineText,
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+      replaceSpaceOrTabs
+    });
+  }
+  STATE.CONTEXT.lastSelectorTabs = Math.max(STATE.LOCAL_CONTEXT.indentation.distance + offset, 0);
+  FormatSetTabs(STATE, { additionalTabs, offset: offset });
   return edit;
 }

@@ -71,35 +71,28 @@ interface FormatLocalContext {
   isHtmlTag: boolean;
   isIfOrElse: boolean;
   isIfOrElseAProp: boolean;
-  isKeyframes: boolean;
-  isKeyframesPoint: boolean;
+  isAtKeyframes: boolean;
+  isAtKeyframesPoint: boolean;
   isAdjacentSelector: boolean;
 }
 
 export class FormattingState {
-  /**
-   * Text to format.
-   */
+  /** Text to format. */
   text = '';
-  /**
-   * Current Character.
-   */
+
+  /** Current Character. */
   char = 0;
-  /**
-   * Current line.
-   */
+
+  /** Current line. */
   line = 0;
-  /**
-   * Current line Text.
-   */
+
+  /** Current line Text. */
   lineText = '';
-  /**
-   * Formatting Result
-   */
+
+  /** Formatting Result */
   RESULT = '';
-  /**
-   * Context For Each Line.
-   */
+
+  /** Context For Each Line. */
   LOCAL_CONTEXT: FormatLocalContext = {
     isAdjacentSelector: false,
     isHtmlTag: false,
@@ -112,8 +105,8 @@ export class FormattingState {
     isClassOrIdSelector: false,
     isIfOrElse: false,
     isIfOrElseAProp: false,
-    isKeyframes: false,
-    isKeyframesPoint: false,
+    isAtKeyframes: false,
+    isAtKeyframesPoint: false,
     isProp: false
   };
 
