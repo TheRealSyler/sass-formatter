@@ -1,6 +1,6 @@
 {
   "name": "sass-formatter",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
