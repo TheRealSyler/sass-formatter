@@ -2,28 +2,20 @@ import { SassTextLine } from '../index';
 
 import { FormattingState } from '../state';
 
-import { hasPropertyValueSpace, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
+import { getDistanceReversed, isComment as isComment_, hasPropertyValueSpace } from 'suf-regex';
 
-import { replaceSpacesOrTabs, PushDebugInfo, replaceWithOffset, isConvert } from '../utility';
+import { PushDebugInfo, replaceWithOffset, isConvert, replaceSpacesOrTabs } from '../utility';
 
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
 
 export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
-  let setSpace = false;
   let convert = false;
   let replaceSpaceOrTabs = false;
-  let edit: string = line.get();
+  let edit = line.get();
   const isComment = isComment_(line.get());
-  if (
-    !STATE.LOCAL_CONTEXT.isHtmlTag &&
-    !hasPropertyValueSpace(line.get()) &&
-    STATE.LOCAL_CONTEXT.isProp &&
-    STATE.CONFIG.setPropertySpace
-  ) {
-    line.set(line.get().replace(/(^[\t ]*[\$\w-]+:)[\t ]*/, '$1 '));
-    setSpace = true;
-  }
+  let { setSpace, text: SetPropertySpaceRes } = HandleSetPropertySpace(STATE, line.get(), false);
+  line.set(SetPropertySpaceRes);
   if (isConvert(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
     line.set(convertRes.text);
@@ -32,13 +24,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   // Set Context Vars
   STATE.CONTEXT.convert.wasLastLineCss = convert;
   const move = STATE.LOCAL_CONTEXT.indentation.offset !== 0 && !isComment;
-  if (
-    STATE.CONFIG.replaceSpacesOrTabs &&
-    !move &&
-    (STATE.CONFIG.insertSpaces
-      ? /\t/g.test(line.get())
-      : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(line.get()))
-  ) {
+  if (!move && canReplaceSpacesOrTabs(STATE, line.get())) {
     line.set(replaceSpacesOrTabs(line.get(), STATE).trimRight());
     replaceSpaceOrTabs = true;
   }
@@ -94,4 +80,23 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
 
   FormatSetTabs(STATE);
   return edit;
+}
+
+export function canReplaceSpacesOrTabs(STATE: FormattingState, text: string) {
+  return STATE.CONFIG.insertSpaces
+    ? /\t/g.test(text)
+    : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(text);
+}
+
+export function HandleSetPropertySpace(STATE: FormattingState, text: string, setSpace: boolean) {
+  if (
+    !STATE.LOCAL_CONTEXT.isHtmlTag &&
+    !hasPropertyValueSpace(text) &&
+    (STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isInterpolatedProp) &&
+    STATE.CONFIG.setPropertySpace
+  ) {
+    text = text.replace(/(^[\t ]*.*?:)[\t ]*/, '$1 ');
+    setSpace = true;
+  }
+  return { setSpace, text };
 }

@@ -14,12 +14,13 @@ import {
   isAdjacentSelector,
   isSelectorOperator,
   isBlockCommentEnd,
-  isInclude,
   isEmptyOrWhitespace,
   isClassOrId,
   isCssSelector,
   isAtForwardOrAtUse,
-  isMixin
+  isMixin,
+  isInclude,
+  isInterpolatedProperty
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
@@ -35,7 +36,6 @@ export interface SassFormatterConfig {
   deleteEmptyRows: boolean;
   deleteWhitespace: boolean;
   convert: boolean;
-  replaceSpacesOrTabs: boolean;
   setPropertySpace: boolean;
   tabSize: number;
   insertSpaces: boolean;
@@ -133,7 +133,8 @@ export class SassFormatter {
                 .trim()
                 .split(' ')[0]
             ),
-            isClassOrIdSelector: isClassOrId(line.get())
+            isClassOrIdSelector: isClassOrId(line.get()),
+            isInterpolatedProp: isInterpolatedProperty(line.get())
           });
           // ####### Is @forward or @use #######
           if (isAtForwardOrAtUse(line.get())) {
@@ -146,7 +147,7 @@ export class SassFormatter {
             STATE.RESULT += FormatBlockHeader(line, STATE);
           }
           // ####### Properties #######
-          else if (this.isProperty(STATE, line)) {
+          else if (this.isProperty(STATE, line.get())) {
             this.ResetCONTEXT('normal', STATE);
             this.addNewLine(STATE);
             STATE.RESULT += FormatProperty(line, STATE);
@@ -267,25 +268,25 @@ export class SassFormatter {
 
   private static isBlockHeader(line: SassTextLine, STATE: FormattingState) {
     return (
-      isMixin(line.get()) || // also adds =mixin etc.
-      isPseudo(line.get()) ||
-      isSelectorOperator(line.get()) ||
-      isStar(line.get()) ||
-      isBracketSelector(line.get()) ||
-      STATE.LOCAL_CONTEXT.isClassOrIdSelector ||
-      STATE.LOCAL_CONTEXT.isAdjacentSelector ||
-      STATE.LOCAL_CONTEXT.isIfOrElse ||
-      STATE.LOCAL_CONTEXT.ResetTabs ||
-      STATE.LOCAL_CONTEXT.isAnd_ ||
-      STATE.LOCAL_CONTEXT.isHtmlTag ||
-      isCssSelector(line.get()) // adds all lines that start with @
+      !STATE.LOCAL_CONTEXT.isInterpolatedProp &&
+      (isMixin(line.get()) || // also adds =mixin
+        isPseudo(line.get()) ||
+        isSelectorOperator(line.get()) ||
+        isStar(line.get()) ||
+        isBracketSelector(line.get()) ||
+        STATE.LOCAL_CONTEXT.isAdjacentSelector ||
+        STATE.LOCAL_CONTEXT.ResetTabs ||
+        STATE.LOCAL_CONTEXT.isAnd_ ||
+        STATE.LOCAL_CONTEXT.isHtmlTag ||
+        isCssSelector(line.get())) // adds all lines that start with [@.#%]
     );
   }
 
-  private static isProperty(STATE: FormattingState, line: SassTextLine) {
+  private static isProperty(STATE: FormattingState, lineText: string) {
     return (
+      isInclude(lineText) || // adds +mixin, @include is handled in the block header.
+      STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||
-      isInclude(line.get()) ||
       STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
     );

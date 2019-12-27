@@ -4,12 +4,12 @@ import {
   isMoreThanOneClassOrId,
   escapeRegExp,
   isPseudoWithParenthesis,
-  isCssOneLiner,
   isCssPseudo,
   isCssSelector
 } from 'suf-regex';
 
 import { replaceWithOffset, StoreLog } from '../utility';
+import { HandleSetPropertySpace } from './format.property';
 
 /**
  * converts scss/css to sass.
@@ -40,17 +40,30 @@ export function convertScssOrCss(
           replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE)
         )
       };
-    } else if (isCssOneLiner(text)) {
+    } else if (/^[\t ]*[&.#%][\w-]*(?!#)[\t ]*\{.*[;\}][\t ]*$/.test(text)) {
       SetStoreConvertInfoType('ONE LINER');
-      // TODO Rewrite, this can't handle more than one property.
+
       const split = text.split('{');
+      const properties = split[1].split(';');
+      // Set isProp to true so that it Sets the property space.
+      STATE.LOCAL_CONTEXT.isProp = true;
+      const selector = split[0].trim();
       return {
         increaseTabSize: false,
-        lastSelector: split[0].trim(),
+        lastSelector: selector,
         text: removeInvalidChars(
-          split[0]
-            .trim()
-            .concat('\n', replaceWithOffset(split[1].trim(), STATE.CONFIG.tabSize, STATE))
+          selector.concat(
+            '\n',
+            properties
+              .map(v =>
+                replaceWithOffset(
+                  HandleSetPropertySpace(STATE, v.trim(), false).text,
+                  STATE.CONFIG.tabSize,
+                  STATE
+                )
+              )
+              .join('\n')
+          )
         ).trimRight()
       };
     } else if (isCssPseudo(text) && !isMultiple) {

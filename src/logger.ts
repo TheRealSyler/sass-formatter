@@ -75,7 +75,7 @@ function InfoLogHelper(data: any) {
         return ` ${title} ${row} ${offset}
       ${TEXT('Old')}            ${colon} ${styler(replaceWhitespace(info.oldLineText), '#c64')}
       ${TEXT('New')}            ${colon} ${styler(
-          replaceWhitespace(info.newLineText),
+          replaceWhitespace(info.newLineText.replace(/\n/g, '\\n')),
           '#2c2'
         )}${CONVERT}${additionalInfo}`;
     }

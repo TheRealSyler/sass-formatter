@@ -77,11 +77,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   // Convert Spaces to tabs or vice versa depending on the config.
-  if (
-    STATE.CONFIG.replaceSpacesOrTabs && STATE.CONFIG.insertSpaces
-      ? /\t/g.test(line.get())
-      : / /g.test(line.get())
-  ) {
+  if (STATE.CONFIG.insertSpaces ? /\t/g.test(line.get()) : / /g.test(line.get())) {
     line.set(replaceSpacesOrTabs(line.get(), STATE));
     replaceSpaceOrTabs = true;
   }

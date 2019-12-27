@@ -68,7 +68,6 @@ export function FormatHandleLocalContext(line: SassTextLine, STATE: FormattingSt
     STATE.CONTEXT.tabs = Math.max(0, STATE.CONTEXT.currentTabs - STATE.CONFIG.tabSize);
   }
   return {
-    isIfOrElse: IS_IF_OR_ELSE_,
     isIfOrElseAProp,
     isAtKeyframes,
     isAtKeyframesPoint: isPointCheck

@@ -69,11 +69,11 @@ interface FormatLocalContext {
   };
   isClassOrIdSelector: boolean;
   isHtmlTag: boolean;
-  isIfOrElse: boolean;
   isIfOrElseAProp: boolean;
   isAtKeyframes: boolean;
   isAtKeyframesPoint: boolean;
   isAdjacentSelector: boolean;
+  isInterpolatedProp: boolean;
 }
 
 export class FormattingState {
@@ -103,11 +103,11 @@ export class FormattingState {
     },
     isAnd_: false,
     isClassOrIdSelector: false,
-    isIfOrElse: false,
     isIfOrElseAProp: false,
     isAtKeyframes: false,
     isAtKeyframesPoint: false,
-    isProp: false
+    isProp: false,
+    isInterpolatedProp: false
   };
 
   CONTEXT: FormatContext = {
@@ -138,7 +138,6 @@ export class FormattingState {
     deleteCompact: true,
     deleteEmptyRows: true,
     deleteWhitespace: true,
-    replaceSpacesOrTabs: true,
     setPropertySpace: true
   };
   // useless !?

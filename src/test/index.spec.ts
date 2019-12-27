@@ -609,3 +609,41 @@ li
   @include bootstrap.list-reset
 `);
 });
+test('Sass Format: Convert css ONE LINER', () => {
+  expect(
+    SF.Format(
+      `  .class    \t\t       {width:335px;     \t     float:left;\t overflow:hidden; padding-left:5px;}
+
+
+   `,
+      { debug: false }
+    )
+  ).toBe(`.class
+  width: 335px
+  float: left
+  overflow: hidden
+  padding-left: 5px
+`);
+});
+test('Sass Format: Interpolated Property', () => {
+  expect(
+    SF.Format(
+      ` @for $i from 0 through 3
+      .nav-#{map-get($directions, $i)}
+        #{map-get($directions, $i)}: 1rem
+        animation:  nav-#{map-get($directions, $i)}-start 200ms ease
+        border-radius-#{$dir}: 1rem\t
+                            \t            #{$dir}:   1rem
+        border: solid 20px red
+   `,
+      { debug: false }
+    )
+  ).toBe(`@for $i from 0 through 3
+  .nav-#{map-get($directions, $i)}
+    #{map-get($directions, $i)}: 1rem
+    animation: nav-#{map-get($directions, $i)}-start 200ms ease
+    border-radius-#{$dir}: 1rem
+    #{$dir}: 1rem
+    border: solid 20px red
+`);
+});
