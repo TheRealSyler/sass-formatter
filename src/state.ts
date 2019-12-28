@@ -1,4 +1,4 @@
-import { SassFormatterConfig } from './index';
+import { SassFormatterConfig } from './config';
 
 interface FormatContext {
   isFirstLine: boolean;

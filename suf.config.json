@@ -1,0 +1,31 @@
+{
+  "badges": {
+    "name": "sass-formatter",
+    "github": "TheRealSyler",
+    "repo": "sass-formatter",
+    "out": "README.md",
+    "badges": [
+      "badge=https://jestjs.io/img/jest-badge.svg link=https://github.com/facebook/jest",
+      "badge=https://www.codefactor.io/repository/github/therealsyler/sass-formatter/badge link=https://www.codefactor.io/repository/github/therealsyler/sass-formatter",
+      "badge=https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg link=https://codecov.io/gh/TheRealSyler/sass-formatter",
+      "circleci circleci",
+      "npmV npm ?color=green",
+      "min bundle",
+      "install package",
+      "githubLastCommit github"
+    ]
+  },
+  "tsDoc": {
+    "title": "Docs",
+    "dir": "dist",
+    "out": "README.md",
+    "include": "config"
+  },
+  "license": {
+    "name": "Leonard Grosoli",
+    "type": "mit",
+    "year": "2019",
+    "out": "README.md",
+    "file": "LICENSE"
+  }
+}

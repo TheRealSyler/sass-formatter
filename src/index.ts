@@ -29,17 +29,7 @@ import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
 import { convertScssOrCss } from './formatters/format.convert';
 import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
-
-export interface SassFormatterConfig {
-  debug: boolean;
-  deleteCompact: boolean;
-  deleteEmptyRows: boolean;
-  deleteWhitespace: boolean;
-  convert: boolean;
-  setPropertySpace: boolean;
-  tabSize: number;
-  insertSpaces: boolean;
-}
+import { SassFormatterConfig } from './config';
 
 export class SassTextLine {
   isEmptyOrWhitespace: boolean;

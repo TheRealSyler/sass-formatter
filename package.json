@@ -4,13 +4,11 @@
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "jest && del ./dist && npm run build && npm run generate:badges && npm run generate:docs",
+    "prepack": "jest && del ./dist && npm run build && suf",
     "build": "tsc -b",
     "watch": "tsc -w",
     "test": "jest --coverage",
-    "test:watch": "jest --watch --coverage",
-    "generate:docs": "tdg --include 'index'",
-    "generate:badges": "get-badges"
+    "test:watch": "jest --watch --coverage"
   },
   "files": [
     "dist",
@@ -24,12 +22,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.18",
-    "get-badges": "^0.1.0",
+    "del-cli": "^3.0.0",
     "jest": "^24.9.0",
-    "ts-doc-gen": "^0.2.0",
+    "suf-cli": "^0.1.0",
     "ts-jest": "^24.1.0",
     "tslib": "^1.10.0",
-    "del-cli": "^3.0.0",
     "typescript": "^3.6.3"
   },
   "dependencies": {
