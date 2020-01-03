@@ -115,6 +115,7 @@ export class StoreLog {
   }
   static logs: { ConvertData: LogType; info: LogFormatInfo }[] = [];
 }
+StoreLog.resetTempConvertData();
 
 export function isConvert(line: SassTextLine, STATE: FormattingState) {
   return (

@@ -135,7 +135,6 @@ export class FormattingState {
     tabSize: 2,
     convert: true,
     debug: false,
-    deleteCompact: true,
     deleteEmptyRows: true,
     deleteWhitespace: true,
     setPropertySpace: true

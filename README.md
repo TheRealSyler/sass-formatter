@@ -61,14 +61,19 @@ span
 
 ```typescript
 interface SassFormatterConfig {
-  debug: boolean;
-  deleteCompact: boolean;
-  deleteEmptyRows: boolean;
-  deleteWhitespace: boolean;
-  convert: boolean;
-  setPropertySpace: boolean;
-  tabSize: number;
-  insertSpaces: boolean;
+    /**Enable debug messages */
+    debug: boolean;
+    /**delete rows that are empty. */
+    deleteEmptyRows: boolean;
+    /**Delete trailing whitespace.*/
+    deleteWhitespace: boolean;
+    /**Convert css or scss to sass */
+    convert: boolean;
+    /**set the space after the colon of a property to one.*/
+    setPropertySpace: boolean;
+    tabSize: number;
+    /**insert spaces or tabs. */
+    insertSpaces: boolean;
 }
 ```
 

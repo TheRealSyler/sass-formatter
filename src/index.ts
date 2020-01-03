@@ -213,7 +213,7 @@ export class SassFormatter {
       };
       const nextLine: SassTextLine = getNextLine();
 
-      const compact = STATE.CONFIG.deleteCompact ? true : !isProperty(nextLine.get());
+      const compact = !isProperty(nextLine.get());
       const nextLineWillBeDeleted = STATE.CONFIG.convert
         ? isBracketOrWhitespace(nextLine.get())
         : false;
