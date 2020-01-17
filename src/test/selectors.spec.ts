@@ -1,6 +1,6 @@
 import { SassFormatter as SF } from '../index';
 
-test('Selectors: Comma separated selectors', () => {
+test('Sass Format: Comma separated selectors', () => {
   const a = SF.Format(
     `
 .footer,
@@ -18,7 +18,8 @@ margin: 10px
   padding: 20px
 
 
-`
+`,
+    { insertSpaces: true, tabSize: 2 }
   );
   expect(a).toEqual(
     `
@@ -38,7 +39,7 @@ margin: 10px
   );
 });
 
-test('Selectors: check + selector', () => {
+test('Sass Format: check + selector', () => {
   const a = SF.Format(
     `
   .class + div,
@@ -54,7 +55,7 @@ test('Selectors: check + selector', () => {
         + div
         padding: 2rem
 `,
-    { debug: false }
+    { insertSpaces: true, tabSize: 2, debug: false }
   );
   expect(a).toEqual(
     `
@@ -74,7 +75,7 @@ div
   );
 });
 
-test('Selectors: @media and (& >)', () => {
+test('Sass Format Case 9', () => {
   const a = SF.Format(
     `
 .foo
@@ -87,7 +88,8 @@ position:   relative
     & > .bar
   width: 100%
 
-`
+`,
+    { insertSpaces: true, tabSize: 2 }
   );
   expect(a).toEqual(
     `
@@ -104,7 +106,7 @@ position:   relative
   );
 });
 
-test('Selectors: operators(> + ~)', () => {
+test('Sass Format Case 10', () => {
   const a = SF.Format(
     `
 .class
@@ -122,7 +124,8 @@ test('Selectors: operators(> + ~)', () => {
   color: none
 
 
-`
+`,
+    { insertSpaces: true, tabSize: 2 }
   );
   expect(a).toEqual(
     `
@@ -139,38 +142,6 @@ test('Selectors: operators(> + ~)', () => {
 
   ~ div
     color: none
-`
-  );
-});
-test('Selectors: Square bracket selector', () => {
-  const a = SF.Format(
-    `
-input[type=time]
-     margin: 20px
-
-       .class
-  padding: 2rem
-
-input[type=time]::-webkit-datetime-edit-hour-field,
-     input[type=time]::-webkit-datetime-edit-minute-field,
-     input[type=time]::-webkit-datetime-edit-ampm-field
-       border-radius: 5px
-
-`,
-    { debug: false }
-  );
-  expect(a).toEqual(
-    `
-input[type=time]
-  margin: 20px
-
-  .class
-    padding: 2rem
-
-input[type=time]::-webkit-datetime-edit-hour-field,
-input[type=time]::-webkit-datetime-edit-minute-field,
-input[type=time]::-webkit-datetime-edit-ampm-field
-  border-radius: 5px
 `
   );
 });
