@@ -1,4 +1,4 @@
-import { SassTextLine } from '..';
+import { SassTextLine } from '../sassTextLine';
 
 import { FormattingState } from '../state';
 import { isKeyframePoint } from '../utility';

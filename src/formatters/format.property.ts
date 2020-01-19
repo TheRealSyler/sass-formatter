@@ -1,4 +1,4 @@
-import { SassTextLine } from '../index';
+import { SassTextLine } from '../sassTextLine';
 
 import { FormattingState } from '../state';
 

@@ -1,6 +1,6 @@
 import { getDistance, isScssOrCss, isComment } from 'suf-regex';
 import { logger } from './logger';
-import { SassTextLine } from './index';
+import { SassTextLine } from './sassTextLine';
 import { FormattingState } from './state';
 
 /**

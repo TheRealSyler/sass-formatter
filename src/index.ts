@@ -14,7 +14,6 @@ import {
   isAdjacentSelector,
   isSelectorOperator,
   isBlockCommentEnd,
-  isEmptyOrWhitespace,
   isClassOrId,
   isCssSelector,
   isAtForwardOrAtUse,
@@ -30,21 +29,9 @@ import { FormatHandleBlockComment } from './formatters/format.blockComment';
 import { convertScssOrCss } from './formatters/format.convert';
 import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
 import { SassFormatterConfig } from './config';
+import { SassTextLine } from './sassTextLine';
 
-export class SassTextLine {
-  isEmptyOrWhitespace: boolean;
-  constructor(private text: string, public lineNumber: number) {
-    this.isEmptyOrWhitespace = isEmptyOrWhitespace(text);
-  }
-  /**Sets the text of the line. */
-  set(text: string) {
-    this.text = text;
-  }
-  /**Gets the text of the line. */
-  get(): string {
-    return this.text;
-  }
-}
+export { SassFormatterConfig } from './config';
 
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
