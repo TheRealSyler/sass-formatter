@@ -40,7 +40,7 @@ export function convertScssOrCss(
           replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE)
         )
       };
-    } else if (/^[\t ]*[&.#%][\w-]*(?!#)[\t ]*\{.*[;\}][\t ]*$/.test(text)) {
+    } else if (isCssOneLiner(text)) {
       SetStoreConvertInfoType('ONE LINER');
 
       const split = text.split('{');
@@ -81,6 +81,10 @@ export function convertScssOrCss(
   }
   SetStoreConvertInfoType('DEFAULT');
   return { text: removeInvalidChars(text).trimRight(), increaseTabSize: false, lastSelector };
+}
+
+function isCssOneLiner(text: string) {
+  return /^[\t ]*[&.#%][\w-]*(?!#)[\t ]*\{.*[;\}][\t ]*$/.test(text);
 }
 
 function removeInvalidChars(text: string) {

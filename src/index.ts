@@ -42,7 +42,7 @@ export class SassFormatter {
       ...config
     };
 
-    for (STATE.char = 0; STATE.char < STATE.text.length; STATE.char++) {
+    for (STATE.char; STATE.char < STATE.text.length; STATE.char++) {
       const char = STATE.text[STATE.char];
       const last = STATE.char === STATE.text.length - 1;
       const isNewLine = char === '\n';

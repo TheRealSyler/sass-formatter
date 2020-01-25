@@ -8,6 +8,7 @@
     "build": "tsc -b",
     "watch": "tsc -w",
     "test": "jest --coverage",
+    "performance:gen-sass": "ts-node src/test/performance/performance.generateSass.ts",
     "test:watch": "jest --watch --coverage"
   },
   "files": [
@@ -24,8 +25,11 @@
     "@types/jest": "^24.0.18",
     "del-cli": "^3.0.0",
     "jest": "^24.9.0",
+    "known-css-properties": "^0.18.0",
+    "suf": "^1.0.1",
     "suf-cli": "^0.1.0",
     "ts-jest": "^24.1.0",
+    "ts-node": "^8.6.2",
     "typescript": "^3.6.3"
   },
   "dependencies": {
