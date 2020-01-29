@@ -61,24 +61,26 @@ span
 
 ```typescript
 interface SassFormatterConfig {
-    /**Enable debug messages */
-    debug: boolean;
-    /**delete rows that are empty. */
-    deleteEmptyRows: boolean;
-    /**Delete trailing whitespace.*/
-    deleteWhitespace: boolean;
-    /**Convert css or scss to sass */
-    convert: boolean;
-    /**set the space after the colon of a property to one.*/
-    setPropertySpace: boolean;
-    tabSize: number;
-    /**insert spaces or tabs. */
-    insertSpaces: boolean;
+  /**Enable debug messages */
+  debug: boolean;
+  /**delete rows that are empty. */
+  deleteEmptyRows: boolean;
+  /**Delete trailing whitespace.*/
+  deleteWhitespace: boolean;
+  /**Convert css or scss to sass */
+  convert: boolean;
+  /**set the space after the colon of a property to one.*/
+  setPropertySpace: boolean;
+  tabSize: number;
+  /**insert spaces or tabs. */
+  insertSpaces: boolean;
 }
 ```
 
 _Generated with_ **[suf-cli](https://www.npmjs.com/package/suf-cli)**
 <span id="DOC_GENERATION_MARKER_1"></span>
+
+### License
 
 <span id="LICENSE_GENERATION_MARKER_0"></span>
 Copyright (c) 2019 Leonard Grosoli Licensed under the MIT license.

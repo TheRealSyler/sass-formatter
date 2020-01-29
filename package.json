@@ -4,11 +4,15 @@
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "jest && del ./dist && npm run build && suf",
+    "prepack": "jest && del ./dist && npm run build && suf && npm run test:performance:dev",
+    "prepublishOnly": "npm run test:performance:publish",
     "build": "tsc -b",
     "watch": "tsc -w",
+    "watch:p": "npm run test:performance:dev",
     "test": "jest --coverage",
-    "performance:gen-sass": "ts-node src/test/performance/performance.generateSass.ts",
+    "test:performance:dev": "nodemon --ignore './src/test/' src/test/performance/performance.check.ts",
+    "test:performance:publish": "ts-node src/test/performance/performance.check.ts PUBLISH",
+    "test:performance:gen-sass": "ts-node src/test/performance/performance.generateSass.ts",
     "test:watch": "jest --watch --coverage"
   },
   "files": [
@@ -23,9 +27,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.18",
+    "@types/ora": "^3.2.0",
     "del-cli": "^3.0.0",
     "jest": "^24.9.0",
     "known-css-properties": "^0.18.0",
+    "ora": "^4.0.3",
     "suf": "^1.0.1",
     "suf-cli": "^0.1.0",
     "ts-jest": "^24.1.0",
@@ -33,9 +39,9 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "tslib": "^1.10.0",
-    "@sorg/log": "^1.0.3",
-    "suf-regex": "0.0.14"
+    "@sorg/log": "^1.1.0",
+    "suf-regex": "0.0.14",
+    "tslib": "^1.10.0"
   },
   "repository": {
     "type": "git",

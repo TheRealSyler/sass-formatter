@@ -42,6 +42,13 @@ export class SassFormatter {
       ...config
     };
 
+    // TODO this is consistently 3-8% faster but makes 11 tests fail, because whitespace memes.
+    // const lines = STATE.text.split('\n');
+
+    // for (let i = 0; i < lines.length; i++) {
+    //   this.handleLine(new SassTextLine(lines[i], i), STATE);
+    // }
+
     for (STATE.char; STATE.char < STATE.text.length; STATE.char++) {
       const char = STATE.text[STATE.char];
       const last = STATE.char === STATE.text.length - 1;

@@ -63,7 +63,7 @@ function getPropertyValue() {
   text += getEmptySpace(4);
   text += Choose50(
     `${Math.round(Math.random() * 325434)}${Choose50('px', 'rem')}`,
-    Choose50(
+    Choose75(
       Choose50('auto', 'unset'),
       `#${RandomRoundedNumber()}${RandomRoundedNumber()}${RandomRoundedNumber()}`
     )
@@ -79,6 +79,9 @@ function Choose50(a: any, b: any) {
   return Math.random() <= 0.5 ? a : b;
 }
 
+function Choose75(a: any, b: any) {
+  return Math.random() <= 0.75 ? a : b;
+}
 function Choose95(a: any, b: any) {
   return Math.random() <= 0.95 ? a : b;
 }
@@ -91,12 +94,16 @@ function getEmptySpace(max?: number) {
   return ' '.repeat(Math.floor(Math.random() * (max ? max : 24)));
 }
 
+// @ts-ignore
 function genWrapper(lines: number) {
   GenerateWrapper(lines, `src/test/performance/test-sass-files/sass-${lines}-lines.sass`);
 }
 
-genWrapper(100);
-genWrapper(1000);
-genWrapper(10000);
-genWrapper(100000);
-genWrapper(1000000);
+console.log(
+  "\x1b[1;38;2;255;0;0mDON'T Rerun because it will invalidate the Comparison with earlier versions!\x1b[m"
+);
+
+// genWrapper(1000);
+// genWrapper(10000);
+// genWrapper(100000);
+// genWrapper(1000000);
