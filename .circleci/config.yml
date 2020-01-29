@@ -34,6 +34,7 @@ jobs:
 
       # run tests!
       - run: npm run test
+      - run: npm run test:performance:dev
 
       - codecov/upload:
           file: coverage/lcov.info

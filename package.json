@@ -4,7 +4,7 @@
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "jest && del ./dist && npm run build && suf && npm run test:performance:dev",
+    "prepack": "jest && del ./dist && npm run build && suf",
     "prepublishOnly": "npm run test:performance:publish",
     "build": "tsc -b",
     "watch": "tsc -w",
