@@ -11,7 +11,6 @@
     "watch:p": "npm run test:performance:dev",
     "test": "jest --coverage",
     "test:performance:dev": "nodemon --ignore './src/test/' src/test/performance/performance.check.ts",
-    "test:performance:dev:ci": "ts-node --ignore './src/test/' src/test/performance/performance.check.ts",
     "test:performance:publish": "ts-node src/test/performance/performance.check.ts PUBLISH",
     "test:performance:gen-sass": "ts-node src/test/performance/performance.generateSass.ts",
     "test:watch": "jest --watch --coverage"
