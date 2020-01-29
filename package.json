@@ -11,6 +11,7 @@
     "watch:p": "npm run test:performance:dev",
     "test": "jest --coverage",
     "test:performance:dev": "nodemon --ignore './src/test/' src/test/performance/performance.check.ts",
+    "test:performance:dev:ci": "ts-node --ignore './src/test/' src/test/performance/performance.check.ts",
     "test:performance:publish": "ts-node src/test/performance/performance.check.ts PUBLISH",
     "test:performance:gen-sass": "ts-node src/test/performance/performance.generateSass.ts",
     "test:watch": "jest --watch --coverage"
@@ -31,6 +32,7 @@
     "del-cli": "^3.0.0",
     "jest": "^24.9.0",
     "known-css-properties": "^0.18.0",
+    "nodemon": "^2.0.2",
     "ora": "^4.0.3",
     "suf": "^1.0.1",
     "suf-cli": "^0.1.0",
