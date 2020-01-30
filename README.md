@@ -9,7 +9,7 @@
 ```typescript
 import { SassFormatter } from 'sass-formatter';
 
-const result = SassFormatter.SassFormatter.Format(
+const result = SassFormatter.Format(
   `
     span
       color: none
