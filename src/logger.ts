@@ -1,6 +1,29 @@
-import { Logger, LoggerType, styler, SetEnvironment } from '@sorg/log';
-import { Log, LogFormatInfo } from './utility';
+import { styler, SetEnvironment } from '@sorg/log';
+import { SassTextLine } from './sassTextLine';
 SetEnvironment('node');
+
+export interface LogFormatInfo {
+  title: string;
+  debug: boolean;
+  lineNumber: number;
+  oldLineText: string;
+  newLineText: string;
+  setSpace?: boolean;
+  offset?: number;
+  replaceSpaceOrTabs?: boolean;
+  nextLine?: SassTextLine;
+}
+
+export interface LogConvertData {
+  type: string;
+  text: string;
+  log: boolean;
+}
+
+type Logs = {
+  ConvertData: LogConvertData;
+  info: LogFormatInfo;
+};
 
 const colon = styler(':', '#777');
 // const quote = styler('"', '#f64');
@@ -9,30 +32,47 @@ const TEXT = (text: string) => styler(text, '#bbb');
 const NUMBER = (number: number) => styler(number.toString(), '#f03');
 const BOOL = (bool: Boolean) => styler(bool.toString(), bool ? '#0c0' : '#c00');
 
-export const logger = new Logger<{
-  info: LoggerType;
-}>({
-  info: {
-    customHandler: msg => {
-      const data = msg.rawMessages[0] as Log[];
-      const res = msg.rawMessages[1] as string;
-
-      let out = styler('FORMAT', '#0af');
-      for (let i = 0; i < data.length; i++) {
-        out += '\n';
-        out += InfoLogHelper(data[i]);
-      }
-      out += `
-${pipe}${styler(replaceWhitespace(res.replace(/\n/g, '|\n|')), '#c76')}${pipe}`;
-      return out;
-    }
+export function LogDebugResult(result: string) {
+  const data = StoreLog.logs;
+  let out = styler('FORMAT', '#0af');
+  for (let i = 0; i < data.length; i++) {
+    out += '\n';
+    out += InfoLogHelper(data[i]);
   }
-});
+  out += `
+${pipe}${styler(replaceWhitespace(result.replace(/\n/g, '|\n|')), '#c76')}${pipe}`;
+  console.log(out);
+}
 
-function InfoLogHelper(data: any) {
+const emptyTempConvertData: LogConvertData = {
+  text: '',
+  type: '',
+  log: false
+};
+export class StoreLog {
+  static TempConvertData: LogConvertData = emptyTempConvertData;
+  static resetTempConvertData() {
+    this.TempConvertData = emptyTempConvertData;
+  }
+  static logs: Logs[] = [];
+}
+
+export function PushDebugInfo(info: LogFormatInfo) {
+  if (info.debug) {
+    StoreLog.logs.push({
+      info,
+      ConvertData: StoreLog.TempConvertData ? StoreLog.TempConvertData : ({} as LogConvertData)
+    });
+    StoreLog.resetTempConvertData();
+  } else {
+    StoreLog.resetTempConvertData();
+  }
+}
+
+function InfoLogHelper(data: Logs) {
   if (data) {
-    const ConvertData = data.ConvertData;
-    const info = data.info as LogFormatInfo;
+    const { ConvertData, info } = data;
+
     const notProvided = null;
     const title = styler(info.title, '#cc0');
     const row = `${TEXT('Row')}${colon} ${NUMBER(info.lineNumber)}`;

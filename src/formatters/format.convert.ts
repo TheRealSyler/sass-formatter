@@ -8,8 +8,9 @@ import {
   isCssSelector
 } from 'suf-regex';
 
-import { replaceWithOffset, StoreLog } from '../utility';
+import { replaceWithOffset } from '../utility';
 import { HandleSetPropertySpace } from './format.property';
+import { StoreLog } from '../logger';
 
 /**
  * converts scss/css to sass.

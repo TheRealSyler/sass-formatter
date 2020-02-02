@@ -4,10 +4,11 @@ import { FormattingState } from '../state';
 
 import { getDistanceReversed, isComment as isComment_, hasPropertyValueSpace } from 'suf-regex';
 
-import { PushDebugInfo, replaceWithOffset, isConvert, replaceSpacesOrTabs } from '../utility';
+import { replaceWithOffset, isConvert, replaceSpacesOrTabs } from '../utility';
 
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
+import { PushDebugInfo } from '../logger';
 
 export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   let convert = false;

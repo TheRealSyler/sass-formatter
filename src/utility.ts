@@ -1,5 +1,4 @@
 import { getDistance, isScssOrCss, isComment } from 'suf-regex';
-import { logger } from './logger';
 import { SassTextLine } from './sassTextLine';
 import { FormattingState } from './state';
 
@@ -67,55 +66,6 @@ export function replaceSpacesOrTabs(text: string, STATE: FormattingState, insert
     return text.replace(new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g'), '\t');
   }
 }
-export interface LogFormatInfo {
-  title: string;
-  debug: boolean;
-  lineNumber: number;
-  oldLineText: string;
-  newLineText: string;
-  setSpace?: boolean;
-  offset?: number;
-  replaceSpaceOrTabs?: boolean;
-  nextLine?: SassTextLine;
-}
-
-export function PushDebugInfo(info: LogFormatInfo) {
-  if (info.debug) {
-    StoreLog.logs.push({
-      info,
-      ConvertData: StoreLog.TempConvertData ? StoreLog.TempConvertData : ({} as LogType)
-    });
-    StoreLog.resetTempConvertData();
-  } else {
-    StoreLog.resetTempConvertData();
-  }
-}
-export function Log(res: string) {
-  logger.Log('info', StoreLog.logs, res);
-}
-
-export interface LogType {
-  type: string;
-  text: string;
-  log: boolean;
-}
-export interface Log {
-  ConvertData: LogType;
-  lineNumber: number;
-  info: LogFormatInfo;
-}
-export class StoreLog {
-  static TempConvertData: LogType;
-  static resetTempConvertData() {
-    this.TempConvertData = {
-      text: '',
-      type: '',
-      log: false
-    };
-  }
-  static logs: { ConvertData: LogType; info: LogFormatInfo }[] = [];
-}
-StoreLog.resetTempConvertData();
 
 export function isConvert(line: SassTextLine, STATE: FormattingState) {
   return (

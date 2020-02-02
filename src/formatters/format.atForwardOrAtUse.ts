@@ -4,7 +4,8 @@ import { FormattingState } from '../state';
 
 import { convertScssOrCss } from './format.convert';
 
-import { PushDebugInfo, isConvert } from '../utility';
+import { isConvert } from '../utility';
+import { PushDebugInfo } from '../logger';
 
 export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingState) {
   if (isConvert(line, STATE)) {

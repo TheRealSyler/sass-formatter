@@ -4,13 +4,13 @@ import { isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-r
 
 import {
   replaceSpacesOrTabs,
-  PushDebugInfo,
   replaceWithOffset,
   getBlockHeaderOffset,
   getIndentationOffset
 } from '../utility';
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
+import { PushDebugInfo } from '../logger';
 
 export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;

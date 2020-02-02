@@ -30,6 +30,7 @@
     "@types/ora": "^3.2.0",
     "del-cli": "^3.0.0",
     "jest": "^24.9.0",
+    "jest-store-log": "^1.0.0",
     "known-css-properties": "^0.18.0",
     "nodemon": "^2.0.2",
     "ora": "^4.0.3",
@@ -40,7 +41,7 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@sorg/log": "^1.1.0",
+    "@sorg/log": "^2.0.0",
     "suf-regex": "0.0.14",
     "tslib": "^1.10.0"
   },

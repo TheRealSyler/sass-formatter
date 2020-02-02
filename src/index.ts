@@ -1,4 +1,4 @@
-import { getIndentationOffset, PushDebugInfo, Log, isConvert } from './utility';
+import { getIndentationOffset, isConvert } from './utility';
 import {
   isBlockCommentStart,
   isIgnore,
@@ -30,6 +30,7 @@ import { convertScssOrCss } from './formatters/format.convert';
 import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
 import { SassFormatterConfig } from './config';
 import { SassTextLine } from './sassTextLine';
+import { LogDebugResult, PushDebugInfo } from './logger';
 
 export { SassFormatterConfig } from './config';
 
@@ -73,7 +74,7 @@ export class SassFormatter {
     }
 
     if (STATE.CONFIG.debug) {
-      Log(STATE.RESULT);
+      LogDebugResult(STATE.RESULT);
     }
     return STATE.RESULT;
   }
