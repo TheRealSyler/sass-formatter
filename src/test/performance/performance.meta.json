@@ -1,22 +1,22 @@
 {
   "1000": {
-    "total": 8466,
+    "total": 8838,
     "median": 8,
     "average": 8
   },
   "10000": {
-    "total": 10037,
-    "median": 99,
-    "average": 100
+    "total": 9736,
+    "median": 96,
+    "average": 97
   },
   "100000": {
-    "total": 10285,
-    "median": 1010.5,
-    "average": 1028
+    "total": 9855,
+    "median": 976,
+    "average": 985
   },
   "1000000": {
-    "total": 10649,
-    "median": 10649,
-    "average": 10649
+    "total": 10239,
+    "median": 10239,
+    "average": 10239
   }
 }
