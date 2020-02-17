@@ -32,7 +32,8 @@ test('Sass Format: Commands', () => {
       
 
 
-     margin: 200px`
+     margin: 200px`,
+      { debug: false }
     )
   ).toBe(`
 .class

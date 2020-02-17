@@ -12,14 +12,14 @@ import {
   isPseudo,
   isBracketOrWhitespace,
   isAdjacentSelector,
-  isSelectorOperator,
   isBlockCommentEnd,
   isClassOrId,
-  isCssSelector,
   isAtForwardOrAtUse,
   isMixin,
   isInclude,
-  isInterpolatedProperty
+  isInterpolatedProperty,
+  isSelectorOperator,
+  isCssSelector
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
@@ -254,6 +254,9 @@ export class SassFormatter {
   private static isBlockHeader(line: SassTextLine, STATE: FormattingState) {
     return (
       !STATE.LOCAL_CONTEXT.isInterpolatedProp &&
+      // TODO implement #15.
+      // !/^[\t ]*\+\w+/.test(line.get()) &&
+      // (!STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isHtmlTag) &&
       (isMixin(line.get()) || // also adds =mixin
         isPseudo(line.get()) ||
         isSelectorOperator(line.get()) ||
@@ -263,6 +266,7 @@ export class SassFormatter {
         STATE.LOCAL_CONTEXT.ResetTabs ||
         STATE.LOCAL_CONTEXT.isAnd_ ||
         STATE.LOCAL_CONTEXT.isHtmlTag ||
+        // /^[\t \w\.\-%@#{}()$+~,>:]+(\/\/.*)?$/.test(line.get()))
         isCssSelector(line.get())) // adds all lines that start with [@.#%]
     );
   }

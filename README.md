@@ -4,6 +4,8 @@
 [![Custom](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![Custom](https://www.codefactor.io/repository/github/therealsyler/sass-formatter/badge)](https://www.codefactor.io/repository/github/therealsyler/sass-formatter) [![Custom](https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg)](https://codecov.io/gh/TheRealSyler/sass-formatter) [![circleci](https://img.shields.io/circleci/build/github/TheRealSyler/sass-formatter)](https://app.circleci.com/github/TheRealSyler/sass-formatter/pipelines) [![npmV](https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter) [![min](https://img.shields.io/bundlephobia/min/sass-formatter)](https://bundlephobia.com/result?p=sass-formatter) [![install](https://badgen.net/packagephobia/install/sass-formatter)](https://packagephobia.now.sh/result?p=sass-formatter) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter)
 <span id="BADGE_GENERATION_MARKER_1"></span>
 
+<iframe src="https://sass-formatter.syler.de/" width="1000px" height="1200px" style="border: none; border-radius: 10px"> <iframe>
+
 ## Usage
 
 ```typescript
@@ -61,19 +63,19 @@ span
 
 ```typescript
 interface SassFormatterConfig {
-    /**Enable debug messages */
-    debug: boolean;
-    /**delete rows that are empty. */
-    deleteEmptyRows: boolean;
-    /**Delete trailing whitespace.*/
-    deleteWhitespace: boolean;
-    /**Convert css or scss to sass */
-    convert: boolean;
-    /**set the space after the colon of a property to one.*/
-    setPropertySpace: boolean;
-    tabSize: number;
-    /**insert spaces or tabs. */
-    insertSpaces: boolean;
+  /**Enable debug messages */
+  debug: boolean;
+  /**delete rows that are empty. */
+  deleteEmptyRows: boolean;
+  /**Delete trailing whitespace.*/
+  deleteWhitespace: boolean;
+  /**Convert css or scss to sass */
+  convert: boolean;
+  /**set the space after the colon of a property to one.*/
+  setPropertySpace: boolean;
+  tabSize: number;
+  /**insert spaces or tabs. */
+  insertSpaces: boolean;
 }
 ```
 
