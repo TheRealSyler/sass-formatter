@@ -6,7 +6,7 @@ import { isIfOrElse, isElse, isKeyframes as isKeyframes_ } from 'suf-regex';
 
 export function FormatSetTabs(
   STATE: FormattingState,
-  headerStuff?: { offset: number; additionalTabs: number } // TODO   isAtForwardOrAtUse: boolean
+  headerStuff?: { offset: number; additionalTabs: number }
 ) {
   if (headerStuff === undefined) {
     // § set Tabs Property
@@ -33,8 +33,6 @@ export function FormatSetTabs(
       );
       STATE.CONTEXT.currentTabs = STATE.CONTEXT.tabs;
     } else {
-      // TODO  adding the tab size when it an @ header can lead to strange results
-      // TODO  const tabSizeOrZero = headerStuff.isAtForwardOrAtUse ? 0 : STATE.CONFIG.tabSize;
       STATE.CONTEXT.tabs = Math.max(
         0,
         STATE.LOCAL_CONTEXT.indentation.distance +
