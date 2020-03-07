@@ -2,9 +2,7 @@ import { getDistance, isScssOrCss, isComment } from 'suf-regex';
 import { SassTextLine } from './sassTextLine';
 import { FormattingState } from './state';
 
-/**
- * returns the relative distance that the class or id should be at.
- */
+/** returns the relative distance that the class or id should be at. */
 export function getBlockHeaderOffset(
   distance: number,
   tabSize: number,
@@ -38,9 +36,7 @@ export function replaceWithOffset(text: string, offset: number, STATE: Formattin
   }
   return text;
 }
-/**
- * returns the difference between the current indentation and the indentation of the given text.
- */
+/** returns the difference between the current indentation and the indentation of the given text. */
 export function getIndentationOffset(
   text: string,
   indentation: number,
@@ -49,9 +45,7 @@ export function getIndentationOffset(
   const distance = getDistance(text, tabSize);
   return { offset: indentation - distance, distance };
 }
-/**
- *
- */
+
 export function isKeyframePoint(text: string, isAtKeyframe: boolean) {
   if (isAtKeyframe === false) {
     return false;
