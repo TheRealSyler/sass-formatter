@@ -20,14 +20,14 @@ test('Sass Format Case 11', () => {
 `);
   expect(log.data.replace(/\x1b\[.*?m/g, '')).toEqual(
     `FORMAT
- BLOCK HEADER: MODIFIED Row: 0 
+ BLOCK HEADER: MODIFIED Line Number: 0 
       Old            : ··.class····⟶⟶·······{width:335px;·····⟶·····float:left;⟶·overflow:hidden;·padding-left:5px;}
       New            : .class\\n··width:·335px\\n··float:·left\\n··overflow:·hidden\\n··padding-left:·5px
       Convert        : ONE LINER
       Replace        : false
- EMPTY LINE: DELETE Row: 1 Next Line: "text": "", "lineNumber": 2, "isEmptyOrWhitespace": true
- EMPTY LINE: DELETE Row: 2 Next Line: "text": "    ", "lineNumber": 3, "isEmptyOrWhitespace": true
- EMPTY LINE: WHITESPACE Row: 3
+ EMPTY LINE: DELETE Line Number: 1 Next Line: "text": "", "isEmptyOrWhitespace": true
+ EMPTY LINE: DELETE Line Number: 2 Next Line: "text": "    ", "isEmptyOrWhitespace": true
+ EMPTY LINE: WHITESPACE Line Number: 3
 |.class|
 |··width:·335px|
 |··float:·left|

@@ -79,7 +79,7 @@ interface FormatLocalContext {
 export class FormattingState {
   lines: string[] = [];
 
-  /** Current line. */
+  /** Current line index. */
   currentLine = 0;
 
   /** Formatting Result */

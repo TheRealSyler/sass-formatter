@@ -75,7 +75,7 @@ function InfoLogHelper(data: Logs) {
 
     const notProvided = null;
     const title = styler(info.title, '#cc0');
-    const row = `${TEXT('Row')}${colon} ${NUMBER(info.lineNumber)}`;
+    const lineNumber = `${TEXT('Line Number')}${colon} ${NUMBER(info.lineNumber)}`;
     const offset =
       info.offset !== undefined ? `${TEXT('Offset')}${colon} ${NUMBER(info.offset)}` : '';
     const propertySpace = info.setSpace !== undefined ? BOOL(info.setSpace) : notProvided;
@@ -97,10 +97,10 @@ function InfoLogHelper(data: Logs) {
       : '';
     switch (info.newLineText) {
       case 'DELETED':
-        return ` ${title} ${row} ${TEXT('Next Line')}${colon} ${nextLine}`;
+        return ` ${title} ${lineNumber} ${TEXT('Next Line')}${colon} ${nextLine}`;
       case 'NEWLINE':
       case 'NULL':
-        return ` ${title} ${row}`;
+        return ` ${title} ${lineNumber}`;
       default:
         let additionalInfo = '';
         additionalInfo +=
@@ -112,7 +112,7 @@ function InfoLogHelper(data: Logs) {
         additionalInfo +=
           replace !== null ? `\n      ${TEXT('Replace')}        ${colon} ${replace}` : '';
 
-        return ` ${title} ${row} ${offset}
+        return ` ${title} ${lineNumber} ${offset}
       ${TEXT('Old')}            ${colon} ${styler(replaceWhitespace(info.oldLineText), '#c64')}
       ${TEXT('New')}            ${colon} ${styler(
           replaceWhitespace(info.newLineText.replace(/\n/g, '\\n')),
