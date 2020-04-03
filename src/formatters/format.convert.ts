@@ -21,8 +21,10 @@ export function convertScssOrCss(
 ): { text: string; increaseTabSize: boolean; lastSelector: string } {
   const isMultiple = isMoreThanOneClassOrId(text);
   let lastSelector = STATE.CONTEXT.convert.lastSelector;
-  StoreLog.TempConvertData.log = true;
-  StoreLog.TempConvertData.text = text;
+  if (STATE.CONFIG.debug) {
+    StoreLog.TempConvertData.log = true;
+    StoreLog.TempConvertData.text = text;
+  }
   if (!/[\t ]*[#.%]\{.*?}/.test(text)) {
     if (lastSelector && new RegExp('^.*' + escapeRegExp(lastSelector)).test(text)) {
       SetStoreConvertInfoType('LAST SELECTOR');

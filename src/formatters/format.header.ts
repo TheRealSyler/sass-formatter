@@ -87,8 +87,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
     edit = replaceWithOffset(line.get(), offset, STATE).trimRight();
     PushDebugInfo({
       title: 'BLOCK HEADER: MOVE',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       replaceSpaceOrTabs,
@@ -101,8 +101,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
     edit = line.get().trimRight();
     PushDebugInfo({
       title: 'BLOCK HEADER: TRAIL',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       replaceSpaceOrTabs
@@ -111,8 +111,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
     edit = line.get();
     PushDebugInfo({
       title: 'BLOCK HEADER: MODIFIED',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       replaceSpaceOrTabs
@@ -120,8 +120,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   } else {
     PushDebugInfo({
       title: 'BLOCK HEADER: DEFAULT',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       replaceSpaceOrTabs

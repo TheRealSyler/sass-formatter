@@ -11,7 +11,8 @@ test('Sass Format: Commands', () => {
   ).toBe(`
 .class
     ///I
-    margin: 200px`);
+    margin: 200px
+`);
   expect(
     SF.Format(
       `
@@ -22,7 +23,8 @@ test('Sass Format: Commands', () => {
   ).toBe(`
 .class
         ///R
-        margin: 200px`);
+        margin: 200px
+`);
   expect(
     SF.Format(
       `
@@ -42,5 +44,6 @@ test('Sass Format: Commands', () => {
 
 
 
-  margin: 200px`);
+  margin: 200px
+`);
 });

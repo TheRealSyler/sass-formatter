@@ -8,7 +8,8 @@ test('Sass Format: Block Comment', () => {
  		   			*
  *
  *
- */`,
+ */
+`,
     { insertSpaces: false, tabSize: 2, debug: false }
   );
 
@@ -18,7 +19,8 @@ test('Sass Format: Block Comment', () => {
 	*
 	*
 	*
-	*/`);
+	*/
+`);
 });
 
 test('Sass Format: Check Comment and @font-face', () => {
@@ -36,5 +38,6 @@ test('Sass Format: Check Comment and @font-face', () => {
  * Comment
  */
 @font-face
-  margin: 200px`);
+  margin: 200px
+`);
 });

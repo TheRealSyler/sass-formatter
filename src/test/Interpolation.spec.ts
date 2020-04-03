@@ -36,5 +36,6 @@ test('Sass Format: Interpolation', () => {
   color: red
 
 #{main}
-  color: red`);
+  color: red
+`);
 });

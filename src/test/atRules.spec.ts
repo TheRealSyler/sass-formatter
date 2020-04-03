@@ -62,7 +62,8 @@ test('Sass Format: Check @keyframes', () => {
     transform: rotate(0deg)
 
   to
-    transform: rotate(90deg)`);
+    transform: rotate(90deg)
+`);
 });
 
 test('Sass Format: Check @if && @else', () => {

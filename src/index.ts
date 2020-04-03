@@ -37,40 +37,19 @@ export { SassFormatterConfig } from './config';
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
     const STATE = new FormattingState();
-    STATE.text = text;
+
+    STATE.lines = text.split('\n');
     STATE.CONFIG = {
       ...STATE.CONFIG,
       ...config
     };
 
-    // TODO this is consistently 3-8% faster but makes 11 tests fail, because whitespace memes.
-    // const lines = STATE.text.split('\n');
-
-    // for (let i = 0; i < lines.length; i++) {
-    //   this.handleLine(new SassTextLine(lines[i], i), STATE);
-    // }
-
-    for (STATE.char; STATE.char < STATE.text.length; STATE.char++) {
-      const char = STATE.text[STATE.char];
-      const last = STATE.char === STATE.text.length - 1;
-      const isNewLine = char === '\n';
-
-      if (isNewLine || last) {
-        STATE.CONTEXT.isLastLine = last;
-        if (last && !isNewLine) {
-          STATE.lineText += char;
-        }
-
-        this.handleLine(new SassTextLine(STATE.lineText, STATE.line), STATE);
-
-        if (last && isNewLine && !STATE.RESULT.endsWith('\n')) {
-          this.addNewLine(STATE);
-        }
-        STATE.line++;
-        STATE.lineText = '';
-      } else {
-        STATE.lineText += char;
-      }
+    for (let i = 0; i < STATE.lines.length; i++) {
+      STATE.currentLine = i;
+      this.handleLine(new SassTextLine(STATE.lines[i]), STATE);
+    }
+    if (!STATE.RESULT.endsWith('\n')) {
+      this.addNewLine(STATE);
     }
 
     if (STATE.CONFIG.debug) {
@@ -143,8 +122,8 @@ export class SassFormatter {
             const edit = convertScssOrCss(line.get(), STATE).text;
             PushDebugInfo({
               title: 'CONVERT',
-              lineNumber: line.lineNumber,
-              oldLineText: STATE.lineText,
+              lineNumber: STATE.currentLine,
+              oldLineText: STATE.lines[STATE.currentLine],
               newLineText: edit,
               debug: STATE.CONFIG.debug
             });
@@ -153,8 +132,8 @@ export class SassFormatter {
           } else {
             PushDebugInfo({
               title: 'NO CHANGE',
-              lineNumber: line.lineNumber,
-              oldLineText: STATE.lineText,
+              lineNumber: STATE.currentLine,
+              oldLineText: STATE.lines[STATE.currentLine],
               newLineText: 'NULL',
               debug: STATE.CONFIG.debug
             });
@@ -183,8 +162,8 @@ export class SassFormatter {
     if (STATE.CONFIG.debug) {
       PushDebugInfo({
         title: 'COMMENT BLOCK',
-        lineNumber: line.lineNumber,
-        oldLineText: STATE.lineText,
+        lineNumber: STATE.currentLine,
+        oldLineText: STATE.lines[STATE.currentLine],
         newLineText: edit,
         debug: STATE.CONFIG.debug
       });
@@ -196,17 +175,7 @@ export class SassFormatter {
     let pass = true; // its not useless, trust me.
 
     if (STATE.CONFIG.deleteEmptyRows && !STATE.CONTEXT.isLastLine) {
-      const getNextLine = () => {
-        for (let i = STATE.char + 1; i < STATE.text.length; i++) {
-          const char = STATE.text[i];
-          if (char === '\n') {
-            return new SassTextLine(STATE.lineText, STATE.line + 1);
-          }
-          STATE.lineText += char;
-        }
-        return new SassTextLine('', -1);
-      };
-      const nextLine: SassTextLine = getNextLine();
+      const nextLine = new SassTextLine(STATE.lines[STATE.currentLine + 1]);
 
       const compact = !isProperty(nextLine.get());
       const nextLineWillBeDeleted = STATE.CONFIG.convert
@@ -221,8 +190,8 @@ export class SassFormatter {
           PushDebugInfo({
             title: 'EMPTY LINE: DELETE',
             nextLine,
-            lineNumber: line.lineNumber,
-            oldLineText: STATE.lineText,
+            lineNumber: STATE.currentLine,
+            oldLineText: STATE.lines[STATE.currentLine],
             newLineText: 'DELETED',
             debug: STATE.CONFIG.debug
           });
@@ -233,8 +202,8 @@ export class SassFormatter {
     if (line.get().length > 0 && pass && STATE.CONFIG.deleteWhitespace) {
       PushDebugInfo({
         title: 'EMPTY LINE: WHITESPACE',
-        lineNumber: line.lineNumber,
-        oldLineText: STATE.lineText,
+        lineNumber: STATE.currentLine,
+        oldLineText: STATE.lines[STATE.currentLine],
         newLineText: 'NEWLINE',
         debug: STATE.CONFIG.debug
       });
@@ -242,8 +211,8 @@ export class SassFormatter {
     } else if (pass) {
       PushDebugInfo({
         title: 'EMPTY LINE',
-        lineNumber: line.lineNumber,
-        oldLineText: STATE.lineText,
+        lineNumber: STATE.currentLine,
+        oldLineText: STATE.lines[STATE.currentLine],
         newLineText: 'NEWLINE',
         debug: STATE.CONFIG.debug
       });

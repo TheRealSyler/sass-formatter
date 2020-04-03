@@ -77,17 +77,10 @@ interface FormatLocalContext {
 }
 
 export class FormattingState {
-  /** Text to format. */
-  text = '';
-
-  /** Current Character. */
-  char = 0;
+  lines: string[] = [];
 
   /** Current line. */
-  line = 0;
-
-  /** Current line Text. */
-  lineText = '';
+  currentLine = 0;
 
   /** Formatting Result */
   RESULT = '';

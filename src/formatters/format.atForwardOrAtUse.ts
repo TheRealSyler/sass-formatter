@@ -16,8 +16,8 @@ export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingStat
   if (STATE.CONFIG.debug) {
     PushDebugInfo({
       title: '@forward or @use',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: line.get(),
       debug: STATE.CONFIG.debug
     });

@@ -2,7 +2,7 @@ import { isEmptyOrWhitespace } from 'suf-regex';
 
 export class SassTextLine {
   isEmptyOrWhitespace: boolean;
-  constructor(private text: string, public lineNumber: number) {
+  constructor(private text: string) {
     this.isEmptyOrWhitespace = isEmptyOrWhitespace(text);
   }
   /**Sets the text of the line. */

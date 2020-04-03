@@ -34,8 +34,8 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     edit = replaceWithOffset(line.get(), STATE.LOCAL_CONTEXT.indentation.offset, STATE).trimRight();
     PushDebugInfo({
       title: 'PROPERTY: MOVE',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
@@ -49,8 +49,8 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     edit = line.get().trimRight();
     PushDebugInfo({
       title: 'PROPERTY: TRAIL',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
@@ -60,8 +60,8 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     edit = line.get();
     PushDebugInfo({
       title: 'PROPERTY: CHANGE',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
@@ -70,8 +70,8 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   } else {
     PushDebugInfo({
       title: 'PROPERTY: DEFAULT',
-      lineNumber: line.lineNumber,
-      oldLineText: STATE.lineText,
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
