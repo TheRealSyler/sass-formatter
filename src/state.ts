@@ -132,7 +132,6 @@ export class FormattingState {
     deleteWhitespace: true,
     setPropertySpace: true
   };
-  // useless !?
   setLocalContext(context: FormatLocalContext) {
     this.LOCAL_CONTEXT = context;
   }
