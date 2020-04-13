@@ -21,19 +21,22 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+            - yarn-packages-{{ checksum "yarn.lock" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - yarn-packages-
 
-      - run: npm install
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
 
       - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - ~/.cache/yarn
 
       # run tests!
-      - run: npm run test
+      - run: yarn test
 
       - codecov/upload:
           file: coverage/lcov.info
