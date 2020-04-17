@@ -67,6 +67,7 @@ interface FormatLocalContext {
     offset: number;
     distance: number;
   };
+  isAtExtend: boolean;
   isClassOrIdSelector: boolean;
   isHtmlTag: boolean;
   isIfOrElseAProp: boolean;
@@ -92,15 +93,16 @@ export class FormattingState {
     ResetTabs: false,
     indentation: {
       distance: 0,
-      offset: 0
+      offset: 0,
     },
+    isAtExtend: false,
     isAnd_: false,
     isClassOrIdSelector: false,
     isIfOrElseAProp: false,
     isAtKeyframes: false,
     isAtKeyframesPoint: false,
     isProp: false,
-    isInterpolatedProp: false
+    isInterpolatedProp: false,
   };
 
   CONTEXT: FormatContext = {
@@ -113,15 +115,15 @@ export class FormattingState {
     wasLastLineSelector: false,
     convert: {
       lastSelector: '',
-      wasLastLineCss: false
+      wasLastLineCss: false,
     },
     keyframes: {
       is: false,
-      tabs: 0
+      tabs: 0,
     },
     tabs: 0,
     currentTabs: 0,
-    firstCommaHeader: { exists: false, distance: 0 }
+    firstCommaHeader: { exists: false, distance: 0 },
   };
   CONFIG: SassFormatterConfig = {
     insertSpaces: true,
@@ -130,7 +132,7 @@ export class FormattingState {
     debug: false,
     deleteEmptyRows: true,
     deleteWhitespace: true,
-    setPropertySpace: true
+    setPropertySpace: true,
   };
   setLocalContext(context: FormatLocalContext) {
     this.LOCAL_CONTEXT = context;

@@ -19,7 +19,8 @@ import {
   isInterpolatedProperty,
   isSelectorOperator,
   isCssSelector,
-  isInclude
+  isInclude,
+  isAtExtend,
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
@@ -41,7 +42,7 @@ export class SassFormatter {
     STATE.lines = text.split('\n');
     STATE.CONFIG = {
       ...STATE.CONFIG,
-      ...config
+      ...config,
     };
 
     for (let i = 0; i < STATE.lines.length; i++) {
@@ -91,14 +92,10 @@ export class SassFormatter {
             isProp: isProperty(line.get()),
             indentation: getIndentationOffset(line.get(), STATE.CONTEXT.tabs, STATE.CONFIG.tabSize),
             isAdjacentSelector: isAdjacentSelector(line.get()),
-            isHtmlTag: isHtmlTag(
-              line
-                .get()
-                .trim()
-                .split(' ')[0]
-            ),
+            isHtmlTag: isHtmlTag(line.get().trim().split(' ')[0]),
             isClassOrIdSelector: isClassOrId(line.get()),
-            isInterpolatedProp: isInterpolatedProperty(line.get())
+            isAtExtend: isAtExtend(line.get()),
+            isInterpolatedProp: isInterpolatedProperty(line.get()),
           });
           // ####### Is @forward or @use #######
           if (isAtForwardOrAtUse(line.get())) {
@@ -125,7 +122,7 @@ export class SassFormatter {
               lineNumber: STATE.currentLine,
               oldLineText: STATE.lines[STATE.currentLine],
               newLineText: edit,
-              debug: STATE.CONFIG.debug
+              debug: STATE.CONFIG.debug,
             });
             this.addNewLine(STATE);
             STATE.RESULT += edit;
@@ -135,7 +132,7 @@ export class SassFormatter {
               lineNumber: STATE.currentLine,
               oldLineText: STATE.lines[STATE.currentLine],
               newLineText: 'NULL',
-              debug: STATE.CONFIG.debug
+              debug: STATE.CONFIG.debug,
             });
 
             this.addNewLine(STATE);
@@ -165,7 +162,7 @@ export class SassFormatter {
         lineNumber: STATE.currentLine,
         oldLineText: STATE.lines[STATE.currentLine],
         newLineText: edit,
-        debug: STATE.CONFIG.debug
+        debug: STATE.CONFIG.debug,
       });
     }
   }
@@ -193,7 +190,7 @@ export class SassFormatter {
             lineNumber: STATE.currentLine,
             oldLineText: STATE.lines[STATE.currentLine],
             newLineText: 'DELETED',
-            debug: STATE.CONFIG.debug
+            debug: STATE.CONFIG.debug,
           });
         }
         pass = false;
@@ -205,7 +202,7 @@ export class SassFormatter {
         lineNumber: STATE.currentLine,
         oldLineText: STATE.lines[STATE.currentLine],
         newLineText: 'NEWLINE',
-        debug: STATE.CONFIG.debug
+        debug: STATE.CONFIG.debug,
       });
       this.addNewLine(STATE);
     } else if (pass) {
@@ -214,7 +211,7 @@ export class SassFormatter {
         lineNumber: STATE.currentLine,
         oldLineText: STATE.lines[STATE.currentLine],
         newLineText: 'NEWLINE',
-        debug: STATE.CONFIG.debug
+        debug: STATE.CONFIG.debug,
       });
       this.addNewLine(STATE);
     }
@@ -223,6 +220,7 @@ export class SassFormatter {
   private static isBlockHeader(line: SassTextLine, STATE: FormattingState) {
     return (
       !STATE.LOCAL_CONTEXT.isInterpolatedProp &&
+      !STATE.LOCAL_CONTEXT.isAtExtend &&
       (isMixin(line.get()) || // adds =mixin
         isPseudo(line.get()) ||
         isSelectorOperator(line.get()) ||
@@ -242,6 +240,7 @@ export class SassFormatter {
       STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||
       STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
+      STATE.LOCAL_CONTEXT.isAtExtend ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
     );
   }
