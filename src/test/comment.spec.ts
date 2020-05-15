@@ -10,7 +10,7 @@ test('Sass Format: Block Comment', () => {
  *
  */
 `,
-    { insertSpaces: false, tabSize: 2, debug: false }
+    { insertSpaces: false, debug: false }
   );
 
   expect(a).toBe(`/**
@@ -22,19 +22,43 @@ test('Sass Format: Block Comment', () => {
 	*/
 `);
 });
+test('Sass Format: Block Comment 2', () => {
+  const a = SF.Format(
+    `.a
+  color: red
+  
+/*
+ * My block comment
+ */
+.something-else
+  color: red
+`,
+    { insertSpaces: true, debug: false }
+  );
+
+  expect(a).toBe(`.a
+  color: red
+
+/*
+ * My block comment
+ */
+.something-else
+  color: red
+`);
+});
 
 test('Sass Format: Check Comment and @font-face', () => {
   const a = SF.Format(
     `
-		/**
+		/*
     * Comment
  */
 		@font-face
     margin: 200px`,
-    { insertSpaces: true, tabSize: 2 }
+    { insertSpaces: true }
   );
   expect(a).toBe(`
- /**
+ /*
  * Comment
  */
 @font-face
