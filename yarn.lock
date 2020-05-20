@@ -4959,10 +4959,12 @@ suf-node@^1.1.1:
   resolved "https://registry.yarnpkg.com/suf-node/-/suf-node-1.1.1.tgz#040327281c0b2d1b70ed49526c2e120c27fe6be4"
   integrity sha512-XiyPqLdiHJ3CMphADCJg/JVQYcj3JfO8NomlLubSdGYgppfzE+g/7Fyusza/Kr7lC919BdwbfIqFxK8VO7+l4w==
 
-suf-regex@0.0.17:
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.17.tgz#feb3ee3dd47e7fe8abfc063ead2193c9aef9be6d"
-  integrity sha512-/TIMx0G1iXCGHm5XbqHTV86tkdETO7OUOB8UAWHc04M2mMQnWAIZeO6M9GuSibRVM8ewRcHAV3fOFY2z1XtWaQ==
+suf-regex@^0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.19.tgz#45f072246e095d141a78f9380515ffdf473bc587"
+  integrity sha512-AKty67h/FSxJ3Rv+sZgqpDkVmI6NEYILZ3DG57yXFj3bvWScLKPw2bxxo5jDGhCev5RvVZyml3Fvk79qxFlZmg==
+  dependencies:
+    del-cli "^3.0.0"
 
 suf@^1.0.1:
   version "1.0.1"
