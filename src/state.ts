@@ -75,6 +75,7 @@ interface FormatLocalContext {
   isAtKeyframesPoint: boolean;
   isAdjacentSelector: boolean;
   isInterpolatedProp: boolean;
+  isInclude: false | 'prop' | 'header';
 }
 
 export class FormattingState {
@@ -103,6 +104,7 @@ export class FormattingState {
     isAtKeyframesPoint: false,
     isProp: false,
     isInterpolatedProp: false,
+    isInclude: false,
   };
 
   CONTEXT: FormatContext = {

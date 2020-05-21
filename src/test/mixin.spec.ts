@@ -28,7 +28,7 @@ left: 50px
   + selector
     padding-top: 220px
     +desktop
-    margin-left: 20px
+      margin-left: 20px
 `
   );
 });

@@ -19,8 +19,8 @@ import {
   isInterpolatedProperty,
   isSelectorOperator,
   isCssSelector,
-  isInclude,
   isAtExtend,
+  isInclude,
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
@@ -96,6 +96,7 @@ export class SassFormatter {
             isClassOrIdSelector: isClassOrId(line.get()),
             isAtExtend: isAtExtend(line.get()),
             isInterpolatedProp: isInterpolatedProperty(line.get()),
+            isInclude: isInclude(line.get()),
           });
           // ####### Is @forward or @use #######
           if (isAtForwardOrAtUse(line.get())) {
@@ -108,7 +109,7 @@ export class SassFormatter {
             STATE.RESULT += FormatBlockHeader(line, STATE);
           }
           // ####### Properties #######
-          else if (this.isProperty(STATE, line.get())) {
+          else if (this.isProperty(STATE)) {
             this.ResetCONTEXT('normal', STATE);
             this.addNewLine(STATE);
             STATE.RESULT += FormatProperty(line, STATE);
@@ -230,13 +231,14 @@ export class SassFormatter {
         STATE.LOCAL_CONTEXT.ResetTabs ||
         STATE.LOCAL_CONTEXT.isAnd_ ||
         STATE.LOCAL_CONTEXT.isHtmlTag ||
+        STATE.LOCAL_CONTEXT.isInclude === 'header' ||
         isCssSelector(line.get())) // adds all lines that start with [@.#%]
     );
   }
 
-  private static isProperty(STATE: FormattingState, lineText: string) {
+  private static isProperty(STATE: FormattingState) {
     return (
-      isInclude(lineText) || // adds +mixin, @include is handled in the block header.
+      STATE.LOCAL_CONTEXT.isInclude === 'prop' ||
       STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||
       STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||

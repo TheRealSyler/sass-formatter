@@ -34,7 +34,7 @@ margin: 10px
 
   margin: 10px
   +awd
-  padding: 20px
+    padding: 20px
 `
   );
 });
@@ -46,7 +46,7 @@ test('Sass Format: check + selector', () => {
       div 
       + section
         margin: 200px
-                  +mixin
+                  +mixin()
         + .OtherClass
           padding: 2rem
 
@@ -63,7 +63,7 @@ test('Sass Format: check + selector', () => {
 div
 + section
   margin: 200px
-  +mixin
+  +mixin()
   + .OtherClass
     padding: 2rem
 

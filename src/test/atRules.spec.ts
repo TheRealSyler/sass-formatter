@@ -162,12 +162,12 @@ test('Sass Format: @include', () => {
   margin: 200px
   @include mixin(5rem)
     padding: 4rem
-    +mixin
+  +mixin
     border: none
 
 .class
   margin: 20px
   +mixin
-  padding: 4rem
+    padding: 4rem
 `);
 });
