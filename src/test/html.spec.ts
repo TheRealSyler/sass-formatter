@@ -8,3 +8,16 @@ test('Sass Format: figcaption tag', () => {
     '.class\n  figcaption\n    margin: 20px\n'
   );
 });
+test('Sass Format: figcaption tag', () => {
+  expect(
+    SF.Format(
+      `tr:nth-child(2n+1)
+    background-color: $alt-row-color`
+    )
+  ).toBe(
+    SF.Format(
+      `tr:nth-child(2n+1)
+  background-color: $alt-row-color`
+    )
+  );
+});
