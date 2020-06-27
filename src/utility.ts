@@ -50,7 +50,7 @@ export function isKeyframePoint(text: string, isAtKeyframe: boolean) {
   if (isAtKeyframe === false) {
     return false;
   }
-  return /^[\t ]*\d+%/.test(text) || /^[\t ]*from|^[\t ]*to/.test(text);
+  return /^[\t ]*\d+%/.test(text) || /^[\t ]*from[\t ]*$|^[\t ]*to[\t ]*$/.test(text);
 }
 
 export function replaceSpacesOrTabs(text: string, STATE: FormattingState, insertSpaces?: boolean) {

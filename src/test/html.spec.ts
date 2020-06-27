@@ -21,3 +21,18 @@ test('Sass Format: figcaption tag', () => {
     )
   );
 });
+test('Sass Format: keyframe point', () => {
+  expect(
+    SF.Format(
+      `@keyframes foo
+  from
+  top: 0px`
+    )
+  ).toBe(
+    SF.Format(
+      `@keyframes foo
+  from
+    top: 0px`
+    )
+  );
+});
