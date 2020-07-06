@@ -5,7 +5,8 @@
 <span id="BADGE_GENERATION_MARKER_1"></span>
 
 ### Website [sass-formatter.syler.de](https://sass-formatter.syler.de/)
-
+## Used in  
+ * [Vscode sass extension](https://github.com/TheRealSyler/vscode-sass-indented)
 ## Usage
 
 ```typescript
