@@ -5,7 +5,7 @@ export function FormatHandleBlockComment(text: string, STATE: FormattingState) {
     return text;
   }
 
-  if (/^[\t ]*\/?\*/.test(text)) {
+  if (/^[\t ]{1,}|\/?\*/.test(text)) {
     return `${STATE.CONFIG.insertSpaces ? ' ' : '\t'}${text.replace(/^[\t ]*/, '')}`;
   }
 
