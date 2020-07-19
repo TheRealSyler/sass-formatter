@@ -65,3 +65,31 @@ test('Sass Format: Check Comment and @font-face', () => {
   margin: 200px
 `);
 });
+
+test('Sass Format: Check Comment and indentation, multiple', () => {
+  const a = SF.Format(
+    `
+		/*
+    * Comment
+
+		@font-face
+    margin: 200px`,
+    { insertSpaces: true }
+  );
+  expect(a).toBe(`
+ /*
+ * Comment
+
+@font-face
+  margin: 200px
+`);
+
+  const b = SF.Format(a, { insertSpaces: true });
+  expect(b).toBe(`
+ /*
+ * Comment
+
+@font-face
+  margin: 200px
+`);
+});
