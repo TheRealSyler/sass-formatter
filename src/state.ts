@@ -4,6 +4,7 @@ interface FormatContext {
   isFirstLine: boolean;
   isLastLine: boolean;
   isInBlockComment: boolean;
+  blockCommentDistance: number;
   /**
    * The Formatter ignores whitespace until the next selector.
    */
@@ -108,6 +109,7 @@ export class FormattingState {
   };
 
   CONTEXT: FormatContext = {
+    blockCommentDistance: 0,
     isFirstLine: true,
     isLastLine: false,
     allowSpace: false,

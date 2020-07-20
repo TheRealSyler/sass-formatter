@@ -21,6 +21,7 @@ import {
   isCssSelector,
   isAtExtend,
   isInclude,
+  getDistance,
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatHandleLocalContext } from './formatters/format.utility';
@@ -62,7 +63,15 @@ export class SassFormatter {
   private static handleLine(line: SassTextLine, STATE: FormattingState) {
     if (isBlockCommentStart(line.get())) {
       STATE.CONTEXT.isInBlockComment = true;
+      STATE.CONTEXT.blockCommentDistance = getDistance(line.get(), STATE.CONFIG.tabSize);
+    } else if (
+      STATE.CONTEXT.isInBlockComment &&
+      STATE.CONTEXT.blockCommentDistance >= getDistance(line.get(), STATE.CONFIG.tabSize)
+    ) {
+      STATE.CONTEXT.isInBlockComment = false;
+      STATE.CONTEXT.blockCommentDistance = 0;
     }
+
     if (STATE.CONTEXT.ignoreLine) {
       STATE.CONTEXT.ignoreLine = false;
       this.addNewLine(STATE);

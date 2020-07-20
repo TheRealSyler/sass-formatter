@@ -1,14 +1,14 @@
 import { FormattingState } from '../state';
+import { replaceWithOffset, getIndentationOffset, replaceSpacesOrTabs } from '../utility';
 
 export function FormatHandleBlockComment(text: string, STATE: FormattingState) {
-  if (/^\/\*\*?/.test(text)) {
-    return text;
+  if (/^[\t ]*\/\*/.test(text)) {
+    return replaceSpacesOrTabs(text, STATE);
   }
 
-  if (/^[\t ]{1,}|\/?\*/.test(text)) {
-    return `${STATE.CONFIG.insertSpaces ? ' ' : '\t'}${text.replace(/^[\t ]*/, '')}`;
-  }
-
-  STATE.CONTEXT.isInBlockComment = false;
-  return text;
+  return replaceWithOffset(
+    text,
+    getIndentationOffset(text, STATE.CONTEXT.blockCommentDistance + 1, STATE.CONFIG.tabSize).offset,
+    STATE
+  );
 }
