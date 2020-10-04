@@ -12,4 +12,6 @@ export interface SassFormatterConfig {
   tabSize: number;
   /**insert spaces or tabs. */
   insertSpaces: boolean;
+  /**Defaults to LF*/
+  lineEnding: 'LF' | 'CRLF';
 }

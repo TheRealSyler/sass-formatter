@@ -36,7 +36,7 @@ export function FormatSetTabs(
       STATE.CONTEXT.tabs = Math.max(
         0,
         STATE.LOCAL_CONTEXT.indentation.distance +
-        headerStuff.offset + // keep in mind that + offset can decrease the number.
+          headerStuff.offset + // keep in mind that + offset can decrease the number.
           STATE.CONFIG.tabSize +
           headerStuff.additionalTabs
       );
@@ -46,7 +46,7 @@ export function FormatSetTabs(
   }
 }
 
-export function FormatHandleLocalContext(line: SassTextLine, STATE: FormattingState) {
+export function isAtKeyframes(line: SassTextLine, STATE: FormattingState) {
   const isPointCheck = isKeyframePoint(line.get(), STATE.CONTEXT.keyframes.is);
   if (STATE.CONTEXT.keyframes.is && isPointCheck) {
     STATE.CONTEXT.tabs = Math.max(0, STATE.CONTEXT.keyframes.tabs);
@@ -68,6 +68,6 @@ export function FormatHandleLocalContext(line: SassTextLine, STATE: FormattingSt
   return {
     isIfOrElseAProp,
     isAtKeyframes,
-    isAtKeyframesPoint: isPointCheck
+    isAtKeyframesPoint: isPointCheck,
   };
 }

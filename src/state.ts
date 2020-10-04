@@ -85,6 +85,8 @@ export class FormattingState {
   /** Current line index. */
   currentLine = 0;
 
+  LINE_ENDING: '\n' | '\r\n' = '\n';
+
   /** Formatting Result */
   RESULT = '';
 
@@ -137,6 +139,7 @@ export class FormattingState {
     deleteEmptyRows: true,
     deleteWhitespace: true,
     setPropertySpace: true,
+    lineEnding: 'LF',
   };
   setLocalContext(context: FormatLocalContext) {
     this.LOCAL_CONTEXT = context;

@@ -4986,10 +4986,19 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-suf-cli@^0.1.0, suf-cli@^0.1.2:
+suf-cli@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/suf-cli/-/suf-cli-0.1.2.tgz#3808c2e177d398680d5d901a89647a034910ee80"
   integrity sha512-pPLdQkY8Tt3Wlg+kUkO5oWTYZSPCJf/VUM8t5LPGXcPoSr5/wcf/2L0mHTSNP0xe/6R/F5Zy/K4oX2FA3G0E8w==
+  dependencies:
+    "@sorg/log" "^2.1.0"
+    node-fetch "^2.6.0"
+    suf-node "^1.1.1"
+
+suf-cli@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/suf-cli/-/suf-cli-0.1.3.tgz#c32dfd4d28b852f936858663da64fe4583e89d34"
+  integrity sha512-dM85t6+egHKKM7ChM1JpkZUeXNczRb7vAQN3Y8UAyRjeW6UvfChPi8YbV73eTUBp6N7VfKqwwrsYsbdEb/u0Rg==
   dependencies:
     "@sorg/log" "^2.1.0"
     node-fetch "^2.6.0"
@@ -5003,17 +5012,12 @@ suf-node@^1.1.1:
     del-cli "^3.0.1"
     suf-cli "^0.1.0"
 
-suf-regex@^0.0.23:
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.23.tgz#ebb3fec77c9724a21583917011a3b652cf8e0055"
-  integrity sha512-Rupps+hO04fiskhx5YwBaiB8Bbwsy8fsqDfT8FED6DWkumWClb3em+yukbNgmAvUIbLAm7ibJoN+2Pl4golkQw==
+suf-regex@^0.0.24:
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.24.tgz#81542c5d2f23b35351efc53b7c3fe6e495726af9"
+  integrity sha512-T2fHzVqfXQJBuznudW/rcbMIli5yu8K1bEypWNDqDpK+BSgB0tczM2P0QZrlWn7t6wBk4XdtXh0qnxDC51LOHQ==
   dependencies:
     del-cli "^3.0.0"
-
-suf@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/suf/-/suf-1.0.1.tgz#dfffafbf6e577c1b40ea090ed5f543cb07b6b5d6"
-  integrity sha512-C1KT9dXCxgfGsnLnQK9Bu57znL5XWVGragUYbij2jIns+0lfWJwuB+3x8qcTbwmslEYElfhDuJpW/F3TZjVpLg==
 
 supports-color@^5.3.0, supports-color@^5.5.0:
   version "5.5.0"
@@ -5273,10 +5277,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^3.6.3:
-  version "3.9.7"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
-  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+typescript@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
+  integrity sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
 
 undefsafe@^2.0.2:
   version "2.0.3"

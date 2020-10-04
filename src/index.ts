@@ -24,7 +24,7 @@ import {
   getDistance,
 } from 'suf-regex';
 import { FormattingState } from './state';
-import { FormatHandleLocalContext } from './formatters/format.utility';
+import { isAtKeyframes } from './formatters/format.utility';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
@@ -40,17 +40,19 @@ export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
     const STATE = new FormattingState();
 
-    STATE.lines = text.split('\n');
+    STATE.lines = text.split(/\r?\n/);
     STATE.CONFIG = {
       ...STATE.CONFIG,
       ...config,
     };
 
+    STATE.LINE_ENDING = STATE.CONFIG.lineEnding === 'LF' ? '\n' : '\r\n';
+
     for (let i = 0; i < STATE.lines.length; i++) {
       STATE.currentLine = i;
-      this.handleLine(new SassTextLine(STATE.lines[i]), STATE);
+      this.formatLine(new SassTextLine(STATE.lines[i]), STATE);
     }
-    if (!STATE.RESULT.endsWith('\n')) {
+    if (!STATE.RESULT.endsWith(STATE.LINE_ENDING)) {
       this.addNewLine(STATE);
     }
 
@@ -60,7 +62,7 @@ export class SassFormatter {
     return STATE.RESULT;
   }
 
-  private static handleLine(line: SassTextLine, STATE: FormattingState) {
+  private static formatLine(line: SassTextLine, STATE: FormattingState) {
     if (isBlockCommentStart(line.get())) {
       STATE.CONTEXT.isInBlockComment = true;
       STATE.CONTEXT.blockCommentDistance = getDistance(line.get(), STATE.CONFIG.tabSize);
@@ -95,7 +97,7 @@ export class SassFormatter {
           this.handleEmptyLine(STATE, line);
         } else {
           STATE.setLocalContext({
-            ...FormatHandleLocalContext(line, STATE),
+            ...isAtKeyframes(line, STATE),
             ResetTabs: isReset(line.get()),
             isAnd_: isAnd(line.get()),
             isProp: isProperty(line.get()),
@@ -266,7 +268,7 @@ export class SassFormatter {
   /** Adds new Line If not first line. */
   private static addNewLine(STATE: FormattingState) {
     if (!STATE.CONTEXT.isFirstLine) {
-      STATE.RESULT += '\n';
+      STATE.RESULT += STATE.LINE_ENDING;
     } else {
       STATE.CONTEXT.isFirstLine = false;
     }
