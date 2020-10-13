@@ -1,4 +1,4 @@
-import { SassFormatterConfig } from './config';
+import { defaultSassFormatterConfig, SassFormatterConfig } from './config';
 
 interface FormatContext {
   isFirstLine: boolean;
@@ -131,16 +131,7 @@ export class FormattingState {
     currentTabs: 0,
     firstCommaHeader: { exists: false, distance: 0 },
   };
-  CONFIG: SassFormatterConfig = {
-    insertSpaces: true,
-    tabSize: 2,
-    convert: true,
-    debug: false,
-    deleteEmptyRows: true,
-    deleteWhitespace: true,
-    setPropertySpace: true,
-    lineEnding: 'LF',
-  };
+  CONFIG: SassFormatterConfig = defaultSassFormatterConfig;
   setLocalContext(context: FormatLocalContext) {
     this.LOCAL_CONTEXT = context;
   }

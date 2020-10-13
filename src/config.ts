@@ -15,3 +15,15 @@ export interface SassFormatterConfig {
   /**Defaults to LF*/
   lineEnding: 'LF' | 'CRLF';
 }
+
+
+export const defaultSassFormatterConfig: SassFormatterConfig = {
+  insertSpaces: true,
+  tabSize: 2,
+  convert: true,
+  debug: false,
+  deleteEmptyRows: true,
+  deleteWhitespace: true,
+  setPropertySpace: true,
+  lineEnding: 'LF',
+};

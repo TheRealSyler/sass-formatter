@@ -34,7 +34,7 @@ import { SassFormatterConfig } from './config';
 import { SassTextLine } from './sassTextLine';
 import { LogDebugResult, PushDebugInfo } from './logger';
 
-export { SassFormatterConfig } from './config';
+export { SassFormatterConfig, defaultSassFormatterConfig } from './config';
 
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
