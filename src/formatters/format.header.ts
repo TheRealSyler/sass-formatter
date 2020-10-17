@@ -6,7 +6,7 @@ import {
   replaceSpacesOrTabs,
   replaceWithOffset,
   getBlockHeaderOffset,
-  getIndentationOffset
+  getIndentationOffset,
 } from '../utility';
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
@@ -62,12 +62,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   STATE.CONTEXT.convert.wasLastLineCss = hasBeenConverted;
-  if (
-    line
-      .get()
-      .trim()
-      .endsWith(',')
-  ) {
+  if (line.get().trim().endsWith(',')) {
     if (STATE.CONTEXT.firstCommaHeader.exists !== true) {
       STATE.CONTEXT.firstCommaHeader.distance = STATE.LOCAL_CONTEXT.indentation.distance + offset;
     }
@@ -92,7 +87,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       replaceSpaceOrTabs,
-      offset: offset
+      offset: offset,
     });
   } else if (
     getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
@@ -105,7 +100,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   } else if (hasBeenConverted || replaceSpaceOrTabs) {
     edit = line.get();
@@ -115,7 +110,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   } else {
     PushDebugInfo({
@@ -124,7 +119,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   }
   STATE.CONTEXT.lastSelectorTabs = Math.max(STATE.LOCAL_CONTEXT.indentation.distance + offset, 0);

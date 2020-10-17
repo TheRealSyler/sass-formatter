@@ -5012,10 +5012,10 @@ suf-node@^1.1.1:
     del-cli "^3.0.1"
     suf-cli "^0.1.0"
 
-suf-regex@^0.0.24:
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.24.tgz#81542c5d2f23b35351efc53b7c3fe6e495726af9"
-  integrity sha512-T2fHzVqfXQJBuznudW/rcbMIli5yu8K1bEypWNDqDpK+BSgB0tczM2P0QZrlWn7t6wBk4XdtXh0qnxDC51LOHQ==
+suf-regex@^0.0.25:
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.0.25.tgz#ff0009851c1bb7655d00df6867f4026893c9d963"
+  integrity sha512-0hd6oSzoeqwFgFLtXRoA6lMndzTpgPZCSU+/sCoin0HyKnqni/GX/BkUe9Qgs4uRIV1pxsZzE2pEIbaiFX61AQ==
   dependencies:
     del-cli "^3.0.0"
 

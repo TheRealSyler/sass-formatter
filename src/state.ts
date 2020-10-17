@@ -77,6 +77,8 @@ interface FormatLocalContext {
   isAdjacentSelector: boolean;
   isInterpolatedProp: boolean;
   isInclude: false | 'prop' | 'header';
+  isVariable: boolean;
+  isImport: boolean;
 }
 
 export class FormattingState {
@@ -108,6 +110,8 @@ export class FormattingState {
     isProp: false,
     isInterpolatedProp: false,
     isInclude: false,
+    isVariable: false,
+    isImport: false,
   };
 
   CONTEXT: FormatContext = {

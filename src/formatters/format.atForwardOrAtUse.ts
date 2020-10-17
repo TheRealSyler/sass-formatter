@@ -4,11 +4,11 @@ import { FormattingState } from '../state';
 
 import { convertScssOrCss } from './format.convert';
 
-import { isConvert } from '../utility';
+import { convertLine } from '../utility';
 import { PushDebugInfo } from '../logger';
 
 export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingState) {
-  if (isConvert(line, STATE)) {
+  if (convertLine(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
     line.set(convertRes.text);
   }
@@ -19,7 +19,7 @@ export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingStat
       lineNumber: STATE.currentLine,
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: line.get(),
-      debug: STATE.CONFIG.debug
+      debug: STATE.CONFIG.debug,
     });
   }
   return line.get();

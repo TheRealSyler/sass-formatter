@@ -4,7 +4,7 @@ import { FormattingState } from '../state';
 
 import { getDistanceReversed, isComment as isComment_, hasPropertyValueSpace } from 'suf-regex';
 
-import { replaceWithOffset, isConvert, replaceSpacesOrTabs } from '../utility';
+import { replaceWithOffset, convertLine, replaceSpacesOrTabs } from '../utility';
 
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
@@ -17,18 +17,20 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   const isComment = isComment_(line.get());
   let { setSpace, text: SetPropertySpaceRes } = HandleSetPropertySpace(STATE, line.get(), false);
   line.set(SetPropertySpaceRes);
-  if (isConvert(line, STATE)) {
+  if (convertLine(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
     line.set(convertRes.text);
     convert = true;
   }
   // Set Context Vars
   STATE.CONTEXT.convert.wasLastLineCss = convert;
+
   const move = STATE.LOCAL_CONTEXT.indentation.offset !== 0 && !isComment;
   if (!move && canReplaceSpacesOrTabs(STATE, line.get())) {
     line.set(replaceSpacesOrTabs(line.get(), STATE).trimRight());
     replaceSpaceOrTabs = true;
   }
+
   // Return
   if (move) {
     edit = replaceWithOffset(line.get(), STATE.LOCAL_CONTEXT.indentation.offset, STATE).trimRight();
@@ -40,7 +42,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       debug: STATE.CONFIG.debug,
       setSpace,
       offset: STATE.LOCAL_CONTEXT.indentation.offset,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   } else if (
     getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
@@ -54,7 +56,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   } else if (setSpace || convert || replaceSpaceOrTabs) {
     edit = line.get();
@@ -65,7 +67,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   } else {
     PushDebugInfo({
@@ -75,7 +77,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       newLineText: edit,
       debug: STATE.CONFIG.debug,
       setSpace,
-      replaceSpaceOrTabs
+      replaceSpaceOrTabs,
     });
   }
 

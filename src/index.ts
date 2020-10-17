@@ -1,4 +1,4 @@
-import { getIndentationOffset, isConvert } from './utility';
+import { getIndentationOffset, convertLine } from './utility';
 import {
   isBlockCommentStart,
   isIgnore,
@@ -22,6 +22,8 @@ import {
   isAtExtend,
   isInclude,
   getDistance,
+  isVar,
+  isAtImport,
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { isAtKeyframes } from './formatters/format.utility';
@@ -108,6 +110,8 @@ export class SassFormatter {
             isAtExtend: isAtExtend(line.get()),
             isInterpolatedProp: isInterpolatedProperty(line.get()),
             isInclude: isInclude(line.get()),
+            isVariable: isVar(line.get()),
+            isImport: isAtImport(line.get()),
           });
           // ####### Is @forward or @use #######
           if (isAtForwardOrAtUse(line.get())) {
@@ -119,14 +123,14 @@ export class SassFormatter {
             this.addNewLine(STATE);
             STATE.RESULT += FormatBlockHeader(line, STATE);
           }
-          // ####### Properties #######
+          // ####### Properties or Vars #######
           else if (this.isProperty(STATE)) {
             this.ResetCONTEXT('normal', STATE);
             this.addNewLine(STATE);
             STATE.RESULT += FormatProperty(line, STATE);
           }
           // ####### Convert #######
-          else if (isConvert(line, STATE)) {
+          else if (convertLine(line, STATE)) {
             this.ResetCONTEXT('convert', STATE);
             const edit = convertScssOrCss(line.get(), STATE).text;
             PushDebugInfo({
@@ -233,6 +237,7 @@ export class SassFormatter {
     return (
       !STATE.LOCAL_CONTEXT.isInterpolatedProp &&
       !STATE.LOCAL_CONTEXT.isAtExtend &&
+      !STATE.LOCAL_CONTEXT.isImport &&
       (isMixin(line.get()) || // adds =mixin
         isPseudo(line.get()) ||
         isSelectorOperator(line.get()) ||
@@ -249,6 +254,8 @@ export class SassFormatter {
 
   private static isProperty(STATE: FormattingState) {
     return (
+      STATE.LOCAL_CONTEXT.isImport ||
+      STATE.LOCAL_CONTEXT.isVariable ||
       STATE.LOCAL_CONTEXT.isInclude === 'prop' ||
       STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||

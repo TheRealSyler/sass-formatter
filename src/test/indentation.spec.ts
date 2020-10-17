@@ -5,7 +5,8 @@ test('Sass Format: Indentation & Whitespace', () => {
     `
 @import ../test.sass
 
-$test: 23;
+    $test: 23;
+    $test: 23;
 
 
       @mixin name ( $test )
@@ -51,10 +52,11 @@ $test: 23;
 @import ../test.sass
 
 $test: 23
+$test: 23
 
-  @mixin name ( $test )
-    &:active
-      left: $test
+@mixin name ( $test )
+  &:active
+    left: $test
 
 .checkbox
   background-color: $dark-gray

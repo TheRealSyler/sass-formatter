@@ -57,6 +57,7 @@ span
 - **[config](#config)**
 
   - [SassFormatterConfig](#sassformatterconfig)
+  - [defaultSassFormatterConfig](#defaultsassformatterconfig)
 
 ### config
 
@@ -80,6 +81,12 @@ interface SassFormatterConfig {
     /**Defaults to LF*/
     lineEnding: 'LF' | 'CRLF';
 }
+```
+
+##### defaultSassFormatterConfig
+
+```typescript
+const defaultSassFormatterConfig: SassFormatterConfig;
 ```
 
 _Generated with_ **[suf-cli](https://www.npmjs.com/package/suf-cli)**
