@@ -30,12 +30,12 @@
     "suf-cli": "^0.1.3",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.6.2",
+    "tslib": "^1.10.0",
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "@sorg/log": "^2.0.1",
-    "suf-regex": "^0.0.25",
-    "tslib": "^1.10.0"
+    "suf-log": "^2.2.0",
+    "suf-regex": "^0.0.25"
   },
   "repository": {
     "type": "git",

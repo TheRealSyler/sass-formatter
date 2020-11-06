@@ -1,4 +1,4 @@
-import { styler, SetEnvironment } from '@sorg/log';
+import { styler, SetEnvironment } from 'suf-log';
 import { SassTextLine } from './sassTextLine';
 SetEnvironment('node');
 
@@ -47,7 +47,7 @@ ${pipe}${styler(replaceWhitespace(result.replace(/\n/g, '|\n|')), '#c76')}${pipe
 const emptyTempConvertData: LogConvertData = {
   text: '',
   type: '',
-  log: false
+  log: false,
 };
 export class StoreLog {
   static TempConvertData: LogConvertData = emptyTempConvertData;
@@ -61,7 +61,7 @@ export function PushDebugInfo(info: LogFormatInfo) {
   if (info.debug) {
     StoreLog.logs.push({
       info,
-      ConvertData: StoreLog.TempConvertData ? StoreLog.TempConvertData : ({} as LogConvertData)
+      ConvertData: StoreLog.TempConvertData ? StoreLog.TempConvertData : ({} as LogConvertData),
     });
     StoreLog.resetTempConvertData();
   } else {
@@ -85,7 +85,7 @@ function InfoLogHelper(data: Logs) {
             .replace(/[{}]/g, '')
             .replace(/:/g, ': ')
             .replace(/,/g, ', ')
-            .replace(/".*?"/g, s => {
+            .replace(/".*?"/g, (s) => {
               return styler(s, '#c76');
             })
         : notProvided;
