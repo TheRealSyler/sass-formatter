@@ -7,7 +7,7 @@
     "badges": [
       "badge=https://jestjs.io/img/jest-badge.svg link=https://github.com/facebook/jest",
       "badge=https://www.codefactor.io/repository/github/therealsyler/sass-formatter/badge link=https://www.codefactor.io/repository/github/therealsyler/sass-formatter",
-      "badge=https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg link=https://codecov.io/gh/TheRealSyler/sass-formatter",
+      "codecov codecov",
       "circleci circleci",
       "npmV npm ?color=green",
       "min bundle",
