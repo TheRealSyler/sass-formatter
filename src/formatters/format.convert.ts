@@ -5,11 +5,11 @@ import {
   escapeRegExp,
   isPseudoWithParenthesis,
   isCssPseudo,
-  isCssSelector
+  isCssSelector,
 } from 'suf-regex';
 
 import { replaceWithOffset } from '../utility';
-import { HandleSetPropertySpace } from './format.property';
+import { setValueSpace } from './format.property';
 import { StoreLog } from '../logger';
 
 /**
@@ -41,7 +41,7 @@ export function convertScssOrCss(
         increaseTabSize: true,
         text: '\n'.concat(
           replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE)
-        )
+        ),
       };
     } else if (isCssOneLiner(text)) {
       SetStoreConvertInfoType('ONE LINER');
@@ -58,23 +58,23 @@ export function convertScssOrCss(
           selector.concat(
             '\n',
             properties
-              .map(v =>
+              .map((v) =>
                 replaceWithOffset(
-                  HandleSetPropertySpace(STATE, v.trim(), false).text,
+                  setValueSpace(STATE, v.trim(), false).text,
                   STATE.CONFIG.tabSize,
                   STATE
                 )
               )
               .join('\n')
           )
-        ).trimRight()
+        ).trimRight(),
       };
     } else if (isCssPseudo(text) && !isMultiple) {
       SetStoreConvertInfoType('PSEUDO');
       return {
         increaseTabSize: false,
         lastSelector,
-        text: removeInvalidChars(text).trimRight()
+        text: removeInvalidChars(text).trimRight(),
       };
     } else if (isCssSelector(text)) {
       SetStoreConvertInfoType('SELECTOR');

@@ -2,7 +2,7 @@ import { SassTextLine } from '../sassTextLine';
 
 import { FormattingState } from '../state';
 
-import { getDistanceReversed, isComment as isComment_, hasPropertyValueSpace } from 'suf-regex';
+import { getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
 import { replaceWithOffset, convertLine, replaceSpacesOrTabs } from '../utility';
 
@@ -15,7 +15,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;
   let edit = line.get();
   const isComment = isComment_(line.get());
-  let { setSpace, text: SetPropertySpaceRes } = HandleSetPropertySpace(STATE, line.get(), false);
+  let { setSpace, text: SetPropertySpaceRes } = setValueSpace(STATE, line.get(), false);
   line.set(SetPropertySpaceRes);
   if (convertLine(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
@@ -91,14 +91,36 @@ export function canReplaceSpacesOrTabs(STATE: FormattingState, text: string) {
     : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(text);
 }
 
-export function HandleSetPropertySpace(STATE: FormattingState, text: string, setSpace: boolean) {
+export function setValueSpace(STATE: FormattingState, text: string, setSpace: boolean) {
   if (
     !STATE.LOCAL_CONTEXT.isHtmlTag &&
-    !hasPropertyValueSpace(text) &&
     (STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isInterpolatedProp) &&
     STATE.CONFIG.setPropertySpace
   ) {
-    text = text.replace(/(^[\t ]*.*?:)[\t ]*/, '$1 ');
+    let newText = '';
+    let isAfterColon = false;
+    let wasLastCharSpace = true;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (!isAfterColon) {
+        newText += char;
+        if (char === ':') {
+          isAfterColon = true;
+          newText += ' ';
+        }
+      } else if (char === ' ') {
+        if (!wasLastCharSpace) {
+          newText += char;
+          wasLastCharSpace = true;
+        }
+      } else {
+        newText += char;
+        wasLastCharSpace = false;
+      }
+    }
+    text = newText;
+
     setSpace = true;
   }
   return { setSpace, text };

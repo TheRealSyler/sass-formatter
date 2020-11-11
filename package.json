@@ -8,6 +8,7 @@
     "build": "tsc -b",
     "watch": "tsc -w",
     "test": "jest --coverage",
+    "test:clear": "jest --clearCache",
     "test:watch": "jest --watch --coverage"
   },
   "files": [

@@ -6,7 +6,7 @@ test('Sass Format: Interpolated Property', () => {
       ` @for $i from 0 through 3
       .nav-#{map-get($directions, $i)}
         #{map-get($directions, $i)}: 1rem
-        animation:  nav-#{map-get($directions, $i)}-start 200ms ease
+        animation:  nav-#{map-get($directions, $i)}-start  200ms  ease
         border-radius-#{$dir}: 1rem\t
                             \t            #{$dir}:   1rem
         border: solid 20px red

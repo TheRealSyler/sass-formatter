@@ -4,6 +4,12 @@ test('\\:root', () => {
   expect(SF.Format('\\:root\n     --color: red   ')).toBe('\\:root\n  --color: red\n');
 });
 
+test('property spaces.', () => {
+  expect(SF.Format('.test\n     border: solid    20px    green   ')).toBe(
+    '.test\n  border: solid 20px green\n'
+  );
+});
+
 test('line endings', () => {
   const LF = '@keyframes aaa\n  from\n    background: white\n  to\n    background: black\n';
   expect(SF.Format(LF, { lineEnding: 'LF' })).toBe(LF);
