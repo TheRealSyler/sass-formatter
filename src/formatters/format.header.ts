@@ -42,11 +42,11 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
     STATE.LOCAL_CONTEXT.isAdjacentSelector && STATE.CONTEXT.wasLastLineSelector
       ? STATE.CONTEXT.lastSelectorTabs - STATE.LOCAL_CONTEXT.indentation.distance
       : getBlockHeaderOffset(
-          STATE.LOCAL_CONTEXT.indentation.distance,
-          STATE.CONFIG.tabSize,
-          STATE.CONTEXT.tabs,
-          STATE.LOCAL_CONTEXT.ResetTabs
-        );
+        STATE.LOCAL_CONTEXT.indentation.distance,
+        STATE.CONFIG.tabSize,
+        STATE.CONTEXT.tabs,
+        STATE.LOCAL_CONTEXT.ResetTabs
+      );
 
   if (STATE.CONTEXT.firstCommaHeader.exists) {
     offset = STATE.CONTEXT.firstCommaHeader.distance - STATE.LOCAL_CONTEXT.indentation.distance;

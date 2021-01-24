@@ -9,7 +9,7 @@ import {
 } from 'suf-regex';
 
 import { replaceWithOffset } from '../utility';
-import { setValueSpace } from './format.property';
+import { setPropertyValueSpaces } from './format.property';
 import { StoreLog } from '../logger';
 
 /**
@@ -54,36 +54,36 @@ export function convertScssOrCss(
       return {
         increaseTabSize: false,
         lastSelector: selector,
-        text: removeInvalidChars(
+        text:
           selector.concat(
             '\n',
             properties
               .map((v) =>
                 replaceWithOffset(
-                  setValueSpace(STATE, v.trim(), false).text,
+                  setPropertyValueSpaces(STATE, removeInvalidChars(v)).text.trim(),
                   STATE.CONFIG.tabSize,
                   STATE
                 )
               )
               .join('\n')
-          )
-        ).trimRight(),
+          ).trimEnd()
+        ,
       };
     } else if (isCssPseudo(text) && !isMultiple) {
       SetStoreConvertInfoType('PSEUDO');
       return {
         increaseTabSize: false,
         lastSelector,
-        text: removeInvalidChars(text).trimRight(),
+        text: removeInvalidChars(text).trimEnd(),
       };
     } else if (isCssSelector(text)) {
       SetStoreConvertInfoType('SELECTOR');
-      lastSelector = removeInvalidChars(text).trimRight();
+      lastSelector = removeInvalidChars(text).trimEnd();
       return { text: lastSelector, increaseTabSize: false, lastSelector };
     }
   }
   SetStoreConvertInfoType('DEFAULT');
-  return { text: removeInvalidChars(text).trimRight(), increaseTabSize: false, lastSelector };
+  return { text: removeInvalidChars(text).trimEnd(), increaseTabSize: false, lastSelector };
 }
 
 function isCssOneLiner(text: string) {

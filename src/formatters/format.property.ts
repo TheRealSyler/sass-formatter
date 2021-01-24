@@ -15,7 +15,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;
   let edit = line.get();
   const isComment = isComment_(line.get());
-  let { setSpace, text: SetPropertySpaceRes } = setValueSpace(STATE, line.get(), false);
+  let { setSpace, text: SetPropertySpaceRes } = setPropertyValueSpaces(STATE, line.get());
   line.set(SetPropertySpaceRes);
   if (convertLine(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
@@ -91,37 +91,50 @@ export function canReplaceSpacesOrTabs(STATE: FormattingState, text: string) {
     : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(text);
 }
 
-export function setValueSpace(STATE: FormattingState, text: string, setSpace: boolean) {
-  if (
-    !STATE.LOCAL_CONTEXT.isHtmlTag &&
-    (STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isInterpolatedProp) &&
-    STATE.CONFIG.setPropertySpace
-  ) {
-    let newText = '';
-    let isAfterColon = false;
-    let wasLastCharSpace = true;
+export function setPropertyValueSpaces(STATE: FormattingState, text: string) {
 
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      if (!isAfterColon) {
-        newText += char;
-        if (char === ':') {
-          isAfterColon = true;
-          newText += ' ';
+  let setSpace = false;
+
+  if (
+    text &&
+    (!STATE.LOCAL_CONTEXT.isHtmlTag &&
+      (STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isInterpolatedProp) &&
+      STATE.CONFIG.setPropertySpace)
+  ) {
+
+    let newPropValue = '';
+    const [propName, propValue] = text.split(/:(.+)/)
+
+    if (propValue) {
+      let wasLastCharSpace = true;
+
+      for (let i = 0; i < propValue.length; i++) {
+        const char = propValue[i];
+
+        switch (char) {
+          case ' ':
+            if (!wasLastCharSpace) {
+              newPropValue += char;
+              wasLastCharSpace = true;
+            }
+            break;
+          case '.':
+            wasLastCharSpace = true;
+            newPropValue += char;
+            break;
+          default:
+            wasLastCharSpace = false;
+            newPropValue += char;
+            break;
+
         }
-      } else if (char === ' ') {
-        if (!wasLastCharSpace) {
-          newText += char;
-          wasLastCharSpace = true;
-        }
-      } else {
-        newText += char;
-        wasLastCharSpace = false;
       }
     }
-    text = newText;
+
+    text = `${propName.trimEnd()}:${newPropValue ? ' ' + newPropValue : ''}`
 
     setSpace = true;
   }
   return { setSpace, text };
 }
+

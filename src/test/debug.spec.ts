@@ -1,7 +1,7 @@
 import { SassFormatter as SF } from '../index';
 import { JestStoreLog } from 'jest-store-log';
 
-test('Sass Format Case 11', () => {
+test('Debug Message', () => {
   const log = new JestStoreLog();
 
   expect(
@@ -18,7 +18,7 @@ test('Sass Format Case 11', () => {
   overflow: hidden
   padding-left: 5px
 `);
-  expect(log.data.replace(/\x1b\[.*?m/g, '')).toEqual(
+  expect(log.logs[0].replace(/\x1b\[.*?m/g, '')).toEqual(
     `FORMAT
  BLOCK HEADER: MODIFIED Line Number: 0 
       Old            : ··.class····⟶⟶·······{width:335px;·····⟶·····float:left;⟶·overflow:hidden;·padding-left:5px;}
@@ -35,5 +35,5 @@ test('Sass Format Case 11', () => {
 |··padding-left:·5px|
 ||`
   );
-  log.TestEnd();
+  log.restore();
 });
