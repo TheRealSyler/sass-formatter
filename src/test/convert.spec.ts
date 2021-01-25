@@ -17,7 +17,7 @@ test('Convert css ONE LINER', () => {
 `);
 });
 
-test('Conversion (From scss)', () => {
+test('Convert (scss)', () => {
   const a = SF.Format(
     `
 $var: 100vh;
@@ -32,7 +32,7 @@ $var: 100vh;
                     margin:         $var;
                   
 }
-`,
+`, { debug: false }
   );
   expect(a).toEqual(
     `

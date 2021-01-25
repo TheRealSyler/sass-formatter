@@ -1,6 +1,6 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: Comma separated selectors', () => {
+test('Comma separated selectors', () => {
   const a = SF.Format(
     `
 .footer,
@@ -34,12 +34,12 @@ margin: 10px
 
   margin: 10px
   +awd
-    padding: 20px
+  padding: 20px
 `
   );
 });
 
-test('Sass Format: check + selector', () => {
+test('class + selector', () => {
   const a = SF.Format(
     `
   .class + div,
@@ -47,7 +47,7 @@ test('Sass Format: check + selector', () => {
       + section
         margin: 200px
                   +mixin()
-        + .OtherClass
+  + .OtherClass
           padding: 2rem
 
     .class,
