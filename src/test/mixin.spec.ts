@@ -1,6 +1,6 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: Alternative @mixin', () => {
+test('Alternative @mixin', () => {
   const a = SF.Format(
     `
     =desktop

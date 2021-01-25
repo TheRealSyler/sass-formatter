@@ -1,6 +1,6 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: Indentation & Whitespace', () => {
+test('Indentation & Whitespace', () => {
   const a = SF.Format(
     `
 @import ../test.sass
