@@ -1,6 +1,30 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: +mixin', () => {
+test('+include()', () => {
+  const a = SF.Format(
+    `
+th
+  +caption-semi-bold()
+    padding: 12px 24px
+  margin: 12px 24px  
+  border-radius: 6px    
+
+`, { debug: false }
+
+  );
+  expect(a).toEqual(
+    `
+th
+  +caption-semi-bold()
+    padding: 12px 24px
+  margin: 12px 24px
+  border-radius: 6px
+`
+  );
+});
+
+
+test('+mixin', () => {
   expect(
     SF.Format(
       `.class

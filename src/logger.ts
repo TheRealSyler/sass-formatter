@@ -8,8 +8,8 @@ export interface LogFormatInfo {
   lineNumber: number;
   oldLineText: string;
   newLineText: string;
-  setSpace?: boolean;
   offset?: number;
+  originalOffset?: number;
   replaceSpaceOrTabs?: boolean;
   nextLine?: SassTextLine;
 }
@@ -78,16 +78,18 @@ function InfoLogHelper(data: Logs) {
     const lineNumber = `${TEXT('Line Number')}${colon} ${NUMBER(info.lineNumber)}`;
     const offset =
       info.offset !== undefined ? `${TEXT('Offset')}${colon} ${NUMBER(info.offset)}` : '';
-    const propertySpace = info.setSpace !== undefined ? BOOL(info.setSpace) : notProvided;
+
+    const originalOffset =
+      info.originalOffset !== undefined ? `${TEXT('Original Offset')}${colon} ${NUMBER(info.originalOffset)}` : '';
     const nextLine =
       info.nextLine !== undefined
         ? JSON.stringify(info.nextLine)
-            .replace(/[{}]/g, '')
-            .replace(/:/g, ': ')
-            .replace(/,/g, ', ')
-            .replace(/".*?"/g, (s) => {
-              return styler(s, '#c76');
-            })
+          .replace(/[{}]/g, '')
+          .replace(/:/g, ': ')
+          .replace(/,/g, ', ')
+          .replace(/".*?"/g, (s) => {
+            return styler(s, '#c76');
+          })
         : notProvided;
     const replace =
       info.replaceSpaceOrTabs !== undefined ? BOOL(info.replaceSpaceOrTabs) : notProvided;
@@ -103,16 +105,13 @@ function InfoLogHelper(data: Logs) {
         return ` ${title} ${lineNumber}`;
       default:
         let additionalInfo = '';
-        additionalInfo +=
-          propertySpace !== null
-            ? `\n      ${TEXT('Property Space')} ${colon} ${propertySpace}`
-            : '';
+
         additionalInfo +=
           nextLine !== null ? `\n      ${TEXT('Next Line')}      ${colon} ${nextLine}` : '';
         additionalInfo +=
           replace !== null ? `\n      ${TEXT('Replace')}        ${colon} ${replace}` : '';
 
-        return ` ${title} ${lineNumber} ${offset}
+        return ` ${title} ${lineNumber} ${offset} ${originalOffset}
       ${TEXT('Old')}            ${colon} ${styler(replaceWhitespace(info.oldLineText), '#c64')}
       ${TEXT('New')}            ${colon} ${styler(
           replaceWhitespace(info.newLineText.replace(/\n/g, '\\n')),

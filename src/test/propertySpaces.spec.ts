@@ -7,7 +7,8 @@ test('setPropertyValueSpaces Function', () => {
   const STATE = new FormattingState()
   STATE.LOCAL_CONTEXT.isProp = true
   STATE.CONFIG.setPropertySpace = true
-  expect(setPropertyValueSpaces(STATE, '').text).toEqual('')
+  expect(setPropertyValueSpaces(STATE, '')).toEqual('')
+  expect(setPropertyValueSpaces(STATE, '  margin:')).toEqual('  margin:')
 });
 
 test('Property Spaces', () => {
@@ -22,7 +23,7 @@ test('Property Spaces', () => {
       border: solid  red    20px  
       display \t : flex
 `,
-    { insertSpaces: true, tabSize: 2, debug: false }
+    { debug: false }
   );
   expect(a).toEqual(
     `
@@ -34,6 +35,22 @@ test('Property Spaces', () => {
   bottom: .324rem
   border: solid red 20px
   display: flex
+`
+  );
+});
+test('Don\' set Property Spaces', () => {
+  const a = SF.Format(
+    `
+    .class
+      margin :   23rem    23px  
+
+`,
+    { setPropertySpace: false, debug: false }
+  );
+  expect(a).toEqual(
+    `
+.class
+  margin :   23rem    23px
 `
   );
 });

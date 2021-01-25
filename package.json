@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "suf-log": "^2.5.3",
-    "suf-regex": "^0.1.1"
+    "suf-regex": "^0.2.0"
   },
   "repository": {
     "type": "git",

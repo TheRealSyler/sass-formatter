@@ -60,7 +60,7 @@ export function convertScssOrCss(
             properties
               .map((v) =>
                 replaceWithOffset(
-                  setPropertyValueSpaces(STATE, removeInvalidChars(v)).text.trim(),
+                  setPropertyValueSpaces(STATE, removeInvalidChars(v)).trim(),
                   STATE.CONFIG.tabSize,
                   STATE
                 )

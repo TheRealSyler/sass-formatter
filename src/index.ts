@@ -121,6 +121,7 @@ export class SassFormatter {
           else if (this.isBlockHeader(line, STATE)) {
             this.addNewLine(STATE);
             STATE.RESULT += FormatBlockHeader(line, STATE);
+            STATE.CONTEXT.wasLastHeaderIncludeMixin = STATE.LOCAL_CONTEXT.isInclude
           }
           // ####### Properties or Vars #######
           else if (this.isProperty(STATE)) {
@@ -242,7 +243,6 @@ export class SassFormatter {
         STATE.LOCAL_CONTEXT.ResetTabs ||
         STATE.LOCAL_CONTEXT.isAnd_ ||
         STATE.LOCAL_CONTEXT.isHtmlTag ||
-        STATE.LOCAL_CONTEXT.isInclude === 'header' ||
         STATE.LOCAL_CONTEXT.isInclude ||
         isMixin(line.get()) || // adds =mixin
         isPseudo(line.get()) ||
@@ -257,7 +257,6 @@ export class SassFormatter {
     return (
       STATE.LOCAL_CONTEXT.isImport ||
       STATE.LOCAL_CONTEXT.isVariable ||
-      STATE.LOCAL_CONTEXT.isInclude === 'prop' ||
       STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||
       STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||

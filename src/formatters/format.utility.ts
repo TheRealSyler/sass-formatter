@@ -36,9 +36,9 @@ export function FormatSetTabs(
       STATE.CONTEXT.tabs = Math.max(
         0,
         STATE.LOCAL_CONTEXT.indentation.distance +
-          headerStuff.offset + // keep in mind that + offset can decrease the number.
-          STATE.CONFIG.tabSize +
-          headerStuff.additionalTabs
+        headerStuff.offset + // keep in mind that +offset can decrease the number.
+        STATE.CONFIG.tabSize +
+        headerStuff.additionalTabs
       );
 
       STATE.CONTEXT.currentTabs = STATE.CONTEXT.tabs;

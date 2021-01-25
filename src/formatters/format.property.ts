@@ -4,7 +4,7 @@ import { FormattingState } from '../state';
 
 import { getDistanceReversed, isComment as isComment_ } from 'suf-regex';
 
-import { replaceWithOffset, convertLine, replaceSpacesOrTabs } from '../utility';
+import { replaceWithOffset, convertLine, replaceSpacesOrTabs, getBlockHeaderOffset } from '../utility';
 
 import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
@@ -15,7 +15,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;
   let edit = line.get();
   const isComment = isComment_(line.get());
-  let { setSpace, text: SetPropertySpaceRes } = setPropertyValueSpaces(STATE, line.get());
+  const SetPropertySpaceRes = setPropertyValueSpaces(STATE, line.get());
   line.set(SetPropertySpaceRes);
   if (convertLine(line, STATE)) {
     const convertRes = convertScssOrCss(line.get(), STATE);
@@ -33,15 +33,32 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
 
   // Return
   if (move) {
-    edit = replaceWithOffset(line.get(), STATE.LOCAL_CONTEXT.indentation.offset, STATE).trimRight();
+    let offset = STATE.LOCAL_CONTEXT.indentation.offset;
+    const distance = STATE.LOCAL_CONTEXT.indentation.distance
+
+    if (STATE.CONTEXT.wasLastHeaderIncludeMixin) {
+      if (distance >= STATE.CONTEXT.tabs - STATE.CONFIG.tabSize) {
+        offset = getBlockHeaderOffset(distance,
+          STATE.CONFIG.tabSize,
+          STATE.CONTEXT.tabs,
+          false)
+      } else {
+        offset = (STATE.CONTEXT.tabs - STATE.CONFIG.tabSize) - distance
+
+        STATE.CONTEXT.wasLastHeaderIncludeMixin = false
+        STATE.CONTEXT.tabs = STATE.CONTEXT.tabs - STATE.CONFIG.tabSize
+      }
+    }
+
+    edit = replaceWithOffset(line.get(), offset, STATE).trimRight();
     PushDebugInfo({
       title: 'PROPERTY: MOVE',
       lineNumber: STATE.currentLine,
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      setSpace,
-      offset: STATE.LOCAL_CONTEXT.indentation.offset,
+      offset: offset,
+      originalOffset: STATE.LOCAL_CONTEXT.indentation.offset,
       replaceSpaceOrTabs,
     });
   } else if (
@@ -55,28 +72,16 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      setSpace,
-      replaceSpaceOrTabs,
-    });
-  } else if (setSpace || convert || replaceSpaceOrTabs) {
-    edit = line.get();
-    PushDebugInfo({
-      title: 'PROPERTY: CHANGE',
-      lineNumber: STATE.currentLine,
-      oldLineText: STATE.lines[STATE.currentLine],
-      newLineText: edit,
-      debug: STATE.CONFIG.debug,
-      setSpace,
       replaceSpaceOrTabs,
     });
   } else {
+    edit = line.get();
     PushDebugInfo({
       title: 'PROPERTY: DEFAULT',
       lineNumber: STATE.currentLine,
       oldLineText: STATE.lines[STATE.currentLine],
       newLineText: edit,
       debug: STATE.CONFIG.debug,
-      setSpace,
       replaceSpaceOrTabs,
     });
   }
@@ -93,8 +98,6 @@ export function canReplaceSpacesOrTabs(STATE: FormattingState, text: string) {
 
 export function setPropertyValueSpaces(STATE: FormattingState, text: string) {
 
-  let setSpace = false;
-
   if (
     text &&
     (!STATE.LOCAL_CONTEXT.isHtmlTag &&
@@ -103,38 +106,38 @@ export function setPropertyValueSpaces(STATE: FormattingState, text: string) {
   ) {
 
     let newPropValue = '';
-    const [propName, propValue] = text.split(/:(.+)/)
+    const [propName, propValue] = text.split(/:(.*)/)
 
-    if (propValue) {
-      let wasLastCharSpace = true;
 
-      for (let i = 0; i < propValue.length; i++) {
-        const char = propValue[i];
+    let wasLastCharSpace = true;
 
-        switch (char) {
-          case ' ':
-            if (!wasLastCharSpace) {
-              newPropValue += char;
-              wasLastCharSpace = true;
-            }
-            break;
-          case '.':
+    for (let i = 0; i < propValue.length; i++) {
+      const char = propValue[i];
+
+      switch (char) {
+        case ' ':
+          if (!wasLastCharSpace) {
+            newPropValue += char;
             wasLastCharSpace = true;
-            newPropValue += char;
-            break;
-          default:
-            wasLastCharSpace = false;
-            newPropValue += char;
-            break;
+          }
+          break;
+        case '.':
+          wasLastCharSpace = true;
+          newPropValue += char;
+          break;
+        default:
+          wasLastCharSpace = false;
+          newPropValue += char;
+          break;
 
-        }
       }
     }
 
-    text = `${propName.trimEnd()}:${newPropValue ? ' ' + newPropValue : ''}`
 
-    setSpace = true;
+    return `${propName.trimEnd()}:${propValue ? ' ' + newPropValue : ''}`
+
+
   }
-  return { setSpace, text };
+  return text
 }
 

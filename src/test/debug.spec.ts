@@ -20,7 +20,7 @@ test('Debug Message', () => {
 `);
   expect(log.logs[0].replace(/\x1b\[.*?m/g, '')).toEqual(
     `FORMAT
- BLOCK HEADER: MODIFIED Line Number: 0 
+ BLOCK HEADER: MODIFIED Line Number: 0  
       Old            : ··.class····⟶⟶·······{width:335px;·····⟶·····float:left;⟶·overflow:hidden;·padding-left:5px;}
       New            : .class\\n··width:·335px\\n··float:·left\\n··overflow:·hidden\\n··padding-left:·5px
       Convert        : ONE LINER
