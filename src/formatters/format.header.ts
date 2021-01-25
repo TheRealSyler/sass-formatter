@@ -90,8 +90,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       offset: offset,
     });
   } else if (
-    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
-    STATE.CONFIG.deleteWhitespace
+    STATE.CONFIG.deleteWhitespace,
+    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0
   ) {
     edit = line.get().trimRight();
     PushDebugInfo({

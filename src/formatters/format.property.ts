@@ -45,8 +45,8 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       replaceSpaceOrTabs,
     });
   } else if (
-    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0 &&
-    STATE.CONFIG.deleteWhitespace
+    STATE.CONFIG.deleteWhitespace &&
+    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0
   ) {
     edit = line.get().trimRight();
     PushDebugInfo({
