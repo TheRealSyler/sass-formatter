@@ -63,7 +63,7 @@ span
 
 ##### SassFormatterConfig
 
-```typescript
+```ts
 interface SassFormatterConfig {
     /**Enable debug messages */
     debug: boolean;
@@ -85,7 +85,7 @@ interface SassFormatterConfig {
 
 ##### defaultSassFormatterConfig
 
-```typescript
+```ts
 const defaultSassFormatterConfig: SassFormatterConfig;
 ```
 
