@@ -1,4 +1,4 @@
-import { getIndentationOffset, convertLine } from './utility';
+import { getIndentationOffset } from './utility';
 import {
   isBlockCommentStart,
   isIgnore,
@@ -30,7 +30,6 @@ import { isAtKeyframes } from './formatters/format.utility';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
-import { convertScssOrCss } from './formatters/format.convert';
 import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
 import { SassFormatterConfig } from './config';
 import { SassTextLine } from './sassTextLine';
@@ -130,19 +129,19 @@ export class SassFormatter {
             STATE.RESULT += FormatProperty(line, STATE);
           }
           // ####### Convert #######
-          else if (convertLine(line, STATE)) {
-            this.ResetCONTEXT('convert', STATE);
-            const edit = convertScssOrCss(line.get(), STATE).text;
-            PushDebugInfo({
-              title: 'CONVERT',
-              lineNumber: STATE.currentLine,
-              oldLineText: STATE.lines[STATE.currentLine],
-              newLineText: edit,
-              debug: STATE.CONFIG.debug,
-            });
-            this.addNewLine(STATE);
-            STATE.RESULT += edit;
-          } else {
+          // else if (convertLine(line, STATE)) {
+          //   this.ResetCONTEXT('convert', STATE);
+          //   const edit = convertScssOrCss(line.get(), STATE).text;
+          //   PushDebugInfo({
+          //     title: 'CONVERT',
+          //     lineNumber: STATE.currentLine,
+          //     oldLineText: STATE.lines[STATE.currentLine],
+          //     newLineText: edit,
+          //     debug: STATE.CONFIG.debug,
+          //   });
+          //   this.addNewLine(STATE);
+          //   STATE.RESULT += edit;
+          else {
             PushDebugInfo({
               title: 'NO CHANGE',
               lineNumber: STATE.currentLine,
