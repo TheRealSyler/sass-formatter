@@ -1,6 +1,6 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: Convert css ONE LINER', () => {
+test('Convert css ONE LINER', () => {
   expect(
     SF.Format(
       `  .class    \t\t       {width:335px;     \t     float:left;\t overflow:hidden; padding-left:5px;}
@@ -17,7 +17,7 @@ test('Sass Format: Convert css ONE LINER', () => {
 `);
 });
 
-test('Sass Format: Conversion (From scss)', () => {
+test('Conversion (From scss)', () => {
   const a = SF.Format(
     `
 $var: 100vh;
@@ -32,7 +32,7 @@ $var: 100vh;
                     margin:         $var;
                   
 }
-`
+`,
   );
   expect(a).toEqual(
     `
