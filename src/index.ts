@@ -237,16 +237,18 @@ export class SassFormatter {
       !STATE.LOCAL_CONTEXT.isInterpolatedProp &&
       !STATE.LOCAL_CONTEXT.isAtExtend &&
       !STATE.LOCAL_CONTEXT.isImport &&
-      (isMixin(line.get()) || // adds =mixin
-        isPseudo(line.get()) ||
-        isSelectorOperator(line.get()) ||
-        isStar(line.get()) ||
-        isBracketSelector(line.get()) ||
+      (
         STATE.LOCAL_CONTEXT.isAdjacentSelector ||
         STATE.LOCAL_CONTEXT.ResetTabs ||
         STATE.LOCAL_CONTEXT.isAnd_ ||
         STATE.LOCAL_CONTEXT.isHtmlTag ||
         STATE.LOCAL_CONTEXT.isInclude === 'header' ||
+        STATE.LOCAL_CONTEXT.isInclude ||
+        isMixin(line.get()) || // adds =mixin
+        isPseudo(line.get()) ||
+        isSelectorOperator(line.get()) ||
+        isStar(line.get()) ||
+        isBracketSelector(line.get()) ||
         isCssSelector(line.get())) // adds all lines that start with [@.#%]
     );
   }
