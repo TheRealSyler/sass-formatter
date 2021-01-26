@@ -10,9 +10,8 @@ orbs:
 
 jobs:
   build:
-    # docker:
-    # specify the version you desire here
-    #   - image: circleci/node:10.15.3
+    docker:
+      - image: 'cimg/base:stable'
 
     working_directory: ~/repo
 
