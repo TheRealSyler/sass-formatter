@@ -37,7 +37,6 @@ import { LogDebugResult, PushDebugInfo } from './logger';
 
 export { SassFormatterConfig, defaultSassFormatterConfig } from './config';
 
-
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
     const STATE = new FormattingState();
