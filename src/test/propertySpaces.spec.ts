@@ -54,3 +54,29 @@ test('Don\' set Property Spaces', () => {
 `
   );
 });
+
+test('Variable spaces', () => {
+  const a = SF.Format(
+    `
+$a : black   
+$b :black
+$c: black 
+$d:black
+$e \t : black
+
+$x: border  thin    solid
+`,
+{ debug: false }
+);
+expect(a).toEqual(
+  `
+$a: black
+$b: black
+$c: black
+$d: black
+$e: black
+
+$x: border thin solid
+`
+  );
+});
