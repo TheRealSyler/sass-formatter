@@ -109,12 +109,12 @@ test('prevent indentation #43', () => {
   const a = SF.Format(
     `
 .test
-  color: black
+    color: black
    $a: black
   
 $c: black
 `,
-    { debug: false }
+    { tabSize: 4, debug: false }
   );
   expect(a).toEqual(
     `
