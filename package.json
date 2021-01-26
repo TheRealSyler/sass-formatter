@@ -7,6 +7,7 @@
     "prepack": "jest && del ./dist && npm run build && suf",
     "build": "tsc -b",
     "watch": "tsc -w",
+    "postpublish": "curl -X POST -d {} https://api.netlify.com/build_hooks/60100b58cf7f871b9e91cca8",
     "test": "jest --coverage",
     "test:clear": "jest --clearCache",
     "test:watch": "jest --watch --coverage"
