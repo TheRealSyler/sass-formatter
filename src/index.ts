@@ -128,7 +128,7 @@ export class SassFormatter {
           }
           // ####### Properties or Vars #######
           else if (this.isProperty(STATE)) {
-            this.ResetCONTEXT('normal', STATE);
+            STATE.CONTEXT.firstCommaHeader.exists = false;
             this.addNewLine(STATE);
             STATE.RESULT += FormatProperty(line, STATE);
           }
@@ -174,7 +174,7 @@ export class SassFormatter {
   }
 
   private static handleEmptyLine(STATE: FormattingState, line: SassTextLine) {
-    this.ResetCONTEXT('normal', STATE);
+    STATE.CONTEXT.firstCommaHeader.exists = false;
     let pass = true; // its not useless, trust me.
 
     if (STATE.CONFIG.deleteEmptyRows && !STATE.CONTEXT.isLastLine) {
@@ -253,13 +253,6 @@ export class SassFormatter {
       STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
     );
-  }
-
-  private static ResetCONTEXT(type: 'normal' | 'convert', STATE: FormattingState) {
-    STATE.CONTEXT.firstCommaHeader.exists = false;
-    if (type === 'convert') {
-      STATE.CONTEXT.convert.wasLastLineCss = true;
-    }
   }
 
   /** Adds new Line If not first line. */
