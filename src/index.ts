@@ -22,7 +22,7 @@ import {
   isAtExtend,
   isInclude,
   getDistance,
-  isVar,
+  isVar as isVar__DoesntCoverAllCases,
   isAtImport,
 } from 'suf-regex';
 import { FormattingState } from './state';
@@ -36,6 +36,10 @@ import { SassTextLine } from './sassTextLine';
 import { LogDebugResult, PushDebugInfo } from './logger';
 
 export { SassFormatterConfig, defaultSassFormatterConfig } from './config';
+
+function isVar(payload: string): boolean {
+  return isVar__DoesntCoverAllCases(payload) || /^[\t ]*(\$|--)\S+\s*:.*/gm.test(payload)
+}
 
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
