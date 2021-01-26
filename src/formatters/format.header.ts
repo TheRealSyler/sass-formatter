@@ -1,14 +1,12 @@
 import { SassTextLine } from '../sassTextLine';
 import { FormattingState } from '../state';
 import { isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
-
 import {
   replaceSpacesOrTabs,
   replaceWithOffset,
   getBlockHeaderOffset,
   getIndentationOffset,
 } from '../utility';
-import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
 import { PushDebugInfo } from '../logger';
 
@@ -32,7 +30,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
     line.set(convertRes.text);
     STATE.LOCAL_CONTEXT.indentation = getIndentationOffset(
       line.get(),
-      STATE.CONTEXT.tabs,
+      STATE.CONTEXT.indentation,
       STATE.CONFIG.tabSize
     );
     hasBeenConverted = true;
@@ -40,12 +38,12 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   // Set offset.
   let offset =
     STATE.LOCAL_CONTEXT.isAdjacentSelector && STATE.CONTEXT.wasLastLineSelector
-      ? STATE.CONTEXT.lastSelectorTabs - STATE.LOCAL_CONTEXT.indentation.distance
+      ? STATE.CONTEXT.lastSelectorIndentation - STATE.LOCAL_CONTEXT.indentation.distance
       : getBlockHeaderOffset(
         STATE.LOCAL_CONTEXT.indentation.distance,
         STATE.CONFIG.tabSize,
-        STATE.CONTEXT.tabs,
-        STATE.LOCAL_CONTEXT.ResetTabs
+        STATE.CONTEXT.indentation,
+        STATE.LOCAL_CONTEXT.isReset
       );
 
   if (STATE.CONTEXT.firstCommaHeader.exists) {
@@ -53,7 +51,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   // Set Context Vars
-  STATE.CONTEXT.keyframes.is =
+  STATE.CONTEXT.keyframes.isIn =
     STATE.LOCAL_CONTEXT.isAtKeyframes || STATE.LOCAL_CONTEXT.isAtKeyframesPoint;
   STATE.CONTEXT.allowSpace = false;
 
@@ -122,7 +120,24 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       replaceSpaceOrTabs,
     });
   }
-  STATE.CONTEXT.lastSelectorTabs = Math.max(STATE.LOCAL_CONTEXT.indentation.distance + offset, 0);
-  FormatSetTabs(STATE, { additionalTabs, offset: offset });
+
+  STATE.CONTEXT.lastSelectorIndentation = Math.max(STATE.LOCAL_CONTEXT.indentation.distance + offset, 0);
+
+  if (STATE.LOCAL_CONTEXT.isReset) {
+    STATE.CONTEXT.indentation = Math.max(0, STATE.LOCAL_CONTEXT.indentation.distance + offset);
+  } else {
+    STATE.CONTEXT.indentation = Math.max(
+      0,
+      STATE.LOCAL_CONTEXT.indentation.distance +
+      offset + // keep in mind that +offset can decrease the number.
+      STATE.CONFIG.tabSize +
+      additionalTabs
+    );
+  }
+
+  if (STATE.LOCAL_CONTEXT.isAtKeyframes) {
+    STATE.CONTEXT.keyframes.indentation = STATE.CONTEXT.indentation
+  }
+
   return edit;
 }

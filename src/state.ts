@@ -24,25 +24,22 @@ interface FormatContext {
     wasLastLineCss: boolean;
   };
   keyframes: {
-    is: boolean;
-    tabs: number;
+    /**true if in keyframes body. */
+    isIn: boolean;
+    /** the indentation level of the keyframes declaration. */
+    indentation: number;
   };
   /**
    * Indentation level of the last selector
    */
-  lastSelectorTabs: number;
+  lastSelectorIndentation: number;
   /**
    * if `.class` is at line 0 and has an indentation level of 0,
    * then this property should be set to the current `tabSize`.
    *
    * so that the properties get the correct indentation level.
    */
-  tabs: number;
-  /**
-   * forgot what this is for, but `DO NOT REMOVE THIS`,
-   * don't be an idiot and write documentations before you forget what the code does.
-   */
-  currentTabs: number;
+  indentation: number;
   /**
    * used if there is there are multiple selectors, example line 0 has
    * `.class1,` and line 1 has `#someId` this stores the distance of the first selector (`.class1` in this example)
@@ -62,8 +59,8 @@ interface FormatContext {
  * This is the context for each line.
  */
 interface FormatLocalContext {
-  ResetTabs: boolean;
-  isAnd_: boolean;
+  isReset: boolean;
+  isAnd: boolean;
   isProp: boolean;
   indentation: {
     offset: number;
@@ -97,13 +94,13 @@ export class FormattingState {
   LOCAL_CONTEXT: FormatLocalContext = {
     isAdjacentSelector: false,
     isHtmlTag: false,
-    ResetTabs: false,
+    isReset: false,
     indentation: {
       distance: 0,
       offset: 0,
     },
     isAtExtend: false,
-    isAnd_: false,
+    isAnd: false,
     isClassOrIdSelector: false,
     isIfOrElseAProp: false,
     isAtKeyframes: false,
@@ -123,18 +120,17 @@ export class FormattingState {
     allowSpace: false,
     isInBlockComment: false,
     ignoreLine: false,
-    lastSelectorTabs: 0,
+    lastSelectorIndentation: 0,
     wasLastLineSelector: false,
     convert: {
       lastSelector: '',
       wasLastLineCss: false,
     },
     keyframes: {
-      is: false,
-      tabs: 0,
+      isIn: false,
+      indentation: 0,
     },
-    tabs: 0,
-    currentTabs: 0,
+    indentation: 0,
     firstCommaHeader: { exists: false, distance: 0 },
   };
   CONFIG: SassFormatterConfig = defaultSassFormatterConfig;

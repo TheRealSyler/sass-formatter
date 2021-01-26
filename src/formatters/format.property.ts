@@ -1,12 +1,7 @@
 import { SassTextLine } from '../sassTextLine';
-
 import { FormattingState } from '../state';
-
 import { getDistanceReversed, isComment as isComment_ } from 'suf-regex';
-
 import { replaceWithOffset, convertLine, replaceSpacesOrTabs, getBlockHeaderOffset } from '../utility';
-
-import { FormatSetTabs } from './format.utility';
 import { convertScssOrCss } from './format.convert';
 import { PushDebugInfo } from '../logger';
 
@@ -37,21 +32,21 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     const distance = STATE.LOCAL_CONTEXT.indentation.distance
 
     if (STATE.CONTEXT.wasLastHeaderIncludeMixin) {
-      if (distance >= STATE.CONTEXT.tabs - STATE.CONFIG.tabSize) {
+      if (distance >= STATE.CONTEXT.indentation - STATE.CONFIG.tabSize) {
         offset = getBlockHeaderOffset(distance,
           STATE.CONFIG.tabSize,
-          STATE.CONTEXT.tabs,
+          STATE.CONTEXT.indentation,
           false)
       } else {
-        offset = (STATE.CONTEXT.tabs - STATE.CONFIG.tabSize) - distance
+        offset = (STATE.CONTEXT.indentation - STATE.CONFIG.tabSize) - distance
 
         STATE.CONTEXT.wasLastHeaderIncludeMixin = false
-        STATE.CONTEXT.tabs = STATE.CONTEXT.tabs - STATE.CONFIG.tabSize
+        STATE.CONTEXT.indentation = STATE.CONTEXT.indentation - STATE.CONFIG.tabSize
       }
     } else if (STATE.LOCAL_CONTEXT.isVariable || STATE.LOCAL_CONTEXT.isImport) {
       offset = getBlockHeaderOffset(distance,
         STATE.CONFIG.tabSize,
-        STATE.CONTEXT.tabs,
+        STATE.CONTEXT.indentation,
         false)
     }
 
@@ -91,7 +86,10 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     });
   }
 
-  FormatSetTabs(STATE);
+  if (STATE.CONTEXT.keyframes.isIn && STATE.LOCAL_CONTEXT.isAtKeyframesPoint) {
+    STATE.CONTEXT.indentation = Math.max(0, STATE.CONTEXT.indentation + STATE.CONFIG.tabSize);
+  }
+
   return edit;
 }
 

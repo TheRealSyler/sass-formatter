@@ -1,4 +1,4 @@
-import { getDistance, isScssOrCss, isComment } from 'suf-regex';
+import { getDistance, isScssOrCss, isComment, isElse, isIfOrElse } from 'suf-regex';
 import { SassTextLine } from './sassTextLine';
 import { FormattingState } from './state';
 
@@ -46,7 +46,7 @@ export function getIndentationOffset(
   return { offset: indentation - distance, distance };
 }
 
-export function isKeyframePoint(text: string, isAtKeyframe: boolean) {
+function isKeyframePoint(text: string, isAtKeyframe: boolean) {
   if (isAtKeyframe === false) {
     return false;
   }
@@ -68,3 +68,32 @@ export function convertLine(line: SassTextLine, STATE: FormattingState) {
     !isComment(line.get())
   );
 }
+
+
+export function isIfOrElseProp(line: SassTextLine, STATE: FormattingState) {
+  let IS_IF_OR_ELSE_ = isIfOrElse(line.get());
+  let isIfOrElseAProp = false;
+  if (STATE.CONTEXT.keyframes.isIn && IS_IF_OR_ELSE_) {
+    IS_IF_OR_ELSE_ = false;
+    isIfOrElseAProp = true;
+    STATE.CONTEXT.indentation = STATE.CONTEXT.keyframes.indentation + STATE.CONFIG.tabSize;
+  }
+  if (IS_IF_OR_ELSE_ && !STATE.CONTEXT.keyframes.isIn && isElse(line.get())) {
+    isIfOrElseAProp = true;
+    IS_IF_OR_ELSE_ = false;
+    STATE.CONTEXT.indentation = Math.max(0, STATE.CONTEXT.indentation - STATE.CONFIG.tabSize);
+  }
+  return isIfOrElseAProp
+}
+
+export function isKeyframePointAndSetIndentation(line: SassTextLine, STATE: FormattingState) {
+  const isAtKeyframesPoint = isKeyframePoint(line.get(), STATE.CONTEXT.keyframes.isIn)
+
+  if (STATE.CONTEXT.keyframes.isIn && isAtKeyframesPoint) {
+    STATE.CONTEXT.indentation = Math.max(0, STATE.CONTEXT.keyframes.indentation);
+  }
+
+  return isAtKeyframesPoint
+}
+
+

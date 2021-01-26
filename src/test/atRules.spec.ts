@@ -41,32 +41,7 @@ span
   );
 });
 
-test('Sass Format: Check @keyframes', () => {
-  const a = SF.Format(
-    `
-.class
-    animation: test 200ms
-@keyframes test
-   from 
-   transform: rotate(0deg)    
-   
-   to
-   transform: rotate(90deg)        `,
-    { insertSpaces: true, tabSize: 2 }
-  );
-  expect(a).toBe(`
-.class
-  animation: test 200ms
-@keyframes test
-  from
-    transform: rotate(0deg)
-
-  to
-    transform: rotate(90deg)
-`);
-});
-
-test('Sass Format: Check @if && @else', () => {
+test('Check @if && @else', () => {
   const a = SF.Format(
     `
 $light-background: #f2ece4;
@@ -114,7 +89,7 @@ $dark-text: #d2e1dd
 `);
 });
 
-test('Sass Format: @forward and @use', () => {
+test('@forward and @use', () => {
   expect(
     SF.Format(
       `  @use 'sass:map' as MAP
@@ -139,7 +114,7 @@ li
   @include bootstrap.list-reset
 `);
 });
-test('Sass Format: @include', () => {
+test('@include', () => {
   expect(
     SF.Format(
       `

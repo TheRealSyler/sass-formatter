@@ -1,4 +1,4 @@
-import { getIndentationOffset } from './utility';
+import { getIndentationOffset, isIfOrElseProp, isKeyframePointAndSetIndentation } from './utility';
 import {
   isBlockCommentStart,
   isIgnore,
@@ -24,9 +24,9 @@ import {
   getDistance,
   isVar,
   isAtImport,
+  isKeyframes,
 } from 'suf-regex';
 import { FormattingState } from './state';
-import { isAtKeyframes } from './formatters/format.utility';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
 import { FormatHandleBlockComment } from './formatters/format.blockComment';
@@ -98,11 +98,13 @@ export class SassFormatter {
           this.handleEmptyLine(STATE, line);
         } else {
           STATE.setLocalContext({
-            ...isAtKeyframes(line, STATE),
-            ResetTabs: isReset(line.get()),
-            isAnd_: isAnd(line.get()),
+            isAtKeyframesPoint: isKeyframePointAndSetIndentation(line, STATE), // IMPORTANT: has to be before getIndentationOffset.
+            indentation: getIndentationOffset(line.get(), STATE.CONTEXT.indentation, STATE.CONFIG.tabSize),
+            isAtKeyframes: isKeyframes(line.get()),
+            isIfOrElseAProp: isIfOrElseProp(line, STATE),
+            isReset: isReset(line.get()),
+            isAnd: isAnd(line.get()),
             isProp: isProperty(line.get()),
-            indentation: getIndentationOffset(line.get(), STATE.CONTEXT.tabs, STATE.CONFIG.tabSize),
             isAdjacentSelector: isAdjacentSelector(line.get()),
             isHtmlTag: isHtmlTag(line.get().trim().split(' ')[0]),
             isClassOrIdSelector: isClassOrId(line.get()),
@@ -112,6 +114,7 @@ export class SassFormatter {
             isVariable: isVar(line.get()),
             isImport: isAtImport(line.get()),
           });
+
           // ####### Is @forward or @use #######
           if (isAtForwardOrAtUse(line.get())) {
             this.addNewLine(STATE);
@@ -129,19 +132,6 @@ export class SassFormatter {
             this.addNewLine(STATE);
             STATE.RESULT += FormatProperty(line, STATE);
           }
-          // ####### Convert #######
-          // else if (convertLine(line, STATE)) {
-          //   this.ResetCONTEXT('convert', STATE);
-          //   const edit = convertScssOrCss(line.get(), STATE).text;
-          //   PushDebugInfo({
-          //     title: 'CONVERT',
-          //     lineNumber: STATE.currentLine,
-          //     oldLineText: STATE.lines[STATE.currentLine],
-          //     newLineText: edit,
-          //     debug: STATE.CONFIG.debug,
-          //   });
-          //   this.addNewLine(STATE);
-          //   STATE.RESULT += edit;
           else {
             PushDebugInfo({
               title: 'NO CHANGE',
@@ -240,8 +230,8 @@ export class SassFormatter {
       !STATE.LOCAL_CONTEXT.isImport &&
       (
         STATE.LOCAL_CONTEXT.isAdjacentSelector ||
-        STATE.LOCAL_CONTEXT.ResetTabs ||
-        STATE.LOCAL_CONTEXT.isAnd_ ||
+        STATE.LOCAL_CONTEXT.isReset ||
+        STATE.LOCAL_CONTEXT.isAnd ||
         STATE.LOCAL_CONTEXT.isHtmlTag ||
         STATE.LOCAL_CONTEXT.isInclude ||
         isMixin(line.get()) || // adds =mixin
