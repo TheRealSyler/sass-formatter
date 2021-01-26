@@ -86,7 +86,7 @@ $test: 23
   );
 });
 
-test('Sass Format: Simple Indentation', () => {
+test('Simple Indentation', () => {
   const a = SF.Format(
     `
   
@@ -101,6 +101,28 @@ test('Sass Format: Simple Indentation', () => {
 .class
   margin: 10px
   padding: 10rem
+`
+  );
+});
+
+test('prevent indentation #43', () => {
+  const a = SF.Format(
+    `
+.test
+    color: black
+   $a: black
+  
+$c: black
+`,
+    { tabSize: 4, debug: false }
+  );
+  expect(a).toEqual(
+    `
+.test
+    color: black
+    $a: black
+
+$c: black
 `
   );
 });
