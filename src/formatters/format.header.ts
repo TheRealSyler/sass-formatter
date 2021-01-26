@@ -46,13 +46,13 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
         STATE.LOCAL_CONTEXT.isReset
       );
 
-  if (STATE.CONTEXT.firstCommaHeader.exists) {
-    offset = STATE.CONTEXT.firstCommaHeader.distance - STATE.LOCAL_CONTEXT.indentation.distance;
+  if (STATE.LOCAL_CONTEXT.isElse && STATE.CONTEXT.if.isIn) {
+    offset = (STATE.CONTEXT.if.indentation - STATE.CONFIG.tabSize) - STATE.LOCAL_CONTEXT.indentation.distance
+  } else if (!STATE.LOCAL_CONTEXT.isIf) {
+    STATE.CONTEXT.keyframes.isIn =
+      STATE.LOCAL_CONTEXT.isAtKeyframes || STATE.LOCAL_CONTEXT.isAtKeyframesPoint;
   }
 
-  // Set Context Vars
-  STATE.CONTEXT.keyframes.isIn =
-    STATE.LOCAL_CONTEXT.isAtKeyframes || STATE.LOCAL_CONTEXT.isAtKeyframesPoint;
   STATE.CONTEXT.allowSpace = false;
 
   if (!hasBeenConverted && STATE.LOCAL_CONTEXT.isClassOrIdSelector) {
@@ -60,6 +60,11 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   STATE.CONTEXT.convert.wasLastLineCss = hasBeenConverted;
+
+  if (STATE.CONTEXT.firstCommaHeader.exists) {
+    offset = STATE.CONTEXT.firstCommaHeader.distance - STATE.LOCAL_CONTEXT.indentation.distance;
+  }
+
   if (line.get().trim().endsWith(',')) {
     if (STATE.CONTEXT.firstCommaHeader.exists !== true) {
       STATE.CONTEXT.firstCommaHeader.distance = STATE.LOCAL_CONTEXT.indentation.distance + offset;
@@ -137,6 +142,14 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
 
   if (STATE.LOCAL_CONTEXT.isAtKeyframes) {
     STATE.CONTEXT.keyframes.indentation = STATE.CONTEXT.indentation
+  }
+
+  if (STATE.LOCAL_CONTEXT.isIf) {
+    STATE.CONTEXT.if.indentation = STATE.CONTEXT.indentation
+    STATE.CONTEXT.if.isIn = true
+  } else {
+    STATE.CONTEXT.if.isIn = false
+
   }
 
   return edit;

@@ -1,4 +1,4 @@
-import { getDistance, isScssOrCss, isComment, isElse, isIfOrElse } from 'suf-regex';
+import { getDistance, isScssOrCss, isComment, isIfOrElse as _isIfOrElse } from 'suf-regex';
 import { SassTextLine } from './sassTextLine';
 import { FormattingState } from './state';
 
@@ -67,23 +67,6 @@ export function convertLine(line: SassTextLine, STATE: FormattingState) {
     isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) &&
     !isComment(line.get())
   );
-}
-
-
-export function isIfOrElseProp(line: SassTextLine, STATE: FormattingState) {
-  let IS_IF_OR_ELSE_ = isIfOrElse(line.get());
-  let isIfOrElseAProp = false;
-  if (STATE.CONTEXT.keyframes.isIn && IS_IF_OR_ELSE_) {
-    IS_IF_OR_ELSE_ = false;
-    isIfOrElseAProp = true;
-    STATE.CONTEXT.indentation = STATE.CONTEXT.keyframes.indentation + STATE.CONFIG.tabSize;
-  }
-  if (IS_IF_OR_ELSE_ && !STATE.CONTEXT.keyframes.isIn && isElse(line.get())) {
-    isIfOrElseAProp = true;
-    IS_IF_OR_ELSE_ = false;
-    STATE.CONTEXT.indentation = Math.max(0, STATE.CONTEXT.indentation - STATE.CONFIG.tabSize);
-  }
-  return isIfOrElseAProp
 }
 
 export function isKeyframePointAndSetIndentation(line: SassTextLine, STATE: FormattingState) {

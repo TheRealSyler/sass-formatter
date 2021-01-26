@@ -24,9 +24,15 @@ interface FormatContext {
     wasLastLineCss: boolean;
   };
   keyframes: {
-    /**true if in keyframes body. */
+    /**true if in @keyframes body. */
     isIn: boolean;
     /** the indentation level of the keyframes declaration. */
+    indentation: number;
+  };
+  if: {
+    /**true if in @if body. */
+    isIn: boolean;
+    /** the indentation level of the @if declaration. */
     indentation: number;
   };
   /**
@@ -51,7 +57,7 @@ interface FormatContext {
      */
     distance: number;
     /**
-     * true if a selector ends with a comma
+     * true previous selector ends with a comma
      */ exists: boolean;
   };
 }
@@ -69,7 +75,8 @@ interface FormatLocalContext {
   isAtExtend: boolean;
   isClassOrIdSelector: boolean;
   isHtmlTag: boolean;
-  isIfOrElseAProp: boolean;
+  isIf: boolean;
+  isElse: boolean;
   isAtKeyframes: boolean;
   isAtKeyframesPoint: boolean;
   isAdjacentSelector: boolean;
@@ -102,7 +109,8 @@ export class FormattingState {
     isAtExtend: false,
     isAnd: false,
     isClassOrIdSelector: false,
-    isIfOrElseAProp: false,
+    isIf: false,
+    isElse: false,
     isAtKeyframes: false,
     isAtKeyframesPoint: false,
     isProp: false,
@@ -113,6 +121,10 @@ export class FormattingState {
   };
 
   CONTEXT: FormatContext = {
+    if: {
+      isIn: false,
+      indentation: 0,
+    },
     blockCommentDistance: 0,
     wasLastHeaderIncludeMixin: false,
     isFirstLine: true,

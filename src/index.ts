@@ -1,4 +1,4 @@
-import { getIndentationOffset, isIfOrElseProp, isKeyframePointAndSetIndentation } from './utility';
+import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility';
 import {
   isBlockCommentStart,
   isIgnore,
@@ -25,6 +25,7 @@ import {
   isVar,
   isAtImport,
   isKeyframes,
+
 } from 'suf-regex';
 import { FormattingState } from './state';
 import { FormatBlockHeader } from './formatters/format.header';
@@ -98,10 +99,11 @@ export class SassFormatter {
           this.handleEmptyLine(STATE, line);
         } else {
           STATE.setLocalContext({
-            isAtKeyframesPoint: isKeyframePointAndSetIndentation(line, STATE), // IMPORTANT: has to be before getIndentationOffset.
+            isAtKeyframesPoint: isKeyframePointAndSetIndentation(line, STATE), // IMPORTANT: has to be first
             indentation: getIndentationOffset(line.get(), STATE.CONTEXT.indentation, STATE.CONFIG.tabSize),
+            isIf: /[\t ]*@if/i.test(line.get()),
+            isElse: /[\t ]*@else/i.test(line.get()),
             isAtKeyframes: isKeyframes(line.get()),
-            isIfOrElseAProp: isIfOrElseProp(line, STATE),
             isReset: isReset(line.get()),
             isAnd: isAnd(line.get()),
             isProp: isProperty(line.get()),
@@ -162,6 +164,7 @@ export class SassFormatter {
     if (isBlockCommentEnd(line.get())) {
       STATE.CONTEXT.isInBlockComment = false;
     }
+    /* istanbul ignore if */
     if (STATE.CONFIG.debug) {
       PushDebugInfo({
         title: 'COMMENT BLOCK',
@@ -250,8 +253,7 @@ export class SassFormatter {
       STATE.LOCAL_CONTEXT.isVariable ||
       STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||
-      STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
-      STATE.LOCAL_CONTEXT.isIfOrElseAProp
+      STATE.LOCAL_CONTEXT.isAtKeyframesPoint
     );
   }
 

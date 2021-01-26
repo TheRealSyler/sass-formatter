@@ -54,3 +54,35 @@ transform: rotate(0deg)
     transform: rotate(0deg)
 `);
 });
+
+
+test('Keyframes III', () => {
+  const a = SF.Format(
+    `
+@keyframes name-of-animation
+  from
+    @if $light-theme
+      background-color: $light-background
+  @else
+    background-color: $dark-background
+    transform: rotate(0deg)  
+          to
+transform: rotate(360deg)
+  
+`,
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
+@keyframes name-of-animation
+  from
+    @if $light-theme
+      background-color: $light-background
+    @else
+      background-color: $dark-background
+      transform: rotate(0deg)
+  to
+    transform: rotate(360deg)
+`
+  );
+});

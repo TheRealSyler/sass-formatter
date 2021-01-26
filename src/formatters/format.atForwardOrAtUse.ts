@@ -13,6 +13,7 @@ export function FormatAtForwardOrAtUse(line: SassTextLine, STATE: FormattingStat
     line.set(convertRes.text);
   }
   line.set(line.get().trimStart());
+  /* istanbul ignore if */
   if (STATE.CONFIG.debug) {
     PushDebugInfo({
       title: '@forward or @use',
