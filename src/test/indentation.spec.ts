@@ -104,3 +104,23 @@ test('Sass Format: Simple Indentation', () => {
 `
   );
 });
+
+test('Sass Format: prevent indentation #43', () => {
+  const a = SF.Format(
+    `
+.test
+  color: black
+  
+$c: black  
+`,
+{ debug: false }
+);
+expect(a).toEqual(
+  `
+.test
+  color: black
+  
+$c: black  
+`
+  );
+});
