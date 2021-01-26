@@ -17,7 +17,8 @@ jobs:
 
     steps:
       - checkout
-
+      - node/install:
+          install-yarn: true
       # Download and cache dependencies
       - restore_cache:
           keys:
