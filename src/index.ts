@@ -256,11 +256,11 @@ export class SassFormatter {
   private static isProperty(STATE: FormattingState) {
     return (
       STATE.LOCAL_CONTEXT.isImport ||
+      STATE.LOCAL_CONTEXT.isAtExtend ||
       STATE.LOCAL_CONTEXT.isVariable ||
       STATE.LOCAL_CONTEXT.isInterpolatedProp ||
       STATE.LOCAL_CONTEXT.isProp ||
       STATE.LOCAL_CONTEXT.isAtKeyframesPoint ||
-      STATE.LOCAL_CONTEXT.isAtExtend ||
       STATE.LOCAL_CONTEXT.isIfOrElseAProp
     );
   }
