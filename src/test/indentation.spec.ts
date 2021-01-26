@@ -110,8 +110,8 @@ test('Sass Format: prevent indentation #43', () => {
     `
 .test
   color: black
-  
-$c: black  
+
+$c: black
 `,
 { debug: false }
 );
@@ -119,8 +119,8 @@ expect(a).toEqual(
   `
 .test
   color: black
-  
-$c: black  
+
+$c: black
 `
   );
 });

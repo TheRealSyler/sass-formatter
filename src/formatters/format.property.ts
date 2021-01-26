@@ -49,6 +49,9 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
         STATE.CONTEXT.tabs = STATE.CONTEXT.tabs - STATE.CONFIG.tabSize
       }
     }
+    if (STATE.LOCAL_CONTEXT.isVariable) {
+      offset = Math.min(offset, 0) // only allow negative offset for variables
+    }
 
     edit = replaceWithOffset(line.get(), offset, STATE).trimRight();
     PushDebugInfo({
