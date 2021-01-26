@@ -101,7 +101,7 @@ export function setPropertyValueSpaces(STATE: FormattingState, text: string) {
   if (
     text &&
     (!STATE.LOCAL_CONTEXT.isHtmlTag &&
-      (STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isInterpolatedProp) &&
+      (STATE.LOCAL_CONTEXT.isProp || STATE.LOCAL_CONTEXT.isInterpolatedProp || STATE.LOCAL_CONTEXT.isVariable) &&
       STATE.CONFIG.setPropertySpace)
   ) {
 
