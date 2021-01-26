@@ -64,12 +64,12 @@ $c: black
 $d:black
 $e \t : black
 
-$x: border  thin    solid
+$x: border  thin    solid 
 `,
-{ debug: false }
-);
-expect(a).toEqual(
-  `
+    { debug: false }
+  );
+  expect(a).toEqual(
+    `
 $a: black
 $b: black
 $c: black
