@@ -5,6 +5,7 @@ interface FormatContext {
   isLastLine: boolean;
   isInBlockComment: boolean;
   wasLastHeaderIncludeMixin: boolean;
+  wasLastHeaderNestedProp: boolean;
   blockCommentDistance: number;
   /**
    * The Formatter ignores whitespace until the next selector.
@@ -84,6 +85,7 @@ interface FormatLocalContext {
   isInclude: boolean
   isVariable: boolean;
   isImport: boolean;
+  isNestPropHead: boolean;
 }
 
 export class FormattingState {
@@ -118,6 +120,7 @@ export class FormattingState {
     isInclude: false,
     isVariable: false,
     isImport: false,
+    isNestPropHead: false
   };
 
   CONTEXT: FormatContext = {
@@ -127,6 +130,7 @@ export class FormattingState {
     },
     blockCommentDistance: 0,
     wasLastHeaderIncludeMixin: false,
+    wasLastHeaderNestedProp: false,
     isFirstLine: true,
     isLastLine: false,
     allowSpace: false,
