@@ -237,7 +237,7 @@ export class SassFormatter {
         STATE.LOCAL_CONTEXT.isAdjacentSelector ||
         STATE.LOCAL_CONTEXT.isReset ||
         STATE.LOCAL_CONTEXT.isAnd ||
-        STATE.LOCAL_CONTEXT.isHtmlTag ||
+        (STATE.LOCAL_CONTEXT.isHtmlTag && !/^[\t ]*style[\t ]*:/.test(line.get())) ||
         STATE.LOCAL_CONTEXT.isInclude ||
         STATE.LOCAL_CONTEXT.isNestPropHead ||
         isMixin(line.get()) || // adds =mixin

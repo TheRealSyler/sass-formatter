@@ -11,7 +11,7 @@ test('Nested Properties', () => {
   margin: 20px
      
 `,
-    { debug: true }
+    { debug: false }
   );
   expect(a).toEqual(
     `
@@ -24,4 +24,3 @@ test('Nested Properties', () => {
 `
   );
 });
-
