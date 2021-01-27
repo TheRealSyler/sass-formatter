@@ -1,6 +1,6 @@
 import { SassTextLine } from '../sassTextLine';
 import { FormattingState } from '../state';
-import { getDistanceReversed, isComment as isComment_ } from 'suf-regex';
+import { isComment as isComment_ } from 'suf-regex';
 import { replaceWithOffset, convertLine, replaceSpacesOrTabs, getBlockHeaderOffset } from '../utility';
 import { convertScssOrCss } from './format.convert';
 import { PushDebugInfo } from '../logger';
@@ -61,21 +61,8 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
       originalOffset: STATE.LOCAL_CONTEXT.indentation.offset,
       replaceSpaceOrTabs,
     });
-  } else if (
-    STATE.CONFIG.deleteWhitespace &&
-    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0
-  ) {
-    edit = line.get().trimRight();
-    PushDebugInfo({
-      title: 'PROPERTY: TRAIL',
-      lineNumber: STATE.currentLine,
-      oldLineText: STATE.lines[STATE.currentLine],
-      newLineText: edit,
-      debug: STATE.CONFIG.debug,
-      replaceSpaceOrTabs,
-    });
   } else {
-    edit = line.get();
+    edit = line.get().trimRight();
     PushDebugInfo({
       title: 'PROPERTY: DEFAULT',
       lineNumber: STATE.currentLine,
@@ -93,7 +80,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   return edit;
 }
 
-export function canReplaceSpacesOrTabs(STATE: FormattingState, text: string) {
+function canReplaceSpacesOrTabs(STATE: FormattingState, text: string) {
   return STATE.CONFIG.insertSpaces
     ? /\t/g.test(text)
     : new RegExp(' '.repeat(STATE.CONFIG.tabSize), 'g').test(text);

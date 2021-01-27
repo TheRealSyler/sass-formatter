@@ -1,6 +1,6 @@
 import { SassTextLine } from '../sassTextLine';
 import { FormattingState } from '../state';
-import { isScssOrCss, getDistanceReversed, isComment as isComment_ } from 'suf-regex';
+import { isScssOrCss, isComment as isComment_ } from 'suf-regex';
 import {
   replaceSpacesOrTabs,
   replaceWithOffset,
@@ -91,19 +91,6 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       debug: STATE.CONFIG.debug,
       replaceSpaceOrTabs,
       offset: offset,
-    });
-  } else if (
-    STATE.CONFIG.deleteWhitespace,
-    getDistanceReversed(line.get(), STATE.CONFIG.tabSize) > 0
-  ) {
-    edit = line.get().trimRight();
-    PushDebugInfo({
-      title: 'BLOCK HEADER: TRAIL',
-      lineNumber: STATE.currentLine,
-      oldLineText: STATE.lines[STATE.currentLine],
-      newLineText: edit,
-      debug: STATE.CONFIG.debug,
-      replaceSpaceOrTabs,
     });
   } else if (hasBeenConverted || replaceSpaceOrTabs) {
     edit = line.get();

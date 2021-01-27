@@ -205,7 +205,7 @@ export class SassFormatter {
         pass = false;
       }
     }
-    if (line.get().length > 0 && pass && STATE.CONFIG.deleteWhitespace) {
+    if (line.get().length > 0 && pass) {
       PushDebugInfo({
         title: 'EMPTY LINE: WHITESPACE',
         lineNumber: STATE.currentLine,

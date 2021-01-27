@@ -3,7 +3,7 @@ export interface SassFormatterConfig {
   debug: boolean;
   /**delete rows that are empty. */
   deleteEmptyRows: boolean;
-  /**Delete trailing whitespace.*/
+  /**@deprecated*/
   deleteWhitespace: boolean;
   /**Convert css or scss to sass */
   convert: boolean;

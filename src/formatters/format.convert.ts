@@ -6,15 +6,14 @@ import {
   isPseudoWithParenthesis,
   isCssPseudo,
   isCssSelector,
+  isCssOneLiner
 } from 'suf-regex';
 
 import { replaceWithOffset } from '../utility';
 import { setPropertyValueSpaces } from './format.property';
 import { StoreLog } from '../logger';
 
-/**
- * converts scss/css to sass.
- */
+/** converts scss/css to sass. */
 export function convertScssOrCss(
   text: string,
   STATE: FormattingState
@@ -40,7 +39,7 @@ export function convertScssOrCss(
         lastSelector,
         increaseTabSize: true,
         text: '\n'.concat(
-          replaceWithOffset(removeInvalidChars(newText).trimRight(), STATE.CONFIG.tabSize, STATE)
+          replaceWithOffset(removeInvalidChars(newText).trimEnd(), STATE.CONFIG.tabSize, STATE)
         ),
       };
     } else if (isCssOneLiner(text)) {
@@ -84,10 +83,6 @@ export function convertScssOrCss(
   }
   SetStoreConvertInfoType('DEFAULT');
   return { text: removeInvalidChars(text).trimEnd(), increaseTabSize: false, lastSelector };
-}
-
-function isCssOneLiner(text: string) {
-  return /^[\t ]*[&.#%][\w-]*(?!#)[\t ]*\{.*[;\}][\t ]*$/.test(text);
 }
 
 function removeInvalidChars(text: string) {
