@@ -115,6 +115,7 @@ export class SassFormatter {
             isInclude: isInclude(line.get()),
             isVariable: isVar(line.get()),
             isImport: isAtImport(line.get()),
+            isNestPropHead: /^[\t ]* \S*[\t ]*:[\t ]*$/.test(line.get())
           });
 
           // ####### Is @forward or @use #######
@@ -126,7 +127,7 @@ export class SassFormatter {
           else if (this.isBlockHeader(line, STATE)) {
             this.addNewLine(STATE);
             STATE.RESULT += FormatBlockHeader(line, STATE);
-            STATE.CONTEXT.wasLastHeaderIncludeMixin = STATE.LOCAL_CONTEXT.isInclude
+
           }
           // ####### Properties or Vars #######
           else if (this.isProperty(STATE)) {
@@ -227,6 +228,7 @@ export class SassFormatter {
   }
 
   private static isBlockHeader(line: SassTextLine, STATE: FormattingState) {
+
     return (
       !STATE.LOCAL_CONTEXT.isInterpolatedProp &&
       !STATE.LOCAL_CONTEXT.isAtExtend &&
@@ -235,8 +237,9 @@ export class SassFormatter {
         STATE.LOCAL_CONTEXT.isAdjacentSelector ||
         STATE.LOCAL_CONTEXT.isReset ||
         STATE.LOCAL_CONTEXT.isAnd ||
-        STATE.LOCAL_CONTEXT.isHtmlTag ||
+        (STATE.LOCAL_CONTEXT.isHtmlTag && !/^[\t ]*style[\t ]*:/.test(line.get())) ||
         STATE.LOCAL_CONTEXT.isInclude ||
+        STATE.LOCAL_CONTEXT.isNestPropHead ||
         isMixin(line.get()) || // adds =mixin
         isPseudo(line.get()) ||
         isSelectorOperator(line.get()) ||

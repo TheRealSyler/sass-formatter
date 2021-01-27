@@ -139,5 +139,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
 
   }
 
+  STATE.CONTEXT.wasLastHeaderIncludeMixin = STATE.LOCAL_CONTEXT.isInclude
+  STATE.CONTEXT.wasLastHeaderNestedProp = STATE.LOCAL_CONTEXT.isNestPropHead
+
   return edit;
 }

@@ -31,7 +31,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
     let offset = STATE.LOCAL_CONTEXT.indentation.offset;
     const distance = STATE.LOCAL_CONTEXT.indentation.distance
 
-    if (STATE.CONTEXT.wasLastHeaderIncludeMixin) {
+    if (STATE.CONTEXT.wasLastHeaderIncludeMixin || STATE.CONTEXT.wasLastHeaderNestedProp) {
       if (distance >= STATE.CONTEXT.indentation - STATE.CONFIG.tabSize) {
         offset = getBlockHeaderOffset(distance,
           STATE.CONFIG.tabSize,
@@ -41,6 +41,7 @@ export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
         offset = (STATE.CONTEXT.indentation - STATE.CONFIG.tabSize) - distance
 
         STATE.CONTEXT.wasLastHeaderIncludeMixin = false
+        STATE.CONTEXT.wasLastHeaderNestedProp = false
         STATE.CONTEXT.indentation = STATE.CONTEXT.indentation - STATE.CONFIG.tabSize
       }
     } else if (STATE.LOCAL_CONTEXT.isVariable || STATE.LOCAL_CONTEXT.isImport) {
