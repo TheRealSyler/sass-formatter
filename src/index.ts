@@ -15,7 +15,6 @@ import {
   isBlockCommentEnd,
   isClassOrId,
   isAtForwardOrAtUse,
-  isMixin,
   isInterpolatedProperty,
   isSelectorOperator,
   isCssSelector,
@@ -240,12 +239,11 @@ export class SassFormatter {
         (STATE.LOCAL_CONTEXT.isHtmlTag && !/^[\t ]*style[\t ]*:/.test(line.get())) ||
         STATE.LOCAL_CONTEXT.isInclude ||
         STATE.LOCAL_CONTEXT.isNestPropHead ||
-        isMixin(line.get()) || // adds =mixin
         isPseudo(line.get()) ||
         isSelectorOperator(line.get()) ||
         isStar(line.get()) ||
         isBracketSelector(line.get()) ||
-        isCssSelector(line.get())) // adds all lines that start with [@.#%]
+        isCssSelector(line.get())) // adds all lines that start with [@.#%=]
     );
   }
 
