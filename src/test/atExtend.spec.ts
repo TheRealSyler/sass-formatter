@@ -1,13 +1,13 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format Case 11', () => {
+test('AtExtend', () => {
   const a = SF.Format(
     `
     .class
       @extend %profile
         margin: 20px
 `,
-    { insertSpaces: true, tabSize: 2 }
+    { debug: false }
   );
   expect(a).toEqual(
     `

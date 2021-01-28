@@ -92,17 +92,8 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       replaceSpaceOrTabs,
       offset: offset,
     });
-  } else if (hasBeenConverted || replaceSpaceOrTabs) {
-    edit = line.get();
-    PushDebugInfo({
-      title: 'BLOCK HEADER: MODIFIED',
-      lineNumber: STATE.currentLine,
-      oldLineText: STATE.lines[STATE.currentLine],
-      newLineText: edit,
-      debug: STATE.CONFIG.debug,
-      replaceSpaceOrTabs,
-    });
   } else {
+    edit = line.get().trimRight();
     PushDebugInfo({
       title: 'BLOCK HEADER: DEFAULT',
       lineNumber: STATE.currentLine,

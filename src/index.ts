@@ -33,7 +33,7 @@ import { FormatHandleBlockComment } from './formatters/format.blockComment';
 import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
 import { SassFormatterConfig } from './config';
 import { SassTextLine } from './sassTextLine';
-import { LogDebugResult, PushDebugInfo } from './logger';
+import { LogDebugResult, PushDebugInfo, ResetDebugLog, SetDebugLOCAL_CONTEXT } from './logger';
 
 export { SassFormatterConfig, defaultSassFormatterConfig } from './config';
 
@@ -59,6 +59,7 @@ export class SassFormatter {
 
     if (STATE.CONFIG.debug) {
       LogDebugResult(STATE.RESULT);
+      ResetDebugLog()
     }
     return STATE.RESULT;
   }
@@ -79,6 +80,15 @@ export class SassFormatter {
       STATE.CONTEXT.ignoreLine = false;
       this.addNewLine(STATE);
       STATE.RESULT += line.get();
+
+      PushDebugInfo({
+        title: 'IGNORED',
+        lineNumber: STATE.currentLine,
+        oldLineText: line.get(),
+        debug: STATE.CONFIG.debug,
+        newLineText: 'NULL'
+      });
+
     } else if (STATE.CONTEXT.isInBlockComment) {
       this.handleCommentBlock(STATE, line);
     } else {
@@ -86,6 +96,15 @@ export class SassFormatter {
         STATE.CONTEXT.ignoreLine = true;
         this.addNewLine(STATE);
         STATE.RESULT += line.get();
+
+        PushDebugInfo({
+          title: 'IGNORE',
+          lineNumber: STATE.currentLine,
+          oldLineText: line.get(),
+          debug: STATE.CONFIG.debug,
+          newLineText: 'NULL'
+        });
+
       } else {
         if (isSassSpace(line.get())) {
           STATE.CONTEXT.allowSpace = true;
@@ -117,6 +136,14 @@ export class SassFormatter {
             isNestPropHead: /^[\t ]* \S*[\t ]*:[\t ]*$/.test(line.get())
           });
 
+          if (STATE.CONFIG.debug) {
+            if (/\/\/[\t ]*info[\t ]*$/.test(line.get())) {
+
+              SetDebugLOCAL_CONTEXT(STATE.LOCAL_CONTEXT)
+            }
+
+          }
+
           // ####### Is @forward or @use #######
           if (isAtForwardOrAtUse(line.get())) {
             this.addNewLine(STATE);
@@ -135,12 +162,13 @@ export class SassFormatter {
             STATE.RESULT += FormatProperty(line, STATE);
           }
           else {
+
             PushDebugInfo({
               title: 'NO CHANGE',
               lineNumber: STATE.currentLine,
-              oldLineText: STATE.lines[STATE.currentLine],
-              newLineText: 'NULL',
+              oldLineText: line.get(),
               debug: STATE.CONFIG.debug,
+              newLineText: 'NULL'
             });
 
             this.addNewLine(STATE);
@@ -154,6 +182,8 @@ export class SassFormatter {
         }
       }
     }
+
+
   }
 
   private static handleCommentBlock(STATE: FormattingState, line: SassTextLine) {
@@ -164,22 +194,21 @@ export class SassFormatter {
     if (isBlockCommentEnd(line.get())) {
       STATE.CONTEXT.isInBlockComment = false;
     }
-    /* istanbul ignore if */
-    if (STATE.CONFIG.debug) {
-      PushDebugInfo({
-        title: 'COMMENT BLOCK',
-        lineNumber: STATE.currentLine,
-        oldLineText: STATE.lines[STATE.currentLine],
-        newLineText: edit,
-        debug: STATE.CONFIG.debug,
-      });
-    }
+
+    PushDebugInfo({
+      title: 'COMMENT BLOCK',
+      lineNumber: STATE.currentLine,
+      oldLineText: STATE.lines[STATE.currentLine],
+      newLineText: edit,
+      debug: STATE.CONFIG.debug,
+    });
+
   }
 
   private static handleEmptyLine(STATE: FormattingState, line: SassTextLine) {
     STATE.CONTEXT.firstCommaHeader.exists = false;
     let pass = true; // its not useless, trust me.
-
+    /*istanbul ignore else */
     if (STATE.CONFIG.deleteEmptyRows && !STATE.CONTEXT.isLastLine) {
       const nextLine = new SassTextLine(STATE.lines[STATE.currentLine + 1]);
 
@@ -192,16 +221,16 @@ export class SassFormatter {
         (compact && !STATE.CONTEXT.allowSpace && nextLine.isEmptyOrWhitespace) ||
         (compact && !STATE.CONTEXT.allowSpace && nextLineWillBeDeleted)
       ) {
-        if (STATE.CONFIG.debug) {
-          PushDebugInfo({
-            title: 'EMPTY LINE: DELETE',
-            nextLine,
-            lineNumber: STATE.currentLine,
-            oldLineText: STATE.lines[STATE.currentLine],
-            newLineText: 'DELETED',
-            debug: STATE.CONFIG.debug,
-          });
-        }
+
+        PushDebugInfo({
+          title: 'EMPTY LINE: DELETE',
+          nextLine,
+          lineNumber: STATE.currentLine,
+          oldLineText: STATE.lines[STATE.currentLine],
+          newLineText: 'DELETED',
+          debug: STATE.CONFIG.debug,
+        });
+
         pass = false;
       }
     }

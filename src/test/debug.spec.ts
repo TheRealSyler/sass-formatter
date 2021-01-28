@@ -20,7 +20,7 @@ test('Debug Message', () => {
 `);
   expect(log.logs[0].replace(/\x1b\[.*?m/g, '')).toEqual(
     `FORMAT
- BLOCK HEADER: MODIFIED Line Number: 0  
+ BLOCK HEADER: DEFAULT Line Number: 0  
       Old            : ··.class····⟶⟶·······{width:335px;·····⟶·····float:left;⟶·overflow:hidden;·padding-left:5px;}
       New            : .class\\n··width:·335px\\n··float:·left\\n··overflow:·hidden\\n··padding-left:·5px
       Convert        : ONE LINER
@@ -33,6 +33,49 @@ test('Debug Message', () => {
 |··float:·left|
 |··overflow:·hidden|
 |··padding-left:·5px|
+||`
+  );
+  log.restore();
+});
+
+test('Debug Info', () => {
+  const log = new JestStoreLog();
+
+  expect(
+    SF.Format(
+      `.class // info
+    `,
+      { debug: true }
+    )
+  ).toEqual(`.class // info
+`);
+  expect(log.logs[0].replace(/\x1b\[.*?m/g, '')).toEqual(
+    `FORMAT
+ BLOCK HEADER: DEFAULT Line Number: 0  
+      Old            : .class·//·info
+      New            : .class·//·info
+      Replace        : false
+ LOCAL_CONTEXT {
+    isAtKeyframesPoint: false
+    indentation: {"offset":0,"distance":0}
+    isIf: false
+    isElse: false
+    isAtKeyframes: false
+    isReset: false
+    isAnd: false
+    isProp: false
+    isAdjacentSelector: false
+    isHtmlTag: false
+    isClassOrIdSelector: true
+    isAtExtend: false
+    isInterpolatedProp: false
+    isInclude: false
+    isVariable: false
+    isImport: false
+    isNestPropHead: false
+ }
+ EMPTY LINE: WHITESPACE Line Number: 1
+|.class·//·info|
 ||`
   );
   log.restore();

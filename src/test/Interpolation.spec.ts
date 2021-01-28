@@ -1,6 +1,6 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: Interpolated Property', () => {
+test('Interpolated Property', () => {
   expect(
     SF.Format(
       ` @for $i from 0 through 3
@@ -23,7 +23,7 @@ test('Sass Format: Interpolated Property', () => {
 `);
 });
 
-test('Sass Format: Interpolation', () => {
+test('Interpolation', () => {
   const a = SF.Format(
     `#{body}
     color: red
