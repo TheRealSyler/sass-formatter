@@ -3,7 +3,7 @@ import { FormattingState } from '../state';
 import {
   isMoreThanOneClassOrId,
   escapeRegExp,
-  isPseudoWithParenthesis,
+  // isPseudoWithParenthesis,
   isCssPseudo,
   isCssSelector,
   isCssOneLiner
@@ -14,26 +14,26 @@ import { setPropertyValueSpaces } from './format.property';
 import { SetConvertData } from '../logger';
 
 /** converts scss/css to sass. */
-export function convertScssOrCss(
-  text: string,
-  STATE: FormattingState
-): { text: string; increaseTabSize: boolean; lastSelector: string } {
+export function convertScssOrCss(text: string, STATE: FormattingState) {
   const isMultiple = isMoreThanOneClassOrId(text);
   let lastSelector = STATE.CONTEXT.convert.lastSelector;
 
+  // if NOT interpolated class, id or partial
   if (!/[\t ]*[#.%]\{.*?}/.test(text)) {
     if (lastSelector && new RegExp('^.*' + escapeRegExp(lastSelector)).test(text)) {
       /*istanbul ignore if */
       if (STATE.CONFIG.debug) SetConvertData({ type: 'LAST SELECTOR', text });
 
       let newText = text.replace(lastSelector, '');
-      if (isPseudoWithParenthesis(text)) {
-        newText = newText.split('(')[0].trim() + '(&' + ')';
-      } else if (text.trim().startsWith(lastSelector)) {
-        newText = text.replace(lastSelector, '&');
-      } else {
-        newText = newText.replace(/ /g, '') + ' &';
-      }
+      // TODO figure out what the commented code below does
+      // if (isPseudoWithParenthesis(text)) {
+      //   newText = newText.split('(')[0].trim() + '(&' + ')';
+      // } else if (text.trim().startsWith(lastSelector)) {
+      // } else {
+      //   newText = newText.replace(/ /g, '') + ' &';
+      // }
+
+      newText = text.replace(lastSelector, '&');
       return {
         lastSelector,
         increaseTabSize: true,

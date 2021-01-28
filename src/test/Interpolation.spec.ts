@@ -29,7 +29,7 @@ test('Interpolation', () => {
     color: red
 
 #{main}
-    color:red`
+    color:red`, { debug: false }
   );
 
   expect(a).toBe(`#{body}
