@@ -6,7 +6,7 @@ test('Sass Format: Commands', () => {
       `
 .class
     ///I
-    margin: 200px`
+    margin: 200px`, { debug: false }
     )
   ).toBe(`
 .class

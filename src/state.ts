@@ -65,7 +65,7 @@ interface FormatContext {
 /**
  * This is the context for each line.
  */
-interface FormatLocalContext {
+export interface StateLocalContext {
   isReset: boolean;
   isAnd: boolean;
   isProp: boolean;
@@ -100,7 +100,7 @@ export class FormattingState {
   RESULT = '';
 
   /** Context For Each Line. */
-  LOCAL_CONTEXT: FormatLocalContext = {
+  LOCAL_CONTEXT: StateLocalContext = {
     isAdjacentSelector: false,
     isHtmlTag: false,
     isReset: false,
@@ -150,7 +150,7 @@ export class FormattingState {
     firstCommaHeader: { exists: false, distance: 0 },
   };
   CONFIG: SassFormatterConfig = defaultSassFormatterConfig;
-  setLocalContext(context: FormatLocalContext) {
+  setLocalContext(context: StateLocalContext) {
     this.LOCAL_CONTEXT = context;
   }
 }

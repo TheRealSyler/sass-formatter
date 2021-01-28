@@ -49,3 +49,47 @@ $var: 100vh
 `
   );
 });
+
+
+test('Convert Interpolation', () => {
+  const a = SF.Format(
+    `#{body} {
+      color: red
+}
+`
+  );
+
+  expect(a).toBe(`#{body}
+  color: red
+`);
+});
+
+test('Convert Comment', () => {
+  const a = SF.Format(
+    `.class { // {} ""
+      color: red
+}
+`
+  );
+
+  expect(a).toBe(`.class  // {} ""
+  color: red
+`);
+});
+test('Convert Pseudo', () => {
+  const a = SF.Format(
+
+    `.class{
+      :not(p) {
+        color: blue;
+  }
+
+    }
+`, { debug: false }
+  );
+
+  expect(a).toBe(`.class
+  :not(p)
+    color: blue
+`);
+});

@@ -99,7 +99,6 @@ export function setPropertyValueSpaces(STATE: FormattingState, text: string) {
     let newPropValue = '';
     const [propName, propValue] = text.split(/:(.*)/)
 
-
     let wasLastCharSpace = true;
 
     for (let i = 0; i < propValue.length; i++) {
@@ -122,7 +121,9 @@ export function setPropertyValueSpaces(STATE: FormattingState, text: string) {
           break;
 
       }
+
     }
+
 
 
     return `${propName.trimEnd()}:${propValue ? ' ' + newPropValue : ''}`
