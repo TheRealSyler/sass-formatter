@@ -1,6 +1,6 @@
 {
   "name": "sass-formatter",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "suf-log": "^2.5.3",
-    "suf-regex": "^0.3.1"
+    "suf-regex": "^0.3.2"
   },
   "repository": {
     "type": "git",
