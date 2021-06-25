@@ -145,3 +145,25 @@ test('Sass Format Case 10', () => {
 `
   );
 });
+test('^ selector', () => {
+  const a = SF.Format(
+    `
+::v-deep .el-menu-item
+  i[class^="el-icon"]
+     font-size: 20px
+      color: $--color-text-primary
+      margin-right: 8px
+
+`,
+    { insertSpaces: true, tabSize: 2 }
+  );
+  expect(a).toEqual(
+    `
+::v-deep .el-menu-item
+  i[class^="el-icon"]
+    font-size: 20px
+    color: $--color-text-primary
+    margin-right: 8px
+`
+  );
+});

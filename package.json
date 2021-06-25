@@ -4,7 +4,7 @@
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "jest && del ./dist && npm run build && suf",
+    "prepack": "jest && del-cli ./dist && npm run build && suf",
     "build": "tsc -b",
     "watch": "tsc -w",
     "postpublish": "curl -X POST -d {} https://api.netlify.com/build_hooks/60100b58cf7f871b9e91cca8",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "suf-log": "^2.5.3",
-    "suf-regex": "^0.3.2"
+    "suf-regex": "^0.3.4"
   },
   "repository": {
     "type": "git",
