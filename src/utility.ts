@@ -1,4 +1,4 @@
-import { getDistance, isScssOrCss, isComment } from 'suf-regex';
+import { getDistance, isScssOrCss, isComment } from './regex/regex';
 import { SassTextLine } from './sassTextLine';
 import { FormattingState } from './state';
 

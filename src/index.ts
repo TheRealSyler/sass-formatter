@@ -25,7 +25,7 @@ import {
   isAtImport,
   isKeyframes,
 
-} from 'suf-regex';
+} from './regex/regex';
 import { FormattingState } from './state';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';

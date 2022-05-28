@@ -1,4 +1,4 @@
-import { isEmptyOrWhitespace } from 'suf-regex';
+import { isEmptyOrWhitespace } from './regex/regex';
 
 export class SassTextLine {
   isEmptyOrWhitespace: boolean;

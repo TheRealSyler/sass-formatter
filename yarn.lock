@@ -1367,7 +1367,7 @@ define-property@^2.0.2:
     is-descriptor "^1.0.2"
     isobject "^3.0.1"
 
-del-cli@^3.0.0, del-cli@^3.0.1:
+del-cli@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/del-cli/-/del-cli-3.0.1.tgz#2d27ff260204b5104cadeda86f78f180a4ebe89a"
   integrity sha512-BLHItGr82rUbHhjMu41d+vw9Md49i81jmZSV00HdTq4t+RTHywmEht/23mNFpUl2YeLYJZJyGz4rdlMAyOxNeg==
@@ -3978,13 +3978,6 @@ suf-node@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/suf-node/-/suf-node-1.3.3.tgz#1be555e09c475bee0a52b78ece518b5a8cce586e"
   integrity sha512-zKdj0Lnpp/n4qM9nICjZgmH6exmpSUXopQuolsKHvAUPXJnskRAFHfkhmCGsusX92U/DzFoWWJopbdezFKolpg==
-
-suf-regex@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/suf-regex/-/suf-regex-0.3.4.tgz#8d1e0cafe1646755264895914cf44442a1202132"
-  integrity sha512-2Txjq2T4BrNKM53ACN8ZXzMulrL2ILDpTwWBy/bXX+gYALWB7pGkCVmCrj/TZrFgGWgmujdXoWmYfeyY2Ky4/g==
-  dependencies:
-    del-cli "^3.0.0"
 
 supports-color@^5.3.0, supports-color@^5.5.0:
   version "5.5.0"
