@@ -64,7 +64,7 @@ export function replaceSpacesOrTabs(text: string, STATE: FormattingState, insert
 export function convertLine(line: SassTextLine, STATE: FormattingState) {
   return (
     STATE.CONFIG.convert &&
-    isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) &&
+    isScssOrCss(line.get()) &&
     !isComment(line.get())
   );
 }
