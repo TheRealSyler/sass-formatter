@@ -93,3 +93,26 @@ test('Convert Pseudo', () => {
     color: blue
 `);
 });
+
+test('Convert One liner with css class below', () => {
+  const a = SF.Format(
+
+    `.class {prop: awd}
+  .class,
+    .class {
+      :not(p) {
+        color: blue;
+  }
+
+    }
+`, { debug: false }
+  );
+
+  expect(a).toBe(`.class
+  prop: awd
+  .class,
+  .class
+    :not(p)
+      color: blue
+`);
+});

@@ -48,10 +48,6 @@ export function isAnd(text: string): boolean {
 export function isAtExtend(text: string): boolean {
   return /^[\t ]*@extend/.test(text);
 }
-/** Check whether text is at rule :  `/^[\t ]*@/`*/
-export function isAtRule(text: string): boolean {
-  return /^[\t ]*@/.test(text);
-}
 /** Check whether text is include mixin statement */
 export function isInclude(text: string) {
   return /^[\t ]*(@include|\+\w)/.test(text)
@@ -68,13 +64,9 @@ export function isPseudo(text: string) {
 export function isBracketSelector(text: string): boolean {
   return /^[\t ]*\[[\w=\-*"' ]*\]/.test(text);
 }
-/** checks if text last char is a number: `/[0-9]$/` && `!text.includes('#')` */
-export function isNumber(text: string): boolean {
-  return /[0-9]$/.test(text) && !text.includes('#');
-}
 /** Check whether text starts with an html tag. */
 export function isHtmlTag(text: string) {
-  return /^[\t ]*(a|abbr|address|area|article|aside|audio|b|base|bdi|bdo|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|data|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|embed|fieldset|figcaption|figure|footer|form|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|picture|input|ins|kbd|keygen|label|legend|li|link|main|map|mark|menu|menuitem|meta|meter|nav|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rb|rp|rt|rtc|ruby|s|samp|script|section|select|small|source|span|strong|style|sub|summary|sup|svg|table|tbody|td|template|textarea|tfoot|th|thead|time|title|tr|track|u|ul|var|video|wbr|path|circle|ellipse|line|polygon|polyline|rect|text)((:|::|,|\.|#|\[)[\^:$#{}()\w\-\[\]='",\.# +]*)?$/.test(
+  return /^[\t ]*(a|abbr|address|area|article|aside|audio|b|base|bdi|bdo|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|data|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|embed|fieldset|figcaption|figure|footer|form|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|picture|input|ins|kbd|keygen|label|legend|li|link|main|map|mark|menu|menuitem|meta|meter|nav|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|rb|rp|rt|rtc|ruby|s|samp|script|section|select|small|source|span|strong|style|sub|summary|sup|svg|table|tbody|td|template|textarea|tfoot|th|thead|time|title|tr|track|u|ul|var|video|wbr|path|circle|ellipse|line|polygon|polyline|rect|text|h[1-6]?)((:|::|,|\.|#|\[)[\^:$#{}()\w\-\[\]='",\.# +]*)?$/.test(
     text
   );
 }
@@ -96,15 +88,9 @@ export function isIgnore(text: string) {
 export function isSassSpace(text: string) {
   return /^[\t ]*\/?\/\/ *S *$/.test(text);
 }
-/** `/^.*['"]\.?[\.\/]$/` */
-export function isPath(text: string) {
-  return /^.*['"]\.?[\.\/]$/.test(text);
-}
 /** Returns true if the string has brackets or semicolons at the end, comments get ignored. */
-export function isScssOrCss(text: string, wasLastLineCss = false) {
-  if (wasLastLineCss && text.endsWith(',') && isClassOrId(text)) {
-    return true;
-  }
+export function isScssOrCss(text: string) {
+
   // Check if has brackets at the end and ignore comments.
   return /[;\{\}][\t ]*(\/\/.*)?$/.test(text);
 }
@@ -117,9 +103,9 @@ export function isCssOneLiner(text: string) {
   return /^[\t ]*[&.#%][\w-]*(?!#)[\t ]*\{.*[;\}][\t ]*$/.test(text);
 }
 /** `/^[\t ]*::?[\w\-]+\(.*\)/` */
-export function isPseudoWithParenthesis(text: string) {
-  return /^[\t ]*::?[\w\-]+\(.*\)/.test(text);
-}
+// export function isPseudoWithParenthesis(text: string) {
+//   return /^[\t ]*::?[\w\-]+\(.*\)/.test(text);
+// }
 /** `/^[\t ]*(\/\/|\/\*)/` */
 export function isComment(text: string) {
   return /^[\t ]*(\/\/|\/\*)/.test(text);
@@ -136,12 +122,6 @@ export function isBlockCommentEnd(text: string) {
 export function isMoreThanOneClassOrId(text: string) {
   return /^[\t ]*[\.#%].* ?, *[\.#%].*/.test(text);
 }
-/** `/^.*#[a-fA-F\d]{3,4}\b|^.*#[a-fA-F\d]{6}\b|^.*#[a-fA-F\d]{8}\b|rgba?\([\d. ]+,[\d. ]+,[\d. ]+(,[\d. ]+)?\)/` */
-export function hasColor(text: string) {
-  return /^.*#[a-fA-F\d]{3,4}\b|^.*#[a-fA-F\d]{6}\b|^.*#[a-fA-F\d]{8}\b|rgba?\([\d. ]+,[\d. ]+,[\d. ]+(,[\d. ]+)?\)/.test(
-    text
-  );
-}
 /** `/^[\t ]*[}{]+[\t }{]*$/` */
 export function isBracketOrWhitespace(text: string) {
   return /^[\t ]*[}{]+[\t }{]*$/.test(text);
@@ -150,11 +130,10 @@ export function isBracketOrWhitespace(text: string) {
 export function isAtForwardOrAtUse(text: string) {
   return /[\t ]*@forward|[\t ]*@use/.test(text);
 }
-/** `/^[\t ]*[\w-]*#\{.*?\}[\w-]*:/` */
 export function isInterpolatedProperty(text: string) {
-  return /^[\t ]*[\w-]*#\{.*?\}[\w-]*:/.test(text);
+  return /^[\t ]*[\w-]*#\{.*?\}[\w-]*:(?!:)/.test(text);
 }
-/** `/^[\t ]*([\w ]+|[\w ]*#\{.*?\}[\w ]*): [^ ]/` */
+
 export function hasPropertyValueSpace(text: string) {
   return /^[\t ]*([\w ]+|[\w ]*#\{.*?\}[\w ]*): [^ ]/.test(text);
 }
@@ -162,22 +141,6 @@ export function hasPropertyValueSpace(text: string) {
 export function getDistance(text: string, tabSize: number): number {
   let count = 0;
   for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    if (char !== ' ' && char !== '\t') {
-      break;
-    }
-    if (char === '\t') {
-      count += tabSize;
-    } else {
-      count++;
-    }
-  }
-  return count;
-}
-/** returns the distance between the end and the first char.*/
-export function getDistanceReversed(text: string, tabSize: number): number {
-  let count = 0;
-  for (let i = text.length - 1; i > 0; i--) {
     const char = text[i];
     if (char !== ' ' && char !== '\t') {
       break;

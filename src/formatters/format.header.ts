@@ -19,7 +19,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   // First Convert then set Offset.
   if (
     STATE.CONFIG.convert &&
-    isScssOrCss(line.get(), STATE.CONTEXT.convert.wasLastLineCss) &&
+    isScssOrCss(line.get()) &&
     !isComment_(line.get())
   ) {
     const convertRes = convertScssOrCss(line.get(), STATE);
