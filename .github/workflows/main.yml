@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
-        
+   
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -28,3 +28,8 @@ jobs:
       - run: yarn install --frozen-lockfile
       - name: Run Tests
         run: yarn test:ci
+      - uses: codecov/codecov-action@v2
+        with:
+          flags: unittests
+          fail_ci_if_error: true
+          verbose: true 
