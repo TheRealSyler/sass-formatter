@@ -39,3 +39,24 @@ test('Interpolation', () => {
   color: red
 `);
 });
+
+test('Interpolation #61', () => {
+  const a = SF.Format(
+    `@for $i from 1 through 6
+  h#{$i}
+    color: red
+
+@for $i from 1 through 6
+  #{'h' + $i}::before
+    color: red`, { debug: false }
+  );
+
+  expect(a).toBe(`@for $i from 1 through 6
+  h#{$i}
+    color: red
+
+@for $i from 1 through 6
+  #{'h' + $i}::before
+    color: red
+`);
+});
