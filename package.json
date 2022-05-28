@@ -8,9 +8,9 @@
     "build": "tsc -b",
     "watch": "tsc -w",
     "postpublish": "curl -X POST -d {} https://api.netlify.com/build_hooks/60100b58cf7f871b9e91cca8",
-    "test": "jest --coverage",
+    "test": "jest --watch --coverage",
     "test:clear": "jest --clearCache",
-    "test:watch": "jest --watch --coverage"
+    "test:ci": "jest --ci --coverage"
   },
   "files": [
     "dist",

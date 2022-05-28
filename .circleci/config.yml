@@ -37,7 +37,7 @@ jobs:
             - ~/.cache/yarn
 
       # run tests!
-      - run: yarn test
+      - run: yarn test:ci
 
       - codecov/upload:
           file: coverage/lcov.info
