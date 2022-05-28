@@ -10,7 +10,7 @@
     "postpublish": "curl -X POST -d {} https://api.netlify.com/build_hooks/60100b58cf7f871b9e91cca8",
     "test": "jest --watch --coverage",
     "test:clear": "jest --clearCache",
-    "test:ci": "jest --ci --coverage"
+    "test:ci": "jest --ci --coverage --forceExit"
   },
   "files": [
     "dist",
