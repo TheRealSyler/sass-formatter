@@ -7,7 +7,7 @@ import {
   isCssPseudo,
   isCssSelector,
   isCssOneLiner
-} from 'suf-regex';
+} from '../regex/regex';
 
 import { replaceWithOffset } from '../utility';
 import { setPropertyValueSpaces } from './format.property';

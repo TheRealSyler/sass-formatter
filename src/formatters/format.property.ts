@@ -1,6 +1,6 @@
 import { SassTextLine } from '../sassTextLine';
 import { FormattingState } from '../state';
-import { isComment as isComment_ } from 'suf-regex';
+import { isComment as isComment_ } from '../regex/regex';
 import { replaceWithOffset, convertLine, replaceSpacesOrTabs, getBlockHeaderOffset } from '../utility';
 import { convertScssOrCss } from './format.convert';
 import { PushDebugInfo } from '../logger';
