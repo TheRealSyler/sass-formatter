@@ -1,27 +1,26 @@
 import { SassFormatter as SF } from '../index';
 
-test('Sass Format: path tag', () => {
+test('path tag', () => {
   expect(SF.Format('.class\n  path\n  margin: 20px')).toBe('.class\n  path\n    margin: 20px\n');
 });
-test('Sass Format: figcaption tag', () => {
+test('figcaption tag', () => {
   expect(SF.Format('.class\n  figcaption\n  margin: 20px')).toBe(
     '.class\n  figcaption\n    margin: 20px\n'
   );
 });
-test('Sass Format: figcaption tag', () => {
+test('figcaption tag', () => {
   expect(
     SF.Format(
       `tr:nth-child(2n+1)
     background-color: $alt-row-color`
     )
   ).toBe(
-    SF.Format(
-      `tr:nth-child(2n+1)
-  background-color: $alt-row-color`
-    )
-  );
+
+    `tr:nth-child(2n+1)
+  background-color: $alt-row-color
+`);
 });
-test('Sass Format: keyframe point', () => {
+test('keyframe point', () => {
   expect(
     SF.Format(
       `@keyframes foo
@@ -29,10 +28,24 @@ test('Sass Format: keyframe point', () => {
   top: 0px`
     )
   ).toBe(
-    SF.Format(
-      `@keyframes foo
+    `@keyframes foo
   from
-    top: 0px`
+    top: 0px
+`);
+});
+
+test('slot', () => {
+  expect(
+    SF.Format(
+      `:host
+  contain: content
+  slot
+      display: grid`
     )
-  );
+  ).toBe(
+    `:host
+  contain: content
+  slot
+    display: grid
+`);
 });
