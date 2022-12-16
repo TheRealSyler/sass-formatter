@@ -1,37 +1,79 @@
-### Sass Formatter
 
-<span id="BADGE_GENERATION_MARKER_0"></span>
-[![Custom](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![Custom](https://www.codefactor.io/repository/github/therealsyler/sass-formatter/badge)](https://www.codefactor.io/repository/github/therealsyler/sass-formatter) [![Custom](https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml/badge.svg)](https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml) [![codecov](https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg)](https://codecov.io/gh/TheRealSyler/sass-formatter) [![npmV](https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter) [![min](https://img.shields.io/bundlephobia/min/sass-formatter)](https://bundlephobia.com/result?p=sass-formatter) [![install](https://badgen.net/packagephobia/install/sass-formatter)](https://packagephobia.now.sh/result?p=sass-formatter) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter)
-<span id="BADGE_GENERATION_MARKER_1"></span>
+<div align = center>
 
-### Website [sass-formatter.syler.de](https://sass-formatter.syler.de/)
-## Used in  
- * [Vscode sass extension](https://github.com/TheRealSyler/vscode-sass-indented)
+[![Badge CodeFactor]][CodeFactor]  
+[![Badge CodeCov]][CodeCov]  
+[![Badge CI]][CI]
+
+[![Badge Minified]][Minified]  
+[![Badge License]][License]  
+[![Badge NPM]][NPM]
+
+<br>
+
+# SASS Formatter
+
+*Formatting library most notably*  
+*used for the **[VSCode Extension]**.*
+
+</div>
+
+<br>
+<br>
+
+## Installation
+
+*How to include this library in your code.*
+
+-   #### [NodeJS]
+
+    ```typescript
+    import 'sass-formatter@0.7.5'
+    ```
+
+-   #### [Deno]
+
+    ```typescript
+    import 'npm:sass-formatter@0.7.5'
+    ```
+
+<br>
+<br>
+
 ## Usage
 
+*Small example showcasing the conversion.*
+
+<br>
+
 ```typescript
-import { SassFormatter } from 'sass-formatter';
+const string = `
+  span
+    color: none
 
-const result = SassFormatter.Format(
-  `
-    span
-      color: none
+    @for $i from 0 through 2
+       
+        &:nth-child(#{$i})
+            color: none
+        @each $author in $list
+            .photo-#{$author}
+              background: image-url("avatars/#{$author}.png") no-repeat
 
-      @for $i from 0 through 2
-         
-          &:nth-child(#{$i})
-              color: none
-          @each $author in $list
-              .photo-#{$author}
-                background: image-url("avatars/#{$author}.png") no-repeat
-
-    @while $types > 0
-          .while-#{$types}
- width: $type-width + $types`
-);
+  @while $types > 0
+        .while-#{$types}
+  width: $type-width + $types`
 ```
 
-#### Result
+```typescript
+import { SassFormatter } from 'sass-formatter'
+
+const result = SassFormatter
+    .Format(string);
+```
+
+<br>
+
+### Output
 
 ```sass
 span
@@ -50,50 +92,79 @@ span
         width: $type-width + $types
 ```
 
-<span id="DOC_GENERATION_MARKER_0"></span>
 
-# Docs
 
-- **[config](#config)**
+<br>
+<br>
 
-  - [SassFormatterConfig](#sassformatterconfig)
-  - [defaultSassFormatterConfig](#defaultsassformatterconfig)
+## Config
 
-### config
+*Configuration options and their default values.*
 
-##### SassFormatterConfig
+<br>
 
 ```ts
 interface SassFormatterConfig {
-    /**Enable debug messages */
-    debug: boolean;
-    /**delete rows that are empty. */
-    deleteEmptyRows: boolean;
-    /**@deprecated*/
-    deleteWhitespace: boolean;
-    /**Convert css or scss to sass */
-    convert: boolean;
-    /**set the space after the colon of a property to one.*/
-    setPropertySpace: boolean;
-    tabSize: number;
-    /**insert spaces or tabs. */
-    insertSpaces: boolean;
-    /**Defaults to LF*/
-    lineEnding: 'LF' | 'CRLF';
+    
+
+    /*  Print debug messages  */
+    
+    debug : boolean ; // false
+    
+    
+    /*  Remove empty lines  */
+    
+    deleteEmptyRows : boolean ; // true
+    
+    
+    /*  Transform CSS / SCSS 🠖 SASS  */
+    
+    convert : boolean ; // true
+    
+
+    /*  Insert a space after a property's colon  */
+    
+    setPropertySpace : boolean ; // true
+    
+    
+    /*  Width of a tab character  */
+
+    tabSize : number ; 2
+    
+
+    /*  Whether to use spaces or tabs  */
+    
+    insertSpaces : boolean ; // true
+    
+    
+    /*  Line ending character sequence  */
+    
+    lineEnding : 'CRLF' | 'LF' ; // LF
 }
 ```
 
-##### defaultSassFormatterConfig
+<br>
 
-```ts
-const defaultSassFormatterConfig: SassFormatterConfig;
-```
 
-_Generated with_ **[suf-cli](https://www.npmjs.com/package/suf-cli)**
-<span id="DOC_GENERATION_MARKER_1"></span>
+<!----------------------------------------------------------------------------->
 
-## License
+[VSCode Extension]: https://github.com/TheRealSyler/vscode-sass-indented
+[CodeFactor]: https://www.codefactor.io/repository/github/therealsyler/sass-formatter/overview/nestedprops
+[Minified]: https://packagephobia.now.sh/result?p=sass-formatter
+[CodeCov]: https://codecov.io/gh/TheRealSyler/sass-formatter
+[NodeJS]: https://nodejs.org/en/
+[Deno]: https://deno.land/
+[NPM]: https://www.npmjs.com/package/sass-formatter
+[CI]: https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml
 
-<span id="LICENSE_GENERATION_MARKER_0"></span>
-Copyright (c) 2019 Leonard Grosoli Licensed under the MIT license.
-<span id="LICENSE_GENERATION_MARKER_1"></span>
+[License]: LICENSE
+
+
+<!---------------------------------[ Badges ]---------------------------------->
+
+[Badge CodeFactor]: https://img.shields.io/codefactor/grade/github/TheRealSyler/SASS-formatter?style=for-the-badge&labelColor=F44A6A&color=bf3a54&logoColor=white&logo=CodeFactor
+[Badge Minified]: https://img.shields.io/bundlephobia/min/sass-formatter?style=for-the-badge&labelColor=00B0B9&color=008b90&logoColor=white&logo=GitLFS&label=Minified
+[Badge License]: https://img.shields.io/badge/License-MIT-ac8b11.svg?style=for-the-badge&labelColor=yellow
+[Badge CodeCov]: https://img.shields.io/codecov/c/github/TheRealSyler/sass-formatter?style=for-the-badge&labelColor=F01F7A&color=b3175d&logoColor=white&logo=CodeCov
+[Badge NPM]: https://img.shields.io/npm/v/sass-formatter?style=for-the-badge&labelColor=CB3837&color=a52d2d&logoColor=white&logo=NPM
+[Badge CI]: https://img.shields.io/github/actions/workflow/status/TheRealSyler/SASS-formatter/main.yml?branch=main&label=CI&style=for-the-badge&logoColor=white&logo=GitHub&labelColor=683D87&color=4f2f68
