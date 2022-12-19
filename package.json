@@ -4,8 +4,8 @@
   "description": "typescript sass formatter",
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "yarn test:ci && del-cli ./dist && npm run build && suf",
-    "build": "tsc -b",
+    "prepack": "yarn test:ci && yarn build",
+    "build": "del-cli ./dist && tsc -b && suf",
     "watch": "tsc -w",
     "postpublish": "curl -X POST -d {} https://api.netlify.com/build_hooks/60100b58cf7f871b9e91cca8",
     "test": "jest --watch --coverage",
