@@ -24,7 +24,6 @@ export function convertScssOrCss(text: string, STATE: FormattingState) {
 
       return {
         lastSelector,
-        increaseTabSize: false,
         text: replaceWithOffset(removeInvalidChars(text.replaceAll(lastSelector, '&')).trimEnd(), STATE.CONFIG.tabSize, STATE),
       };
     } else if (isCssOneLiner(text)) {
@@ -37,7 +36,6 @@ export function convertScssOrCss(text: string, STATE: FormattingState) {
       STATE.LOCAL_CONTEXT.isProp = true;
       const selector = split[0].trim();
       return {
-        increaseTabSize: false,
         lastSelector: selector,
         text:
           selector.concat(
@@ -59,7 +57,6 @@ export function convertScssOrCss(text: string, STATE: FormattingState) {
       if (STATE.CONFIG.debug) SetConvertData({ type: 'PSEUDO', text });
 
       return {
-        increaseTabSize: false,
         lastSelector,
         text: removeInvalidChars(text).trimEnd(),
       };
@@ -68,13 +65,13 @@ export function convertScssOrCss(text: string, STATE: FormattingState) {
       if (STATE.CONFIG.debug) SetConvertData({ type: 'SELECTOR', text });
 
       lastSelector = removeInvalidChars(text).trimEnd();
-      return { text: lastSelector, increaseTabSize: false, lastSelector };
+      return { text: lastSelector, lastSelector };
     }
   }
   /*istanbul ignore if */
   if (STATE.CONFIG.debug) SetConvertData({ type: 'DEFAULT', text });
 
-  return { text: removeInvalidChars(text).trimEnd(), increaseTabSize: false, lastSelector };
+  return { text: removeInvalidChars(text).trimEnd(), lastSelector };
 }
 
 function removeInvalidChars(text: string) {

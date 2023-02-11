@@ -11,7 +11,6 @@ import { convertScssOrCss } from './format.convert'
 export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;
   let hasBeenConverted = false;
-  let additionalTabs = 0;
   let edit: string = line.get();
 
   // First Convert then set Offset.
@@ -22,9 +21,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   ) {
     const convertRes = convertScssOrCss(line.get(), STATE);
     STATE.CONTEXT.convert.lastSelector = convertRes.lastSelector;
-    if (convertRes.increaseTabSize) {
-      additionalTabs = STATE.CONFIG.tabSize;
-    }
+
     line.set(convertRes.text);
     STATE.LOCAL_CONTEXT.indentation = getIndentationOffset(
       line.get(),
@@ -110,8 +107,7 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
       0,
       STATE.LOCAL_CONTEXT.indentation.distance +
       offset + // keep in mind that +offset can decrease the number.
-      STATE.CONFIG.tabSize +
-      additionalTabs
+      STATE.CONFIG.tabSize
     );
   }
 
