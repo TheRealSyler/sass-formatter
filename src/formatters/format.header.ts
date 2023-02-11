@@ -1,14 +1,12 @@
-import { SassTextLine } from '../sassTextLine';
-import { FormattingState } from '../state';
-import { isScssOrCss, isComment as isComment_ } from '../regex/regex';
+import { PushDebugInfo } from '../logger'
+import { isComment as isComment_, isScssOrCss } from '../regex/regex'
+import { SassTextLine } from '../sassTextLine'
+import { FormattingState } from '../state'
 import {
-  replaceSpacesOrTabs,
-  replaceWithOffset,
-  getBlockHeaderOffset,
-  getIndentationOffset,
-} from '../utility';
-import { convertScssOrCss } from './format.convert';
-import { PushDebugInfo } from '../logger';
+  getBlockHeaderOffset, getIndentationOffset, replaceSpacesOrTabs,
+  replaceWithOffset
+} from '../utility'
+import { convertScssOrCss } from './format.convert'
 
 export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   let replaceSpaceOrTabs = false;
@@ -105,7 +103,6 @@ export function FormatBlockHeader(line: SassTextLine, STATE: FormattingState) {
   }
 
   STATE.CONTEXT.lastSelectorIndentation = Math.max(STATE.LOCAL_CONTEXT.indentation.distance + offset, 0);
-
   if (STATE.LOCAL_CONTEXT.isReset) {
     STATE.CONTEXT.indentation = Math.max(0, STATE.LOCAL_CONTEXT.indentation.distance + offset);
   } else {

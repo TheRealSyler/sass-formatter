@@ -1,41 +1,17 @@
-import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility';
-import {
-  isBlockCommentStart,
-  isIgnore,
-  isSassSpace,
-  isProperty,
-  isReset,
-  isAnd,
-  isHtmlTag,
-  isStar,
-  isBracketSelector,
-  isPseudo,
-  isBracketOrWhitespace,
-  isAdjacentSelector,
-  isBlockCommentEnd,
-  isClassOrId,
-  isAtForwardOrAtUse,
-  isInterpolatedProperty,
-  isSelectorOperator,
-  isCssSelector,
-  isAtExtend,
-  isInclude,
-  getDistance,
-  isVar,
-  isAtImport,
-  isKeyframes,
-
-} from './regex/regex';
-import { FormattingState } from './state';
+import { SassFormatterConfig } from './config';
+import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
+import { FormatHandleBlockComment } from './formatters/format.blockComment';
 import { FormatBlockHeader } from './formatters/format.header';
 import { FormatProperty } from './formatters/format.property';
-import { FormatHandleBlockComment } from './formatters/format.blockComment';
-import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
-import { SassFormatterConfig } from './config';
-import { SassTextLine } from './sassTextLine';
 import { LogDebugResult, PushDebugInfo, ResetDebugLog, SetDebugLOCAL_CONTEXT } from './logger';
+import {
+  getDistance, isAdjacentSelector, isAnd, isAtExtend, isAtForwardOrAtUse, isAtImport, isBlockCommentEnd, isBlockCommentStart, isBracketOrWhitespace, isBracketSelector, isClassOrId, isCssSelector, isHtmlTag, isIgnore, isInclude, isInterpolatedProperty, isKeyframes, isProperty, isPseudo, isReset, isSassSpace, isSelectorOperator, isStar, isVar
+} from './regex/regex';
+import { SassTextLine } from './sassTextLine';
+import { FormattingState } from './state';
+import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility';
 
-export { SassFormatterConfig, defaultSassFormatterConfig } from './config';
+export { defaultSassFormatterConfig, SassFormatterConfig } from './config';
 
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
@@ -133,7 +109,7 @@ export class SassFormatter {
             isInclude: isInclude(line.get()),
             isVariable: isVar(line.get()),
             isImport: isAtImport(line.get()),
-            isNestPropHead: /^[\t ]* \S*[\t ]*:[\t ]*$/.test(line.get())
+            isNestPropHead: /^[\t ]* \S*[\t ]*:[\t ]*\{?$/.test(line.get())
           });
 
           if (STATE.CONFIG.debug) {

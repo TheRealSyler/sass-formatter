@@ -1,19 +1,22 @@
-import { SassTextLine } from '../sassTextLine';
-import { FormattingState } from '../state';
-import { isComment as isComment_ } from '../regex/regex';
-import { replaceWithOffset, convertLine, replaceSpacesOrTabs, getBlockHeaderOffset } from '../utility';
-import { convertScssOrCss } from './format.convert';
-import { PushDebugInfo } from '../logger';
+import { PushDebugInfo } from '../logger'
+import { isComment as isComment_ } from '../regex/regex'
+import { SassTextLine } from '../sassTextLine'
+import { FormattingState } from '../state'
+import { convertLine, getBlockHeaderOffset, replaceSpacesOrTabs, replaceWithOffset } from '../utility'
+import { convertScssOrCss } from './format.convert'
 
 export function FormatProperty(line: SassTextLine, STATE: FormattingState) {
   let convert = false;
   let replaceSpaceOrTabs = false;
   let edit = line.get();
   const isComment = isComment_(line.get());
-  const SetPropertySpaceRes = setPropertyValueSpaces(STATE, line.get());
-  line.set(SetPropertySpaceRes);
+
+  line.set(setPropertyValueSpaces(STATE, line.get()));
+
   if (convertLine(line, STATE)) {
+
     const convertRes = convertScssOrCss(line.get(), STATE);
+
     line.set(convertRes.text);
     convert = true;
   }

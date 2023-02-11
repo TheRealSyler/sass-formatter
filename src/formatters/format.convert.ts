@@ -1,17 +1,15 @@
-import { FormattingState } from '../state';
+import { FormattingState } from '../state'
 
 import {
-  isMoreThanOneClassOrId,
-  escapeRegExp,
+  escapeRegExp, isCssOneLiner,
   // isPseudoWithParenthesis,
   isCssPseudo,
-  isCssSelector,
-  isCssOneLiner
-} from '../regex/regex';
+  isCssSelector, isMoreThanOneClassOrId
+} from '../regex/regex'
 
-import { replaceWithOffset } from '../utility';
-import { setPropertyValueSpaces } from './format.property';
-import { SetConvertData } from '../logger';
+import { SetConvertData } from '../logger'
+import { replaceWithOffset } from '../utility'
+import { setPropertyValueSpaces } from './format.property'
 
 /** converts scss/css to sass. */
 export function convertScssOrCss(text: string, STATE: FormattingState) {
@@ -24,22 +22,10 @@ export function convertScssOrCss(text: string, STATE: FormattingState) {
       /*istanbul ignore if */
       if (STATE.CONFIG.debug) SetConvertData({ type: 'LAST SELECTOR', text });
 
-      let newText = text.replace(lastSelector, '');
-      // TODO figure out what the commented code below does
-      // if (isPseudoWithParenthesis(text)) {
-      //   newText = newText.split('(')[0].trim() + '(&' + ')';
-      // } else if (text.trim().startsWith(lastSelector)) {
-      // } else {
-      //   newText = newText.replace(/ /g, '') + ' &';
-      // }
-
-      newText = text.replace(lastSelector, '&');
       return {
         lastSelector,
-        increaseTabSize: true,
-        text: '\n'.concat(
-          replaceWithOffset(removeInvalidChars(newText).trimEnd(), STATE.CONFIG.tabSize, STATE)
-        ),
+        increaseTabSize: false,
+        text: replaceWithOffset(removeInvalidChars(text.replaceAll(lastSelector, '&')).trimEnd(), STATE.CONFIG.tabSize, STATE),
       };
     } else if (isCssOneLiner(text)) {
       /*istanbul ignore if */
@@ -92,20 +78,26 @@ export function convertScssOrCss(text: string, STATE: FormattingState) {
 }
 
 function removeInvalidChars(text: string) {
-  let newText = '';
-  let isInQuotes = false;
-  let isInComment = false;
-  let isInInterpolation = false;
+  let newText = ''
+  let isInQuotes = false
+  let isInComment = false
+  let isInInterpolation = false
+  let quoteChar = ''
   for (let i = 0; i < text.length; i++) {
-    const char = text[i];
+    const char = text[i]
     if (!isInQuotes && char === '/' && text[i + 1] === '/') {
-      isInComment = true;
+      isInComment = true
     } else if (/['"]/.test(char)) {
-      isInQuotes = !isInQuotes;
+      if (!isInQuotes || char === quoteChar) {
+        isInQuotes = !isInQuotes
+        if (isInQuotes) {
+          quoteChar = char
+        }
+      }
     } else if (/#/.test(char) && /{/.test(text[i + 1])) {
-      isInInterpolation = true;
+      isInInterpolation = true
     } else if (isInInterpolation && /}/.test(text[i - 1])) {
-      isInInterpolation = false;
+      isInInterpolation = false
     }
     if (!/[;\{\}]/.test(char) || isInQuotes || isInComment || isInInterpolation) {
       newText += char;
