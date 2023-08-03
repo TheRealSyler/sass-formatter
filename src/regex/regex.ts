@@ -72,7 +72,7 @@ export function isHtmlTag(text: string) {
 }
 /** Check whether text starts with a self closing html tag. */
 export function isVoidHtmlTag(text: string) {
-  return /^[\t ]*(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr|command|keygen|menuitem|path)((:|::|,|\.|#|\[)[:$#{}()\w\-\[\]='',\.# ]*)?$/.test(
+  return /^[\t ]*(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr|command|keygen|menuitem|path)((:|::|,|\.|#|\[)[:$#{}()\w\-\[\]='",\.# ]*)?$/.test(
     text
   )
 }
