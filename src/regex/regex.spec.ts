@@ -46,6 +46,7 @@ test('Regex Is Block Comment', () => {
 });
 test('Regex Is HtmlTag', () => {
     expect(isHtmlTag('a')).toEqual(true);
+    expect(isHtmlTag('web-component')).toEqual(true);
     expect(isHtmlTag('a.class#{$var}[type="awd"]')).toEqual(true);
     expect(isHtmlTag('ab')).toEqual(false);
     expect(isHtmlTag('tr:nth-child(2n+1)')).toEqual(true);
