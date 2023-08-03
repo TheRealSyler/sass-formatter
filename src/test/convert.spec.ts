@@ -1,4 +1,4 @@
-import { SassFormatter as SF } from '../index';
+import { SassFormatter as SF } from '../index'
 
 test('Convert css ONE LINER', () => {
   expect(
@@ -14,8 +14,8 @@ test('Convert css ONE LINER', () => {
   float: left
   overflow: hidden
   padding-left: 5px
-`);
-});
+`)
+})
 
 test('Convert (scss)', () => {
   const a = SF.Format(
@@ -33,7 +33,7 @@ $var: 100vh;
                   
 }
 `, { debug: false }
-  );
+  )
   expect(a).toEqual(
     `
 $var: 100vh
@@ -46,8 +46,8 @@ $var: 100vh
   &-2
     margin: $var
 `
-  );
-});
+  )
+})
 
 
 test('Convert Interpolation', () => {
@@ -56,12 +56,12 @@ test('Convert Interpolation', () => {
       color: red
 }
 `
-  );
+  )
 
   expect(a).toBe(`#{body}
   color: red
-`);
-});
+`)
+})
 
 test('Convert Comment', () => {
   const a = SF.Format(
@@ -69,12 +69,12 @@ test('Convert Comment', () => {
       color: red
 }
 `
-  );
+  )
 
   expect(a).toBe(`.class  // {} ""
   color: red
-`);
-});
+`)
+})
 test('Convert Pseudo', () => {
   const a = SF.Format(
 
@@ -85,13 +85,13 @@ test('Convert Pseudo', () => {
 
     }
 `, { debug: false }
-  );
+  )
 
   expect(a).toBe(`.class
   :not(p)
     color: blue
-`);
-});
+`)
+})
 
 test('Convert One liner with css class below', () => {
   const a = SF.Format(
@@ -105,7 +105,7 @@ test('Convert One liner with css class below', () => {
 
     }
 `, { debug: false }
-  );
+  )
 
   expect(a).toBe(`.class
   prop: awd
@@ -113,8 +113,8 @@ test('Convert One liner with css class below', () => {
   .class
     :not(p)
       color: blue
-`);
-});
+`)
+})
 
 
 test('#66', () => {
