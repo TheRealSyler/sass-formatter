@@ -1,17 +1,17 @@
-import { SassFormatterConfig } from './config';
-import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
-import { FormatHandleBlockComment } from './formatters/format.blockComment';
-import { FormatBlockHeader } from './formatters/format.header';
-import { FormatProperty } from './formatters/format.property';
-import { LogDebugResult, PushDebugInfo, ResetDebugLog, SetDebugLOCAL_CONTEXT } from './logger';
+import { SassFormatterConfig } from './config'
+import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse'
+import { FormatHandleBlockComment } from './formatters/format.blockComment'
+import { FormatBlockHeader } from './formatters/format.header'
+import { FormatProperty } from './formatters/format.property'
+import { LogDebugResult, PushDebugInfo, ResetDebugLog, SetDebugLOCAL_CONTEXT } from './logger'
 import {
   getDistance, isAdjacentSelector, isAnd, isAtExtend, isAtForwardOrAtUse, isAtImport, isBlockCommentEnd, isBlockCommentStart, isBracketOrWhitespace, isBracketSelector, isClassOrId, isCssSelector, isHtmlTag, isIgnore, isInclude, isInterpolatedProperty, isKeyframes, isProperty, isPseudo, isReset, isSassSpace, isSelectorOperator, isStar, isVar
-} from './regex/regex';
-import { SassTextLine } from './sassTextLine';
-import { FormattingState } from './state';
-import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility';
+} from './regex/regex'
+import { SassTextLine } from './sassTextLine'
+import { FormattingState } from './state'
+import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility'
 
-export { defaultSassFormatterConfig, SassFormatterConfig } from './config';
+export { SassFormatterConfig, defaultSassFormatterConfig } from './config'
 
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
@@ -102,7 +102,7 @@ export class SassFormatter {
             isAnd: isAnd(line.get()),
             isProp: isProperty(line.get()),
             isAdjacentSelector: isAdjacentSelector(line.get()),
-            isHtmlTag: isHtmlTag(line.get().trim().split(' ')[0]),
+            isHtmlTag: isHtmlTag(line.get()),
             isClassOrIdSelector: isClassOrId(line.get()),
             isAtExtend: isAtExtend(line.get()),
             isInterpolatedProp: isInterpolatedProperty(line.get()),

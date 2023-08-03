@@ -1,4 +1,4 @@
-import { SassFormatter as SF } from '../index';
+import { SassFormatter as SF } from '../index'
 
 test('Sass Format Case 11', () => {
   const a = SF.Format(
