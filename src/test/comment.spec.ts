@@ -68,6 +68,24 @@ test('Sass Format: Check Comment and @font-face', () => {
 `);
 });
 
+test('#73', () => {
+  const a = SF.Format(`
+/*
+ Grid: x
+
+ Clamp y
+*/`,
+    { insertSpaces: true, debug: false }
+  );
+  expect(a).toBe(`
+/*
+ Grid: x
+
+ Clamp y
+*/
+`);
+});
+
 test('Sass Format: Check Comment and indentation, multiple', () => {
   const a = SF.Format(
     `

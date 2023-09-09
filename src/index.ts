@@ -1,17 +1,17 @@
-import { SassFormatterConfig } from './config'
-import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse'
-import { FormatHandleBlockComment } from './formatters/format.blockComment'
-import { FormatBlockHeader } from './formatters/format.header'
-import { FormatProperty } from './formatters/format.property'
-import { LogDebugResult, PushDebugInfo, ResetDebugLog, SetDebugLOCAL_CONTEXT } from './logger'
+import { SassFormatterConfig } from './config';
+import { FormatAtForwardOrAtUse } from './formatters/format.atForwardOrAtUse';
+import { FormatHandleBlockComment } from './formatters/format.blockComment';
+import { FormatBlockHeader } from './formatters/format.header';
+import { FormatProperty } from './formatters/format.property';
+import { LogDebugResult, PushDebugInfo, ResetDebugLog, SetDebugLOCAL_CONTEXT } from './logger';
 import {
   getDistance, isAdjacentSelector, isAnd, isAtExtend, isAtForwardOrAtUse, isAtImport, isBlockCommentEnd, isBlockCommentStart, isBracketOrWhitespace, isBracketSelector, isClassOrId, isCssSelector, isHtmlTag, isIgnore, isInclude, isInterpolatedProperty, isKeyframes, isProperty, isPseudo, isReset, isSassSpace, isSelectorOperator, isStar, isVar
-} from './regex/regex'
-import { SassTextLine } from './sassTextLine'
-import { FormattingState } from './state'
-import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility'
+} from './regex/regex';
+import { SassTextLine } from './sassTextLine';
+import { FormattingState } from './state';
+import { getIndentationOffset, isKeyframePointAndSetIndentation } from './utility';
 
-export { SassFormatterConfig, defaultSassFormatterConfig } from './config'
+export { SassFormatterConfig, defaultSassFormatterConfig } from './config';
 
 export class SassFormatter {
   static Format(text: string, config?: Partial<SassFormatterConfig>): string {
@@ -35,7 +35,7 @@ export class SassFormatter {
 
     if (STATE.CONFIG.debug) {
       LogDebugResult(STATE.RESULT);
-      ResetDebugLog()
+      ResetDebugLog();
     }
     return STATE.RESULT;
   }
@@ -45,6 +45,7 @@ export class SassFormatter {
       STATE.CONTEXT.isInBlockComment = true;
       STATE.CONTEXT.blockCommentDistance = getDistance(line.get(), STATE.CONFIG.tabSize);
     } else if (
+      !line.isEmptyOrWhitespace &&
       STATE.CONTEXT.isInBlockComment &&
       STATE.CONTEXT.blockCommentDistance >= getDistance(line.get(), STATE.CONFIG.tabSize)
     ) {
@@ -115,7 +116,7 @@ export class SassFormatter {
           if (STATE.CONFIG.debug) {
             if (/\/\/[\t ]*info[\t ]*$/.test(line.get())) {
 
-              SetDebugLOCAL_CONTEXT(STATE.LOCAL_CONTEXT)
+              SetDebugLOCAL_CONTEXT(STATE.LOCAL_CONTEXT);
             }
 
           }
@@ -164,7 +165,8 @@ export class SassFormatter {
 
   private static handleCommentBlock(STATE: FormattingState, line: SassTextLine) {
     this.addNewLine(STATE);
-    const edit = FormatHandleBlockComment(line.get(), STATE);
+
+    const edit = line.isEmptyOrWhitespace ? "" : FormatHandleBlockComment(line.get(), STATE);
     STATE.RESULT += edit;
 
     if (isBlockCommentEnd(line.get())) {
