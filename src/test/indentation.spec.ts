@@ -126,3 +126,16 @@ $c: black
 `
   );
 });
+
+test('#74', () => {
+  const a = SF.Format(
+    `div:first-child > div
+  width: 100px`,
+    { tabSize: 2, debug: false }
+  );
+  expect(a).toEqual(
+    `div:first-child > div
+  width: 100px
+`
+  );
+});
