@@ -36,7 +36,7 @@ Examples:
   sass-formatter -ch "src/**/*.sass"
   sass-formatter -c ./my-config.json src/**/*.scss
 
-You can configure using a .sassformatterrc file (JSON) placed in your project's working directory.
+You can configure using a .sassformatterrc.json file (JSON) placed in your project's working directory.
 The config will be merged with defaults: any missing keys are taken from defaults.
 If the config file contains invalid types/values, the CLI will print an error and exit with code 1.
 `);
@@ -123,14 +123,14 @@ function validateAndMergeConfig(
 }
 
 /**
- * Load config from provided path or from cwd (.sassformatterrc).
+ * Load config from provided path or from cwd (.sassformatterrc.json).
  * If no file found -> return defaults.
  * If file exists -> parse, validate & merge with defaults.
  */
 function loadConfig(configPath?: string): SassFormatterConfig {
   const finalPath = configPath
     ? path.resolve(configPath)
-    : path.resolve(process.cwd(), 'sassformatterrc');
+    : path.resolve(process.cwd(), '.sassformatterrc.json');
 
   if (!fs.existsSync(finalPath)) {
     // No config file in cwd -> use defaults
@@ -192,7 +192,7 @@ async function main() {
   if (args.includes('-d') || args.includes('--default-config')) {
     console.log(`
 --------------------------------------------------------------
-Create a [ .sassformatterrc ] file in your project and configure your formatter.
+Create a [ .sassformatterrc.json ] file in your project and configure your formatter.
 --------------------------------------------------------------
 
 => default config (merged values):
