@@ -12,7 +12,7 @@
         <strong>Sass Formatter</strong> - TypeScript 🚀 library for formatting Sass <br />
         <h4>Both within code and as a CLI</h4> 
         <h4>Supports formatting for [ `Css`, `Scss`, `Sass`, `Less` ]</h4> 
-        <h4>Supports `.sassformatterrc` for custom configuration </h4>
+        <h4>Supports `.sassformatterrc.json` for custom configuration </h4>
       </h3>
     </td>
   </tr>
@@ -126,7 +126,7 @@ Examples:
   sass-formatter -ch "src/**/*.sass"
   sass-formatter -c ./my-config.json src/**/*.scss
 
-You can configure using a .sassformatterrc file (JSON) placed in your project's working directory.
+You can configure using a .sassformatterrc.json file (JSON) placed in your project's working directory.
 The config will be merged with defaults: any missing keys are taken from defaults.
 If the config file contains invalid types/values, the CLI will print an error and exit with code 1.
 ```
@@ -175,7 +175,7 @@ interface SassFormatterConfig {
 const defaultSassFormatterConfig: SassFormatterConfig;
 ```
 
-### .sassformatterrc
+### .sassformatterrc.json
 
 ```json
 {
@@ -190,7 +190,7 @@ const defaultSassFormatterConfig: SassFormatterConfig;
 }
 ```
 
-> Just create a .sassformatterrc file next to your project <br/>
+> Just create a .sassformatterrc.json file next to your project <br/>
 > and configure your formatter.
 
 ---
