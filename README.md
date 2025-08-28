@@ -1,86 +1,36 @@
-<h1>
-   Sass Formatter 🐍
-</h1>
-
-<table>
-  <tr>
-    <td>
-      <img width="452" alt="logo" src="https://github.com/user-attachments/assets/2c675dcf-6db6-4b16-96ce-707ae36f7a3c" />
-    </td>
-    <td>
-      <h3>
-        <strong>Sass Formatter</strong> - TypeScript 🚀 library for formatting Sass <br />
-        <h4>Both within code and as a CLI</h4> 
-        <h4>Supports formatting for [ `Css`, `Scss`, `Sass`, `Less` ]</h4> 
-        <h4>Supports `.sassformatterrc.json` for custom configuration </h4>
-      </h3>
-    </td>
-  </tr>
-</table>
+### Sass Formatter
 
 <span id="BADGE_GENERATION_MARKER_0"></span>
-[![Jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
-[![CodeFactor](https://www.codefactor.io/repository/github/therealsyler/sass-formatter/badge)](https://www.codefactor.io/repository/github/therealsyler/sass-formatter)
-[![Actions](https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml/badge.svg)](https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml)
-[![Codecov](https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg)](https://codecov.io/gh/TheRealSyler/sass-formatter)
-[![npm](https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter)
-[![Minified](https://img.shields.io/bundlephobia/min/sass-formatter)](https://bundlephobia.com/result?p=sass-formatter)
-[![Install](https://badgen.net/packagephobia/install/sass-formatter)](https://packagephobia.now.sh/result?p=sass-formatter)
-[![Last Commit](https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter)
+[![Custom](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest) [![Custom](https://www.codefactor.io/repository/github/therealsyler/sass-formatter/badge)](https://www.codefactor.io/repository/github/therealsyler/sass-formatter) [![Custom](https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml/badge.svg)](https://github.com/TheRealSyler/sass-formatter/actions/workflows/main.yml) [![codecov](https://codecov.io/gh/TheRealSyler/sass-formatter/branch/master/graph/badge.svg)](https://codecov.io/gh/TheRealSyler/sass-formatter) [![npmV](https://img.shields.io/npm/v/sass-formatter?color=green)](https://www.npmjs.com/package/sass-formatter) [![min](https://img.shields.io/bundlephobia/min/sass-formatter)](https://bundlephobia.com/result?p=sass-formatter) [![install](https://badgen.net/packagephobia/install/sass-formatter)](https://packagephobia.now.sh/result?p=sass-formatter) [![githubLastCommit](https://img.shields.io/github/last-commit/TheRealSyler/sass-formatter)](https://github.com/TheRealSyler/sass-formatter)
+<span id="BADGE_GENERATION_MARKER_1"></span>
 
-### Online Preview
+### Website [sass-formatter.syler.de](https://sass-formatter.syler.de/)
 
-> You can preview formatting live: [sass-formatter.syler.de](https://sass-formatter.syler.de/) 👈
+## Used in
 
-### Used in <img width="32" alt="image" src="https://github.com/user-attachments/assets/f1ba02eb-aae7-40a1-a3d1-843b0b9bc3d8" />
-
-> [`[ Visual Studio Code ] sass extension`](https://github.com/TheRealSyler/vscode-sass-indented) 👈
-
----
-
-# Docs
-
-- **[Usage](#usage)**
-  - **[SassFormatter](#sassformatter)**
-  - - [Result](#result)
-  - **[Cli](#Cli)**
-  - - [Cli Help](#cli-help)
-  - - [Cli Write](#cli-write)
-  - - [Cli Check](#cli-check)
-
-- **[Config](#config)**
-  - [SassFormatterConfig](#sassformatterconfig)
-  - [defaultSassFormatterConfig](#defaultsassformatterconfig)
-  - [sassformatterrc](#sassformatterrc)
-
-- **[Install](#install)**
-- **[License](#license)**
-
----
+- [Vscode sass extension](https://github.com/TheRealSyler/vscode-sass-indented)
 
 ## Usage
-
-### SassFormatter
 
 ```typescript
 import { SassFormatter } from 'sass-formatter';
 
 const result = SassFormatter.Format(
   `
-span
-│  │  │  color: none
-│
-│  @for $i from 0 through 2
-   │  │  │  │  &:nth-child(#{$i})
-│  │  │  │  color: none
-│  │  │  │  │  @each $author in $list
-│  │  │  │  .photo-#{$author}
-│  background: image-url("avatars/#{$author}.png") no-repeat
-│
-│@while $types > 0
-│  │  │  │  │.while-#{$types}
-│  │width: $type-width + $types
-  `
+    span
+      color: none
+
+      @for $i from 0 through 2
+         
+          &:nth-child(#{$i})
+              color: none
+          @each $author in $list
+              .photo-#{$author}
+                background: image-url("avatars/#{$author}.png") no-repeat
+
+    @while $types > 0
+          .while-#{$types}
+ width: $type-width + $types`
 );
 ```
 
@@ -88,62 +38,54 @@ span
 
 ```sass
 span
-│ color: none
-│
-│ @for $i from 0 through 2
-│ │ &:nth-child(#{$i})
-│ │ │ color: none
-│ │ │ @each $author in $list
-│ │ │ │ .photo-#{$author}
-│ │ │ │ │ background: image-url("avatars/#{$author}.png") no-repeat
-│
-│ @while $types > 0
-│ │ .while-#{$types}
-│ │ │ width: $type-width + $types
+  color: none
+
+  @for $i from 0 through 2
+    &:nth-child(#{$i})
+      color: none
+      @each $author in $list
+        .photo-#{$author}
+          background: image-url("avatars/#{$author}.png") no-repeat
+
+  @while $types > 0
+    .while-#{$types}
+      width: $type-width + $types
 ```
 
----
+## CLI
 
-### Cli
-
-#### Cli Help
+Sass Formatter includes a command-line interface for formatting directly from editors or CI.
 
 ```bash
-$ sass-formatter -h
+# show help
+$ sass-formatter --help
 
+# rewrite files in place
+$ sass-formatter -w src/styles/main.scss
 
-Usage: sass-formatter [options] <file...>
+# check formatting without writing
+$ sass-formatter -ch "src/**/*.sass"
 
-Options:
-  -w, --write                 Rewrite the file after formatting
-  -ch, --check                Check if the file is formatted
-  -d, --default-config        Show default config
-  -c, --config <Path>         Use custom config file (JSON)
-  -h, --help                  Print this help
-
-Examples:
-  sass-formatter -w src/styles/main.scss
-  sass-formatter -ch "src/**/*.sass"
-  sass-formatter -c ./my-config.json src/**/*.scss
-
-You can configure using a .sassformatterrc.json file (JSON) placed in your project's working directory.
-The config will be merged with defaults: any missing keys are taken from defaults.
-If the config file contains invalid types/values, the CLI will print an error and exit with code 1.
+# use custom config file
+$ sass-formatter -c ./my-config.json src/**/*.scss
 ```
 
-#### Cli Write
+Options summary:
 
-> `Rewrite the file after formatting`: <br/>
-> formats this file to sass <br/>
-> whatever it may be <br/>
-> `sass` `scss` `less` `css` <br/>
+```
+-w, --write                 Rewrite the file after formatting
+-ch, --check                Check if the file is formatted
+-d, --default-config        Show default config
+-c, --config <Path>         Use custom config file (JSON)
+-h, --help                  Print this help
+```
 
-#### Cli Check
+Notes:
 
-> `Check if the file is formatted`: <br/>
-> just check whether the file has been formatted or not <br/>
-
----
+- By default loads `.sassformatterrc.json` from PWD.
+- Config is merged with defaults; missing keys are taken from defaults.
+- Unknown keys trigger warnings; invalid values trigger exit code 1.
+- Supports formatting: `sass`, `scss`, `css`, `less`.
 
 ## Config
 
@@ -151,20 +93,13 @@ If the config file contains invalid types/values, the CLI will print an error an
 
 ```ts
 interface SassFormatterConfig {
-  /** Enable debug messages */
   debug: boolean;
-  /** Delete rows that are empty */
   deleteEmptyRows: boolean;
-  /** @deprecated */
-  deleteWhitespace: boolean;
-  /** Convert CSS or SCSS to Sass */
+  deleteWhitespace: boolean; // deprecated
   convert: boolean;
-  /** Set space after property colon */
   setPropertySpace: boolean;
   tabSize: number;
-  /** Use spaces or tabs */
   insertSpaces: boolean;
-  /** Line endings: LF or CRLF */
   lineEnding: 'LF' | 'CRLF';
 }
 ```
@@ -190,39 +125,19 @@ const defaultSassFormatterConfig: SassFormatterConfig;
 }
 ```
 
-> Just create a .sassformatterrc.json file next to your project <br/>
-> and configure your formatter.
-
----
-
 ## Install
 
 ```bash
 # install locally (recommended)
 npm install --save-dev sass-formatter
 
-# or install globally
-npm install -g sass-formatter
+# or globally
+# npm install -g sass-formatter
 
 # or run without install
-npx sass-formatter --help
-
-#    for example:
-#    sass-formatter -w src/styles/main.scss
-#    sass-formatter -ch src/**/*.sass
-
+# npx sass-formatter --help
 ```
-
----
-
-_Generated with_ **[suf-cli](https://www.npmjs.com/package/suf-cli)**
 
 ## License
 
-[License](LICENSE) <br />
-Copyright (c) 2019 Leonard Grosoli. Licensed under the MIT license.
-
----
-
-> Built with ❤️ by [Syler](https://github.com/TheRealSyler) <br />
-> I wish you maximum productivity. ⚡⚡⚡
+Copyright (c) 2019 Leonard Grosoli Licensed under the MIT license.
