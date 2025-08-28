@@ -111,22 +111,24 @@ span
 ```bash
 $ sass-formatter -h
 
+
 Usage: sass-formatter [options] <file...>
 
 Options:
   -w, --write                 Rewrite the file after formatting
   -ch, --check                Check if the file is formatted
   -d, --default-config        Show default config
-  -c, --config   <Path>       Use custom config file (JSON)
+  -c, --config <Path>         Use custom config file (JSON)
+  -h, --help                  Print this help
 
------------------------------------------------------------
-  -h, --help                        Print this help
+Examples:
+  sass-formatter -w src/styles/main.scss
+  sass-formatter -ch "src/**/*.sass"
+  sass-formatter -c ./my-config.json src/**/*.scss
 
-  You can configure using sassformatterrc
-  in your project.
-
-  sassformatterrc format: JSON matching SassFormatterConfig
-
+You can configure using a .sassformatterrc file (JSON) placed in your project's working directory.
+The config will be merged with defaults: any missing keys are taken from defaults.
+If the config file contains invalid types/values, the CLI will print an error and exit with code 1.
 ```
 
 #### Cli Write
