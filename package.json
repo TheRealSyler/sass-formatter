@@ -1,10 +1,12 @@
 {
   "name": "sass-formatter",
   "version": "0.7.9",
-  "description": "typescript sass formatter",
+  "description": "TypeScript Sass formatter",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepack": "yarn test:ci && yarn build",
+    "prepublishOnly": "yarn build",
     "build": "del-cli ./dist && tsc -b",
     "dev": "ts-node src/cli.ts",
     "watch": "tsc -w",
@@ -19,7 +21,8 @@
   ],
   "keywords": [
     "sass",
-    "formatter"
+    "formatter",
+    "typescript"
   ],
   "author": "Syler",
   "license": "MIT",
@@ -41,7 +44,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TheRealSyler/sass-formatter"
+    "url": "https://github.com/maarutan/sass-formatter"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -64,6 +67,6 @@
     }
   },
   "bin": {
-    "sassfmt": "dist/cli.js"
+    "sass-formatter": "dist/cli.js"
   }
 }

@@ -1,18 +1,66 @@
 #!/usr/bin/env node
 
+//
+// ┌─┐┌─┐┌─┐┌─┐   ┌─┐┌─┐┬─┐┌┬┐┌─┐┌┬┐┌┬┐┌─┐┬─┐
+// └─┐├─┤└─┐└─┐───├┤ │ │├┬┘│││├─┤ │  │ ├┤ ├┬┘
+// └─┘┴ ┴└─┘└─┘   └  └─┘┴└─┴ ┴┴ ┴ ┴  ┴ └─┘┴└─
+// ----------------------------------------------------------------
+// MIT License
+// Copyright (c) 2019 Leonard Grosoli
+// Modified by https://github.com/maarutan  maarutan \ Marat Arzymatov 2025
+// Permission is hereby granted, free of charge...
+// lib author https://github.com/TheRealSyler TheRealSyler \ Leonard Grosoli
+//
+
 import fs from 'fs';
 import path from 'path';
-import { SassFormatter } from './index';
+import {
+  SassFormatter,
+  defaultSassFormatterConfig,
+  SassFormatterConfig
+} from './index';
 
 function printHelp() {
   console.log(`
-Usage: sassfmt [options] <file...>
+Usage: sass-formatter [options] <file...>
 
 Options:
-  -w, --write       Rewrite the file after formatting
-  -c, --check       Check if the file is formatted
-  -h, --help        Print this help
+  -w, --write                 Rewrite the file after formatting
+  -ch, --check                Check if the file is formatted
+  -d, --default-config        Show default config
+  -c, --config   <Path>       Use custom config file (JSON)
+
+-----------------------------------------------------------
+  -h, --help                        Print this help
+
+  You can configure using sassformatterrc
+  in your project.
+
+  sassformatterrc format: JSON matching SassFormatterConfig
 `);
+}
+
+/**
+ * Load config from a file or fallback to default
+ */
+function loadConfig(configPath?: string): SassFormatterConfig {
+  const finalPath = configPath
+    ? path.resolve(configPath)
+    : path.resolve(process.cwd(), 'sassformatterrc');
+
+  if (fs.existsSync(finalPath)) {
+    try {
+      const raw = fs.readFileSync(finalPath, 'utf-8');
+      return { ...defaultSassFormatterConfig, ...JSON.parse(raw) };
+    } catch (err) {
+      console.error(
+        `Failed to read or parse config file: ${finalPath}\n${(err as Error).message}`
+      );
+      process.exit(1);
+    }
+  }
+
+  return defaultSassFormatterConfig;
 }
 
 async function main() {
@@ -23,8 +71,34 @@ async function main() {
     process.exit(0);
   }
 
+  if (args.includes('-d') || args.includes('--default-config')) {
+    console.log(`
+--------------------------------------------------------------
+
+    Create a
+    [ .sassformatterrc ]
+    file in your project and configure your formatter.
+
+--------------------------------------------------------------
+
+=> default config:
+`);
+    console.log(JSON.stringify(defaultSassFormatterConfig, null, 2));
+    process.exit(0);
+  }
+
   const write = args.includes('-w') || args.includes('--write');
-  const check = args.includes('-c') || args.includes('--check');
+  const check = args.includes('-ch') || args.includes('--check');
+
+  // Обработка кастомного конфига
+  let configPath: string | undefined;
+  const configIndex = args.findIndex((a) => a === '-c' || a === '--config');
+  if (configIndex !== -1 && args[configIndex + 1]) {
+    configPath = args[configIndex + 1];
+    args.splice(configIndex, 2);
+  }
+
+  const config = loadConfig(configPath);
 
   const files = args.filter((a) => !a.startsWith('-'));
   if (files.length === 0) {
@@ -40,7 +114,7 @@ async function main() {
     if (!fs.existsSync(filePath)) {
       console.error(`Error: File not found -> ${file}`);
       exitCode = 1;
-      continue; // не падаем, идём дальше
+      continue;
     }
 
     let input: string;
@@ -54,7 +128,7 @@ async function main() {
 
     let formatted: string;
     try {
-      formatted = SassFormatter.Format(input);
+      formatted = SassFormatter.Format(input, config);
     } catch (err) {
       console.error(
         `Error formatting file: ${file}\n${(err as Error).message}`
