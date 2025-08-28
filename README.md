@@ -34,6 +34,8 @@
 
 ### Used in <img width="32" alt="image" src="https://github.com/user-attachments/assets/f1ba02eb-aae7-40a1-a3d1-843b0b9bc3d8" />
 
+> [`[ Visual Studio Code ] sass extension`](https://github.com/TheRealSyler/vscode-sass-indented) 👈
+
 ---
 
 # Docs
