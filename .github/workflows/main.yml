@@ -21,13 +21,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 24
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
+          bun-version: latest
+      - run: bun install
       - name: Run Tests
-        run: yarn test:ci
+        run: bun run test:ci
       - uses: codecov/codecov-action@v2
         with:
           flags: unittests
