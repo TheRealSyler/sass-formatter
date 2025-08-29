@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "commonjs",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "declaration": true,
     "outDir": "./dist",
     "rootDir": "./src",
@@ -11,10 +14,10 @@
     "strictBindCallApply": true,
     "strictPropertyInitialization": true,
     "noImplicitReturns": true,
+    "skipLibCheck": true,
     "esModuleInterop": true
   },
   "exclude": [
-    "node_modules",
     "**/*.spec.ts",
     "**/*.test.ts",
     "dist",
