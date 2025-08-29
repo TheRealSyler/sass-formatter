@@ -7,7 +7,7 @@
   "scripts": {
     "prepack": "yarn test:ci && yarn build",
     "prepublishOnly": "yarn build",
-    "build": "del-cli ./dist && tsc -b",
+    "build": "del-cli ./dist && tsc -b && suf",
     "dev": "ts-node src/cli.ts",
     "watch": "tsc -w",
     "postpublish": "curl -X POST -d {} https://api.netlify.com/build_hooks/60100b58cf7f871b9e91cca8",
