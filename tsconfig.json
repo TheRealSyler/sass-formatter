@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es3",
+    "target": "es2022",
     "module": "commonjs",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "declaration": true,
     "outDir": "./dist",
     "rootDir": "./src",
