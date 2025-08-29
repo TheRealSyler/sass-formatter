@@ -28,8 +28,3 @@ jobs:
       - run: bun install
       - name: Run Tests
         run: bun run test:ci
-      - uses: codecov/codecov-action@v2
-        with:
-          flags: unittests
-          fail_ci_if_error: true
-          verbose: true
