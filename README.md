@@ -34,22 +34,23 @@ const result = SassFormatter.Format(
 );
 ```
 
-### Result
+#### Result
 
 ```sass
 span
   color: none
 
   @for $i from 0 through 2
+
     &:nth-child(#{$i})
       color: none
       @each $author in $list
         .photo-#{$author}
           background: image-url("avatars/#{$author}.png") no-repeat
 
-  @while $types > 0
-    .while-#{$types}
-      width: $type-width + $types
+    @while $types > 0
+      .while-#{$types}
+        width: $type-width + $types
 ```
 
 ## CLI
@@ -87,28 +88,46 @@ Notes:
 - Unknown keys trigger warnings; invalid values trigger exit code 1.
 - Supports formatting: `sass`, `scss`, `css`, `less`.
 
-## Config
+<span id="DOC_GENERATION_MARKER_0"></span>
 
-### SassFormatterConfig
+# Docs
+
+- **[config](#config)**
+  - [SassFormatterConfig](#sassformatterconfig)
+  - [defaultSassFormatterConfig](#defaultsassformatterconfig)
+
+### config
+
+##### SassFormatterConfig
 
 ```ts
 interface SassFormatterConfig {
+  /**Enable debug messages */
   debug: boolean;
+  /**delete rows that are empty. */
   deleteEmptyRows: boolean;
-  deleteWhitespace: boolean; // deprecated
+  /**@deprecated*/
+  deleteWhitespace: boolean;
+  /**Convert css or scss to sass */
   convert: boolean;
+  /**set the space after the colon of a property to one.*/
   setPropertySpace: boolean;
   tabSize: number;
+  /**insert spaces or tabs. */
   insertSpaces: boolean;
+  /**Defaults to LF*/
   lineEnding: 'LF' | 'CRLF';
 }
 ```
 
-### defaultSassFormatterConfig
+##### defaultSassFormatterConfig
 
 ```ts
 const defaultSassFormatterConfig: SassFormatterConfig;
 ```
+
+_Generated with_ **[suf-cli](https://www.npmjs.com/package/suf-cli)**
+<span id="DOC_GENERATION_MARKER_1"></span>
 
 ### .sassformatterrc.json
 
@@ -140,4 +159,6 @@ npm install --save-dev sass-formatter
 
 ## License
 
+<span id="LICENSE_GENERATION_MARKER_0"></span>
 Copyright (c) 2019 Leonard Grosoli Licensed under the MIT license.
+<span id="LICENSE_GENERATION_MARKER_1"></span>
